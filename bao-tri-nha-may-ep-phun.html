@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảo Trì Nhà Máy Ép Phun — Quản Lý TPM & Lập Lịch PM | 20 Máy Ép</title>
+    <style>
+        :root {
+            --navy-dark: #0a1628;
+            --navy-primary: #122442;
+            --navy-light: #1a365d;
+            --amber-primary: #d97706;
+            --amber-light: #fbbf24;
+            --amber-pale: #fef3c7;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --success: #16a34a;
+            --error: #dc2626;
+            --border-radius: 8px;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --transition: all 0.2s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scroll-margin-top: 80px; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            background: var(--bg-light);
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        .nav {
+            position: sticky;
+            top: 0;
+            background: var(--navy-dark);
+            padding: 12px 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+        }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { color: #fff; font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+        .nav-logo a { color: var(--amber-light); text-decoration: none; font-size: 0.85rem; padding: 3px 8px; border: 1px solid var(--amber-light); border-radius: 4px; }
+        .nav-links { display: flex; gap: 18px; list-style: none; }
+        .nav-links a { color: var(--gray-200); text-decoration: none; font-size: 0.9rem; transition: var(--transition); }
+        .nav-links a:hover { color: var(--amber-light); }
+
+        .hero {
+            background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-primary) 100%);
+            color: var(--white);
+            padding: 50px 0;
+            text-align: center;
+        }
+        .hero h1 { font-size: 2.2rem; margin-bottom: 12px; font-weight: 700; }
+        .hero p { font-size: 1.05rem; opacity: 0.9; max-width: 850px; margin: 0 auto; }
+
+        section { padding: 45px 0; background: var(--white); border-bottom: 1px solid var(--gray-200); }
+        section:nth-child(even) { background: var(--bg-light); }
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--navy-primary);
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 3px solid var(--amber-primary);
+            display: inline-block;
+        }
+
+        .tpm-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .tpm-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 22px;
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow-sm);
+            border-top: 4px solid var(--navy-primary);
+        }
+        .tpm-card.amber { border-top-color: var(--amber-primary); }
+        .tpm-card.green { border-top-color: var(--success); }
+        .tpm-card h3 { font-size: 1.15rem; color: var(--navy-primary); margin-bottom: 8px; }
+
+        /* Calculation Box */
+        .calc-box {
+            background: var(--white);
+            border: 2px solid var(--navy-primary);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: var(--shadow-md);
+        }
+        .calc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .calc-group { display: flex; flex-direction: column; gap: 5px; }
+        label { font-weight: 600; font-size: 0.85rem; color: var(--navy-primary); }
+        input, select {
+            padding: 8px 12px;
+            border: 1px solid var(--gray-300);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
+        .btn {
+            padding: 9px 18px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-primary { background: var(--amber-primary); color: var(--navy-dark); }
+        .btn-primary:hover { background: #b45309; color: #fff; }
+        .btn-secondary { background: var(--navy-primary); color: #fff; }
+
+        .result-panel {
+            background: var(--navy-primary);
+            color: #fff;
+            padding: 20px;
+            border-radius: 6px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            text-align: center;
+            margin-top: 15px;
+        }
+        .res-val { font-size: 1.8rem; font-weight: 800; color: var(--amber-light); }
+        .res-lbl { font-size: 0.8rem; opacity: 0.9; text-transform: uppercase; margin-top: 4px; }
+
+        /* Tables */
+        .table-responsive { overflow-x: auto; margin: 20px 0; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.88rem; background: var(--white); }
+        th, td { border: 1px solid var(--gray-200); padding: 10px 12px; text-align: left; }
+        th { background: var(--navy-primary); color: #fff; font-weight: 600; }
+        tr:nth-child(even) { background: var(--gray-100); }
+
+        .footer { background: var(--navy-dark); color: var(--gray-300); text-align: center; padding: 25px 0; font-size: 0.85rem; }
+        .footer a { color: var(--amber-light); text-decoration: none; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.6rem; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="container nav-container">
+            <div class="nav-logo">
+                <span>Bảo Trì TPM · 20 Máy Ép</span>
+                <a href="index.html">← Trang chủ ISO</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#tong-quan">Tổng quan TPM</a></li>
+                <li><a href="#5-cum-co-cau">5 Cụm máy ép</a></li>
+                <li><a href="#kpi-mtbf">Chỉ số MTBF/MTTR</a></li>
+                <li><a href="#lich-pm">Lập lịch bảo trì</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="container">
+            <h1>Bảo Trì Nhà Máy Ép Phun — Quản Lý TPM & Lập Lịch PM</h1>
+            <p>Hệ thống bảo dưỡng tự quản (AM), bảo dưỡng phòng ngừa (PM) và tối ưu hóa chỉ số MTBF/MTTR cho 20 máy ép phun — Tiêu chuẩn ISO 9001:2015 (§7.1.3 Cơ sở hạ tầng thiết bị)</p>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- TỔNG QUAN TPM -->
+        <section id="tong-quan">
+            <h2 class="section-title">1. Ba Trụ Cột Bảo Trì TPM Trong Nhà Máy Ép Phun</h2>
+            <div class="tpm-grid">
+                <div class="tpm-card">
+                    <span style="font-size:0.75rem;font-weight:700;color:var(--navy-primary);">CẤP ĐỘ 1</span>
+                    <h3>Bảo Dưỡng Tự Quản (AM)</h3>
+                    <p style="font-size:0.88rem;color:#475569;">Do chính công nhân vận hành máy thực hiện đầu ca/cuối ca: Lau sạch bàn kẹp, kiểm tra rò rỉ dầu mỡ, châm dầu bôi trơn trục khuỷu, lắng nghe tiếng ồn bất thường.</p>
+                </div>
+                <div class="tpm-card amber">
+                    <span style="font-size:0.75rem;font-weight:700;color:var(--amber-primary);">CẤP ĐỘ 2</span>
+                    <h3>Bảo Dưỡng Phòng Ngừa (PM)</h3>
+                    <p style="font-size:0.88rem;color:#475569;">Do tổ bảo trì cơ điện thực hiện định kỳ theo lịch (tuần/tháng/quý): Thay lọc dầu thủy lực, xiết lại bu lông bệ máy, hiệu chuẩn nhiệt độ PID, kiểm tra độ mòn trục vít.</p>
+                </div>
+                <div class="tpm-card green">
+                    <span style="font-size:0.75rem;font-weight:700;color:var(--success);">CẤP ĐỘ 3</span>
+                    <h3>Bảo Dưỡng Dự Đoán (PdM)</h3>
+                    <p style="font-size:0.88rem;color:#475569;">Sử dụng công nghệ đo đạc hiện đại: Chụp ảnh nhiệt hồng ngoại kiểm tra tiếp điểm khởi động từ trong tủ điện, phân tích độ nhớt và cặn bẩn dầu thủy lực, đo độ rung động motor bơm.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5 CỤM CƠ CẤU MÁY ÉP -->
+        <section id="5-cum-co-cau">
+            <h2 class="section-title">2. Năm Cụm Cơ Cấu Trọng Yếu Cần Bảo Trì Định Kỳ</h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cụm Thiết Bị</th>
+                            <th>Chi Tiết Trọng Yếu</th>
+                            <th>Hạng Mục Kiểm Tra & Bảo Trì</th>
+                            <th>Chu Kỳ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>1. Cụm Kẹp Khuôn</strong></td>
+                            <td>Bàn kẹp tĩnh/động, 4 thanh giằng (tie-bar), cơ cấu khớp toggle, xi lanh kẹp</td>
+                            <td>Bơm mỡ bôi trơn ổ trượt khuỷu; kiểm tra độ rơ lỏng bu lông; đo độ song song 2 bàn kẹp (sai số &lt; 0.05mm).</td>
+                            <td>Hằng ca (bôi trơn) / Hằng tháng (đo độ song song)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2. Cụm Phun & Hóa Dẻo</strong></td>
+                            <td>Trục vít, nòng gia nhiệt, vòng nhiệt điện trở, vòi phun (nozzle), motor quay trục vít</td>
+                            <td>Kiểm tra nhiệt độ thực tế so với cài đặt; xiết chặt bu lông vòng nhiệt; đo độ mòn khe hở nòng - trục vít.</td>
+                            <td>Hằng tuần (nhiệt) / 6 tháng (độ mòn)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>3. Cụm Thủy Lực</strong></td>
+                            <td>Bơm dầu thủy lực (Vane/Piston/Servo), van tỷ lệ điều áp/lưu lượng, bình tích áp</td>
+                            <td>Kiểm tra mức dầu, màu dầu; vệ sinh bộ làm mát chiller dầu; thay lọc dầu hút và lọc dầu hồi; test áp suất hệ thống.</td>
+                            <td>Hằng ngày (mức dầu) / 2.000 giờ (thay lọc dầu)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>4. Cụm Điều Khiển & Điện</strong></td>
+                            <td>Màn hình HMI, bộ điều khiển PLC, thước đo vị trí quang học, rơ le nhiệt</td>
+                            <td>Hút bụi quạt gió làm mát tủ điện; lau bụi thanh trượt thước đo hành trình kẹp/phun; kiểm tra tiếp điểm khởi động từ.</td>
+                            <td>Hằng tháng (vệ sinh tủ điện)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>5. Thiết Bị Phụ Trợ</strong></td>
+                            <td>Phễu sấy hạt nhựa, máy hút ẩm, máy làm lạnh nước (Chiller), máy băm hạt</td>
+                            <td>Vệ sinh phin lọc gió phễu sấy; đo nhiệt độ nước giải nhiệt khuôn cấp về (15°C - 20°C); mài dao máy băm phế.</td>
+                            <td>Hằng tuần (lọc sấy) / Hằng tháng (dao băm)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- KPI MTBF & MTTR -->
+        <section id="kpi-mtbf">
+            <h2 class="section-title">3. Công Cụ Tính Toán KPI Bảo Trì (MTBF & MTTR)</h2>
+            <div class="calc-box">
+                <div class="calc-grid">
+                    <div class="calc-group">
+                        <label>Chọn Máy Ép Phun</label>
+                        <select id="calcMachine">
+                            <option value="Máy 01 (120T)">Máy 01 (120T)</option>
+                            <option value="Máy 05 (250T)">Máy 05 (250T)</option>
+                            <option value="Máy 08 (350T)">Máy 08 (350T)</option>
+                            <option value="Toàn bộ 20 máy (Tháng)">Toàn bộ 20 máy (Tháng)</option>
+                        </select>
+                    </div>
+                    <div class="calc-group">
+                        <label>Tổng Thời Gian Chạy Máy (Giờ)</label>
+                        <input type="number" id="inpRunHours" value="620">
+                    </div>
+                    <div class="calc-group">
+                        <label>Số Lần Hỏng Máy Dừng Chuyền (Lần)</label>
+                        <input type="number" id="inpBreakdowns" value="4">
+                    </div>
+                    <div class="calc-group">
+                        <label>Tổng Thời Gian Sửa Chữa Downtime (Phút)</label>
+                        <input type="number" id="inpDownMinutes" value="150">
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="calcMtbf()">⚡ Tính Toán Chỉ Số MTBF & MTTR</button>
+                </div>
+
+                <div class="result-panel">
+                    <div>
+                        <div class="res-val" id="resMtbf">155.0 giờ</div>
+                        <div class="res-lbl">MTBF (Thời gian giữa 2 lần hỏng)</div>
+                    </div>
+                    <div>
+                        <div class="res-val" id="resMttr">37.5 phút</div>
+                        <div class="res-lbl">MTTR (Thời gian sửa chữa TB)</div>
+                    </div>
+                    <div>
+                        <div class="res-val" id="resStatus" style="color:#4ade80;">TỐT</div>
+                        <div class="res-lbl">Đánh Giá Độ Ổn Định Thiết Bị</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- LẬP LỊCH BẢO TRÌ PM -->
+        <section id="lich-pm">
+            <h2 class="section-title">4. Lập Lịch Bảo Trì Phòng Ngừa (PM Schedule)</h2>
+            <div class="calc-box">
+                <form id="formPm">
+                    <div class="calc-grid">
+                        <div class="calc-group">
+                            <label>Máy Ép Phun</label>
+                            <select id="pmMachine" required>
+                                <option value="Máy 01 (120T)">Máy 01 (120T)</option>
+                                <option value="Máy 02 (160T)">Máy 02 (160T)</option>
+                                <option value="Máy 03 (160T)">Máy 03 (160T)</option>
+                                <option value="Máy 04 (200T)">Máy 04 (200T)</option>
+                                <option value="Máy 05 (250T)">Máy 05 (250T)</option>
+                                <option value="Máy 06 (250T)">Máy 06 (250T)</option>
+                                <option value="Máy 07 (300T)">Máy 07 (300T)</option>
+                                <option value="Máy 08 (350T)">Máy 08 (350T)</option>
+                                <option value="Máy 09 (400T)">Máy 09 (400T)</option>
+                                <option value="Máy 10 (450T)">Máy 10 (450T)</option>
+                            </select>
+                        </div>
+                        <div class="calc-group">
+                            <label>Hạng Mục Bảo Dưỡng PM</label>
+                            <input type="text" id="pmTask" placeholder="VD: Thay phin lọc dầu thủy lực & vệ sinh chiller" required>
+                        </div>
+                        <div class="calc-group">
+                            <label>Ngày Kế Hoạch (Due Date)</label>
+                            <input type="date" id="pmDate" required>
+                        </div>
+                        <div class="calc-group">
+                            <label>Kỹ Thuật Viên Phụ Trách</label>
+                            <input type="text" id="pmTech" placeholder="VD: Lê Văn Bảo" required>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">➕ Thêm Vào Lịch PM</button>
+                        <button type="button" class="btn btn-secondary" onclick="exportPmSample()">Nạp lịch PM mẫu</button>
+                    </div>
+                </form>
+
+                <div class="table-responsive" style="margin-top:20px;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Máy Ép</th>
+                                <th>Hạng Mục Bảo Trì PM</th>
+                                <th>Ngày Kế Hoạch</th>
+                                <th>Kỹ Thuật Viên</th>
+                                <th>Trạng Thái</th>
+                                <th>Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pmHistoryBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Hệ thống Quản lý Thiết bị & Cơ sở hạ tầng ISO 9001 (§7.1.3) · Nhà máy Ép Phun 20 Máy</p>
+            <p style="margin-top: 5px;"><a href="index.html">← Quay lại Cổng tra cứu tài liệu</a></p>
+        </div>
+    </footer>
+
+    <script>
+        const PM_STORAGE_KEY = 'iso_pm_schedule_v1';
+
+        const samplePmList = [
+            { machine: "Máy 05 (250T)", task: "Bơm mỡ bôi trơn khớp toggle & căn chỉnh độ song song bàn kẹp", date: "2026-10-05", tech: "Nguyễn Văn Bảo", status: "Chờ thực hiện" },
+            { machine: "Máy 08 (350T)", task: "Hút bụi vệ sinh tủ điện PLC & kiểm tra tiếp điểm rơ le", date: "2026-10-07", tech: "Trần Tuấn Kiệt", status: "Chờ thực hiện" },
+            { machine: "Máy 02 (160T)", task: "Thay phin lọc dầu hút thủy lực & kiểm tra áp suất bơm servo", date: "2026-10-03", tech: "Nguyễn Văn Bảo", status: "Hoàn thành" }
+        ];
+
+        function calcMtbf() {
+            const runHours = parseFloat(document.getElementById('inpRunHours').value) || 0;
+            const breakdowns = parseInt(document.getElementById('inpBreakdowns').value) || 0;
+            const downMins = parseFloat(document.getElementById('inpDownMinutes').value) || 0;
+
+            if (breakdowns === 0) {
+                document.getElementById('resMtbf').textContent = "> " + runHours + "h";
+                document.getElementById('resMttr').textContent = "0 phút";
+                document.getElementById('resStatus').textContent = "HOÀN HẢO (0 LỖI)";
+                document.getElementById('resStatus').style.color = "#4ade80";
+                return;
+            }
+
+            const mtbf = (runHours / breakdowns).toFixed(1);
+            const mttr = (downMins / breakdowns).toFixed(1);
+
+            document.getElementById('resMtbf').textContent = mtbf + " giờ";
+            document.getElementById('resMttr').textContent = mttr + " phút";
+
+            const statusEl = document.getElementById('resStatus');
+            if (mtbf >= 150 && mttr <= 45) {
+                statusEl.textContent = "RẤT TỐT (CHUẨN)";
+                statusEl.style.color = "#4ade80";
+            } else if (mtbf >= 80) {
+                statusEl.textContent = "TRUNG BÌNH";
+                statusEl.style.color = "#fbbf24";
+            } else {
+                statusEl.textContent = "KÉM (CẦN ĐẠI TU)";
+                statusEl.style.color = "#f87171";
+            }
+        }
+
+        function getPmList() {
+            const raw = localStorage.getItem(PM_STORAGE_KEY);
+            if (!raw) {
+                localStorage.setItem(PM_STORAGE_KEY, JSON.stringify(samplePmList));
+                return samplePmList;
+            }
+            return JSON.parse(raw);
+        }
+
+        function renderPmList() {
+            const list = getPmList();
+            const tbody = document.getElementById('pmHistoryBody');
+            if (list.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#64748b;">Chưa có lịch bảo trì nào được tạo.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = list.map((item, i) => `
+                <tr>
+                    <td><strong>${escapeHtml(item.machine)}</strong></td>
+                    <td>${escapeHtml(item.task)}</td>
+                    <td>${item.date}</td>
+                    <td><code>${escapeHtml(item.tech)}</code></td>
+                    <td>
+                        <span style="display:inline-block;padding:3px 8px;border-radius:4px;font-size:0.75rem;font-weight:700;background:${item.status==='Hoàn thành'?'#dcfce7':'#fef3c7'};color:${item.status==='Hoàn thành'?'#166534':'#854d0e'};">
+                            ${item.status}
+                        </span>
+                    </td>
+                    <td>
+                        <button onclick="togglePmStatus(${i})" style="padding:2px 8px;font-size:0.75rem;cursor:pointer;">Đổi trạng thái</button>
+                        <button onclick="deletePm(${i})" style="padding:2px 8px;font-size:0.75rem;cursor:pointer;color:red;">Xóa</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        document.getElementById('formPm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newItem = {
+                machine: document.getElementById('pmMachine').value,
+                task: document.getElementById('pmTask').value.trim(),
+                date: document.getElementById('pmDate').value,
+                tech: document.getElementById('pmTech').value.trim(),
+                status: 'Chờ thực hiện'
+            };
+            const list = getPmList();
+            list.unshift(newItem);
+            localStorage.setItem(PM_STORAGE_KEY, JSON.stringify(list));
+            renderPmList();
+            document.getElementById('pmTask').value = '';
+            alert('Đã thêm lịch bảo trì PM thành công!');
+        });
+
+        function togglePmStatus(idx) {
+            const list = getPmList();
+            list[idx].status = list[idx].status === 'Hoàn thành' ? 'Chờ thực hiện' : 'Hoàn thành';
+            localStorage.setItem(PM_STORAGE_KEY, JSON.stringify(list));
+            renderPmList();
+        }
+
+        function deletePm(idx) {
+            if (confirm('Xóa lịch PM này?')) {
+                const list = getPmList();
+                list.splice(idx, 1);
+                localStorage.setItem(PM_STORAGE_KEY, JSON.stringify(list));
+                renderPmList();
+            }
+        }
+
+        function exportPmSample() {
+            localStorage.setItem(PM_STORAGE_KEY, JSON.stringify(samplePmList));
+            renderPmList();
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            calcMtbf();
+            renderPmList();
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('pmDate').value = today;
+        });
+    </script>
+</body>
+</html>

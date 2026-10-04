@@ -1,0 +1,1840 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fishbone & Why-Why — Đào nguyên nhân gốc</title>
+    <style>
+        :root {
+            --navy-dark: #0a1628;
+            --navy: #122442;
+            --navy-light: #1a3a6e;
+            --amber: #d97706;
+            --amber-light: #fbbf24;
+            --amber-bg: #fef3c7;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --success: #10b981;
+            --success-bg: #d1fae5;
+            --warning: #f59e0b;
+            --warning-bg: #fef3c7;
+            --danger: #ef4444;
+            --danger-bg: #fee2e2;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --radius: 8px;
+            --radius-lg: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            background: var(--bg-light);
+        }
+
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 600;
+            line-height: 1.3;
+            color: var(--navy-dark);
+        }
+
+        h1 { font-size: 2rem; }
+        h2 { font-size: 1.5rem; margin-top: 2rem; }
+        h3 { font-size: 1.25rem; margin-top: 1.5rem; }
+        h4 { font-size: 1.1rem; margin-top: 1.25rem; }
+
+        p { margin-bottom: 1rem; }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li { margin-bottom: 0.5rem; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--white);
+            box-shadow: var(--shadow-sm);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        th {
+            background: var(--navy);
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        tr:hover { background: var(--gray-100); }
+
+        /* Navigation */
+        .nav {
+            position: sticky;
+            top: 0;
+            background: var(--navy-dark);
+            padding: 0.75rem 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            color: var(--amber-light);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+            margin: 0;
+        }
+
+        .nav-links a {
+            color: var(--gray-200);
+            text-decoration: none;
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--radius);
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: var(--amber);
+            color: var(--white);
+        }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%);
+            color: var(--white);
+            padding: 3rem 1.5rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-subtitle {
+            color: var(--amber-light);
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Main container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* Sections */
+        section {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+            scroll-margin-top: 80px;
+        }
+
+        section h2 {
+            margin-top: 0;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid var(--amber);
+            display: inline-block;
+        }
+
+        /* Callout boxes */
+        .callout {
+            padding: 1rem 1.25rem;
+            border-radius: var(--radius);
+            margin: 1rem 0;
+            border-left: 4px solid;
+        }
+
+        .callout-info {
+            background: #eff6ff;
+            border-color: #3b82f6;
+            color: #1e40af;
+        }
+
+        .callout-warning {
+            background: var(--amber-bg);
+            border-color: var(--amber);
+            color: #92400e;
+        }
+
+        .callout-success {
+            background: var(--success-bg);
+            border-color: var(--success);
+            color: #065f46;
+        }
+
+        /* Progress indicator */
+        .progress-bar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--gray-100);
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .progress-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--navy);
+            color: var(--white);
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .progress-chip.complete {
+            background: var(--success);
+        }
+
+        .progress-chip.warning {
+            background: var(--warning);
+        }
+
+        /* Form elements */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--navy);
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--amber);
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.1);
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .input-warning {
+            border-color: var(--warning) !important;
+            background: var(--amber-bg);
+        }
+
+        .warning-message {
+            display: none;
+            padding: 0.75rem;
+            background: var(--amber-bg);
+            border: 1px solid var(--amber);
+            border-radius: var(--radius);
+            color: #92400e;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .warning-message.show {
+            display: block;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--navy);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--navy-light);
+        }
+
+        .btn-secondary {
+            background: var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-300);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-warning {
+            background: var(--amber);
+            color: var(--white);
+        }
+
+        .btn-warning:hover {
+            background: #b45309;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: var(--white);
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        /* Fishbone diagram */
+        .fishbone-container {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: var(--gray-100);
+            border-radius: var(--radius-lg);
+            overflow-x: auto;
+        }
+
+        .fishbone-diagram {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            min-width: 900px;
+            position: relative;
+        }
+
+        .fishbone-center {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem 3rem;
+            background: var(--navy);
+            color: var(--white);
+            border-radius: var(--radius);
+            font-weight: 700;
+            font-size: 1.25rem;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .fishbone-branch {
+            background: var(--white);
+            border: 2px solid var(--navy);
+            border-radius: var(--radius);
+            padding: 1rem;
+            min-height: 150px;
+        }
+
+        .fishbone-branch h4 {
+            color: var(--navy);
+            margin: 0 0 0.75rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--amber);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .fishbone-causes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .cause-chip {
+            display: inline-block;
+            padding: 0.375rem 0.75rem;
+            background: var(--amber-bg);
+            border: 1px solid var(--amber);
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            color: #92400e;
+        }
+
+        .fishbone-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .fishbone-input-group {
+            background: var(--gray-100);
+            padding: 1rem;
+            border-radius: var(--radius);
+        }
+
+        .fishbone-input-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 0.5rem;
+        }
+
+        .fishbone-input-group .m-label {
+            color: var(--amber);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Why-Why section */
+        .why-why-container {
+            margin-top: 1.5rem;
+        }
+
+        .why-row {
+            display: grid;
+            grid-template-columns: 80px 1fr auto;
+            gap: 1rem;
+            align-items: start;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: var(--gray-100);
+            border-radius: var(--radius);
+        }
+
+        .why-label {
+            font-weight: 700;
+            color: var(--navy);
+            padding-top: 0.75rem;
+        }
+
+        .why-input {
+            position: relative;
+        }
+
+        .why-remove-btn {
+            padding: 0.5rem 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .why-evaluation {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+        }
+
+        .why-evaluation.success {
+            background: var(--success-bg);
+            color: #065f46;
+            border: 1px solid var(--success);
+        }
+
+        .why-evaluation.warning {
+            background: var(--amber-bg);
+            color: #92400e;
+            border: 1px solid var(--amber);
+        }
+
+        .why-evaluation.neutral {
+            background: var(--gray-100);
+            color: var(--gray-700);
+            border: 1px solid var(--gray-300);
+        }
+
+        /* History table */
+        .history-table {
+            margin-top: 1rem;
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--navy-dark);
+            color: var(--gray-300);
+            padding: 2rem 1.5rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .footer p {
+            margin: 0;
+            font-size: 0.875rem;
+        }
+
+        /* Back to top */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--amber);
+            color: var(--white);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 999;
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background: var(--navy);
+            transform: translateY(-3px);
+        }
+
+        /* Flow diagram */
+        .flow-diagram {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            padding: 2rem;
+            background: var(--gray-100);
+            border-radius: var(--radius-lg);
+            margin: 1.5rem 0;
+        }
+
+        .flow-step {
+            padding: 1rem 1.5rem;
+            background: var(--navy);
+            color: var(--white);
+            border-radius: var(--radius);
+            font-weight: 600;
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .flow-step.highlight {
+            background: var(--amber);
+        }
+
+        .flow-arrow {
+            font-size: 1.5rem;
+            color: var(--gray-400);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+
+            section {
+                padding: 1.5rem;
+            }
+
+            .fishbone-diagram {
+                min-width: 600px;
+            }
+
+            .why-row {
+                grid-template-columns: 60px 1fr;
+            }
+
+            .why-row .btn-sm:last-child {
+                grid-column: 1 / -1;
+            }
+        }
+
+        /* Print */
+        @media print {
+            .nav,
+            .back-to-top,
+            .btn,
+            .btn-group,
+            .fishbone-input-group,
+            .why-remove-btn,
+            .history-section {
+                display: none !important;
+            }
+
+            section {
+                box-shadow: none;
+                border: 1px solid var(--gray-300);
+            }
+
+            .fishbone-container {
+                background: none;
+                border: 1px solid var(--gray-300);
+            }
+
+            .fishbone-branch {
+                break-inside: avoid;
+            }
+
+            body {
+                background: var(--white);
+            }
+        }
+
+        /* Reveal animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
+
+        .reveal.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Grid for 6M inputs */
+        .six-m-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal h3 {
+            margin-top: 0;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="nav-brand">Fishbone & Why-Why</div>
+            <ul class="nav-links">
+                <li><a href="#tong-quan">Tổng quan</a></li>
+                <li><a href="#fishbone">Fishbone (6M)</a></li>
+                <li><a href="#why-why">Why-Why</a></li>
+                <li><a href="#ket-hop">Kết hợp</a></li>
+                <li><a href="#lien-he">Liên hệ</a></li>
+                <li><a href="#cong-cu">Công cụ</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero">
+        <h1>Fishbone & Why-Why — Đào nguyên nhân gốc</h1>
+        <p class="hero-subtitle">Ishikawa (6M) × 5 Whys · Cặp công cụ lõi của 8D – D4</p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- BLOCK 1: Tổng quan -->
+        <section id="tong-quan" class="reveal">
+            <h2>Tổng quan</h2>
+            
+            <div class="callout callout-info">
+                <strong>Fishbone (Biểu đồ xương cá)</strong> do giáo sư Kaoru Ishikawa (Nhật Bản) phát triển, còn gọi là biểu đồ nguyên nhân–kết quả. Đầu cá = vấn đề cần giải quyết, các xương = nhóm nguyên nhân tiềm năng. Dùng để brainstorm toàn diện TRƯỚC khi chốt nguyên nhân gốc.
+            </div>
+
+            <div class="callout callout-info">
+                <strong>Why-Why (5 Whys)</strong> là phương pháp hỏi "Tại sao?" khoảng 5 lần cho đến khi tìm ra nguyên nhân gốc — nguyên nhân có thể hành động được và không tái phát.
+            </div>
+
+            <div class="callout callout-warning">
+                <strong>Quan trọng:</strong> Fishbone MỞ RỘNG NGANG (nhiều nguyên nhân), Why-Why ĐI THẲNG XUỐNG (từng nhánh) — hai công cụ bổ trợ nhau. Đây là lõi của bước D4 trong quy trình 8D.
+            </div>
+
+            <h3>Mối quan hệ Fishbone × Why-Why</h3>
+            <ul>
+                <li><strong>Fishbone:</strong> Giúp không bỏ sót nguyên nhân tiềm năng nào (6M: Man, Machine, Material, Method, Measurement, Environment)</li>
+                <li><strong>Why-Why:</strong> Đào sâu từng nhánh nghi vấn để tìm nguyên nhân gốc thực sự</li>
+                <li><strong>Kết hợp:</strong> Fishbone → chọn 3–5 nghi vấn → Why-Why từng nhánh → nguyên nhân gốc → hành động khắc phục</li>
+            </ul>
+        </section>
+
+        <!-- BLOCK 2: Fishbone chi tiết -->
+        <section id="fishbone" class="reveal">
+            <h2>Fishbone (6M) — Chi tiết</h2>
+
+            <h3>Bảng 6M áp dụng nhà máy ép phun</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 15%;">6M</th>
+                        <th style="width: 25%;">Yếu tố</th>
+                        <th>Ví dụ thực tế</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Man</strong></td>
+                        <td>Con người</td>
+                        <td>vận hành mới chưa đào tạo · bỏ qua bước kiểm tra · thao tác khác nhau giữa 2 ca</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Machine</strong></td>
+                        <td>Máy móc</td>
+                        <td>nhiệt khuôn lệch · áp phun không ổn định · chốt hãm mòn · van 1 chiều hở · bơm mất áp</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Material</strong></td>
+                        <td>Vật liệu</td>
+                        <td>độ ẩm hạt cao · lô hạt không đồng nhất · tỉ lệ hạt tái chế sai · phụ gia lẫn lạ</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Method</strong></td>
+                        <td>Phương pháp</td>
+                        <td>thiếu WI · thông số chưa chuẩn hóa · tra mỡ sai · trình tự khởi động khác nhau</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Measurement</strong></td>
+                        <td>Đo lường</td>
+                        <td>calip hết hiệu chuẩn · đo sai vị trí · thiếu thiết bị đo độ ẩm · tiêu chuẩn mơ hồ</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Environment</strong></td>
+                        <td>Môi trường</td>
+                        <td>nhiệt/ẩm xưởng cao (PA66 hút ẩm) · bụi · thiếu sáng khi QC · rung máy kế bên</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p><em>Ghi chú: Có thể thêm Management (Quản lý) hoặc Money (Chi phí) tùy tình huống.</em></p>
+
+            <h3>6 bước vẽ Fishbone</h3>
+            <ol>
+                <li><strong>Ghi vấn đề ở đầu cá:</strong> Dùng mô tả chuẩn D2/5W2H (vấn đề gì, ở đâu, khi nào, mức độ)</li>
+                <li><strong>Vẽ xương sống + 4–6 nhánh:</strong> Dùng 6M làm khung chính</li>
+                <li><strong>Brainstorm điền nguyên nhân:</strong> Chưa phê phán, ghi tất cả ý tưởng</li>
+                <li><strong>Vẽ xương con:</strong> Cho nguyên nhân phức tạp cần phân tích sâu</li>
+                <li><strong>Khoanh 3–5 nghi vấn:</strong> Dựa trên dữ liệu thực tế (Pareto, KPI phế phẩm)</li>
+                <li><strong>Đưa nghi vấn vào Why-Why:</strong> Đào sâu từng nhánh để tìm nguyên nhân gốc</li>
+            </ol>
+
+            <div class="callout callout-warning">
+                <strong>3 lưu ý quan trọng:</strong>
+                <ul style="margin-top: 0.5rem; margin-bottom: 0;">
+                    <li>Phát hiện ≠ kết luận — chưa cần xác minh ngay ở bước brainstorm</li>
+                    <li>Không đổ lỗi cá nhân — ghi theo quy trình/điều kiện, không phải "do công nhân A"</li>
+                    <li>Brainstorm đủ 6 nhánh rồi MỚI chọn nghi vấn — tránh bỏ sót</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- BLOCK 3: Why-Why chi tiết -->
+        <section id="why-why" class="reveal">
+            <h2>Why-Why (5 Whys) — Chi tiết</h2>
+
+            <h3>Nguyên tắc</h3>
+            <ul>
+                <li>Hỏi "Tại sao?" khoảng 5 lần cho 1 nhánh</li>
+                <li>Mỗi lần đi sâu hơn, cụ thể hơn</li>
+                <li>Dừng khi nguyên nhân <strong>CÓ THỂ HÀNH ĐỘNG</strong> và xác minh bằng dữ liệu</li>
+            </ul>
+
+            <h3>Ví dụ kinh điển (Ford)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">Lần</th>
+                        <th>Câu hỏi</th>
+                        <th>Trả lời</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Sao máy ngừng?</td>
+                        <td>Cầu chì nổ do quá tải</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Sao quá tải?</td>
+                        <td>Ổ trục bôi trơn không đủ</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Sao thiếu?</td>
+                        <td>Bơm dầu không bơm đủ</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Sao bơm thiếu?</td>
+                        <td>Trục bơm mòn</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Sao mòn?</td>
+                        <td><strong>Hạt kim loại lọt vào, không có lưới lọc</strong> → GỐC: thêm lưới lọc + quy trình vệ sinh (không chỉ thay cầu chì)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Ví dụ KL-102 (Nhà máy ép phun)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">Lần</th>
+                        <th>Câu hỏi</th>
+                        <th>Trả lời</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Sao bong bóng khí?</td>
+                        <td>Độ ẩm hạt PA66 quá cao khi phun</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Sao độ ẩm cao?</td>
+                        <td>Hạt mới sấy chưa đủ 4h ở 80°C</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Sao chưa đủ giờ mà đưa vào máy?</td>
+                        <td>Tăng ca mở máy sớm, không ai kiểm tra</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Sao không phát hiện?</td>
+                        <td>Máy sấy không có tín hiệu/cảnh báo khi chưa đạt tiêu chuẩn</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Sao lại vậy?</td>
+                        <td><strong>Thiết bị không đo độ ẩm + checklist đầu ca thiếu mục này</strong> → GỐC: lắp cảnh báo Poka-Yoke + bổ sung checklist + WI</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="callout callout-warning">
+                <strong>Chú thích:</strong> Chỉ dừng tầng 1–2 thì giải pháp "hãy sấy lâu hơn" — vẫn tái phát. Xuống tầng 5 mới có hành động sửa được hệ thống.
+            </div>
+
+            <h3>3 quy tắc vàng</h3>
+            <ol>
+                <li><strong>Trả lời ĐẶC BIỆT HÓA, không chung chung:</strong>
+                    <ul>
+                        <li>✗ "do công nhân quên"</li>
+                        <li>✓ "checklist đầu ca thiếu mục kiểm tra độ ẩm"</li>
+                    </ul>
+                </li>
+                <li><strong>Mỗi nhánh 1 chuỗi riêng, không trộn:</strong> Mỗi nghi vấn từ Fishbone có 1 chuỗi Why-Why độc lập</li>
+                <li><strong>Dừng đúng lúc:</strong> 6–8 tầng nghĩa là trả lời quá chung chung — quay lại đặc biệt hóa</li>
+            </ol>
+        </section>
+
+        <!-- BLOCK 4: Kết hợp -->
+        <section id="ket-hop" class="reveal">
+            <h2>Kết hợp Fishbone × Why-Why trong 8D D4</h2>
+
+            <div class="flow-diagram">
+                <div class="flow-step">Vấn đề (D2)</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step highlight">Fishbone 6M</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">3–5 Nghi vấn</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step highlight">Why-Why</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">Nguyên nhân GỐC</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">Xác minh</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">Phân loại</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">PCA (5W2H)</div>
+            </div>
+
+            <h3>Phân loại nguyên nhân gốc</h3>
+            <ul>
+                <li><strong>XẢY RA:</strong> Tại sao lỗi xảy ra? (nguyên nhân trực tiếp)</li>
+                <li><strong>TRỐN THOÁT:</strong> Tại sao QC không bắt được? (hệ thống kiểm tra)</li>
+                <li><strong>HỆ THỐNG:</strong> Tại sao quy trình cho phép? (quản lý, chính sách)</li>
+            </ul>
+
+            <div class="callout callout-success">
+                <strong>Tiện ích:</strong> Fishbone không bỏ sót nhánh, Why-Why không dừng nông. Nhớ tìm cả nguyên nhân trốn thoát và hệ thống — đây là điểm khác biệt của 8D so với sửa lỗi thông thường.
+            </div>
+        </section>
+
+        <!-- BLOCK 5: Liên hệ bộ tài liệu -->
+        <section id="lien-he" class="reveal">
+            <h2>Liên hệ Bộ tài liệu</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Việc cần</th>
+                        <th style="width: 25%;">Dùng gì</th>
+                        <th style="width: 25%;">File</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Lý thuyết Fishbone/Why-Why/Pareto</td>
+                        <td>6 Tools</td>
+                        <td><code>6-tools-...</code></td>
+                    </tr>
+                    <tr>
+                        <td>Lõi D4 trong báo cáo 8D</td>
+                        <td>Worksheet 8D</td>
+                        <td><code>8d-...</code></td>
+                    </tr>
+                    <tr>
+                        <td>Sau khi chốt gốc → giao hành động D5–D7</td>
+                        <td>5W2H</td>
+                        <td><code>5w2h-...</code></td>
+                    </tr>
+                    <tr>
+                        <td>Chọn nghi vấn bằng dữ liệu</td>
+                        <td>KPI phế/OEE</td>
+                        <td><code>kpi-nha-may-theo-gio</code></td>
+                    </tr>
+                    <tr>
+                        <td>Chọn vấn đề nghiêm trọng</td>
+                        <td>Pareto</td>
+                        <td><code>6-tools-...</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- BLOCK 6: Công cụ tương tác -->
+        <section id="cong-cu" class="reveal">
+            <h2>Công cụ Tương tác</h2>
+
+            <!-- Progress Bar -->
+            <div class="progress-bar">
+                <span class="progress-chip" id="progress-problem">Vấn đề: chưa nhập</span>
+                <span class="progress-chip" id="progress-fishbone">Nguyên nhân: 0/6 nhánh</span>
+                <span class="progress-chip" id="progress-why">Tầng: 0/5</span>
+            </div>
+
+            <!-- Session Info -->
+            <div class="form-group">
+                <label for="session-name">Tên phiên giải quyết / Mã</label>
+                <input type="text" id="session-name" placeholder="VD: KL-102, NC-2026-001, ...">
+            </div>
+
+            <div class="form-group">
+                <label for="problem-statement">Vấn đề cần đào (một câu, đo được)</label>
+                <input type="text" id="problem-statement" placeholder="VD: 15% sản phẩm PA66 có bong bóng khí, ca đêm 28/09/2026">
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="fillExample()">📋 Dán ví dụ mẫu (KL-102)</button>
+                <button class="btn btn-secondary" onclick="printPage()">🖨 In</button>
+                <button class="btn btn-success" onclick="saveSession()">💾 Lưu phiên</button>
+                <button class="btn btn-danger" onclick="clearForm()">↺ Xóa trống công cụ</button>
+            </div>
+
+            <!-- Fishbone 6M Input -->
+            <h3 style="margin-top: 2rem;">PHẦN A — Fishbone 6M</h3>
+            <p>Nhập nguyên nhân cho mỗi nhánh (mỗi dòng 1 nguyên nhân):</p>
+
+            <div class="six-m-grid">
+                <div class="fishbone-input-group">
+                    <label>
+                        <span class="m-label">Man</span>
+                        Con người
+                    </label>
+                    <textarea id="fishbone-man" placeholder="VD:&#10;- Vận hành mới chưa đào tạo&#10;- Bỏ qua bước kiểm tra độ ẩm"></textarea>
+                </div>
+
+                <div class="fishbone-input-group">
+                    <label>
+                        <span class="m-label">Machine</span>
+                        Máy móc
+                    </label>
+                    <textarea id="fishbone-machine" placeholder="VD:&#10;- Nhiệt khuôn lệch&#10;- Áp phun không ổn định"></textarea>
+                </div>
+
+                <div class="fishbone-input-group">
+                    <label>
+                        <span class="m-label">Material</span>
+                        Vật liệu
+                    </label>
+                    <textarea id="fishbone-material" placeholder="VD:&#10;- Độ ẩm hạt PA66 cao&#10;- Lô hạt không đồng nhất"></textarea>
+                </div>
+
+                <div class="fishbone-input-group">
+                    <label>
+                        <span class="m-label">Method</span>
+                        Phương pháp
+                    </label>
+                    <textarea id="fishbone-method" placeholder="VD:&#10;- Thiếu WI sấy hạt&#10;- Thông số chưa chuẩn hóa"></textarea>
+                </div>
+
+                <div class="fishbone-input-group">
+                    <label>
+                        <span class="m-label">Measurement</span>
+                        Đo lường
+                    </label>
+                    <textarea id="fishbone-measurement" placeholder="VD:&#10;- Thiếu thiết bị đo độ ẩm&#10;- Tiêu chuẩn mơ hồ"></textarea>
+                </div>
+
+                <div class="fishbone-input-group">
+                    <label>
+                        <span class="m-label">Environment</span>
+                        Môi trường
+                    </label>
+                    <textarea id="fishbone-environment" placeholder="VD:&#10;- Độ ẩm xưởng cao&#10;- Nhiệt độ không ổn định"></textarea>
+                </div>
+            </div>
+
+            <!-- Fishbone Diagram Display -->
+            <div class="fishbone-container">
+                <h4 style="margin-top: 0;">Sơ đồ Fishbone (Live)</h4>
+                <div class="fishbone-diagram" id="fishbone-diagram">
+                    <div class="fishbone-center" id="fishbone-center-text">
+                        Vấn đề: Chưa nhập
+                    </div>
+                    <div class="fishbone-grid" id="fishbone-branches-display">
+                        <!-- Branches rendered by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Why-Why Section -->
+            <h3 style="margin-top: 2rem;">PHẦN B — Why-Why Chain</h3>
+            
+            <div class="form-group">
+                <label for="why-branch-select">Chọn nhánh đang đào (từ Fishbone)</label>
+                <select id="why-branch-select">
+                    <option value="">-- Chọn nhánh --</option>
+                    <option value="man">Man (Con người)</option>
+                    <option value="machine">Machine (Máy móc)</option>
+                    <option value="material">Material (Vật liệu)</option>
+                    <option value="method">Method (Phương pháp)</option>
+                    <option value="measurement">Measurement (Đo lường)</option>
+                    <option value="environment">Environment (Môi trường)</option>
+                </select>
+            </div>
+
+            <div class="why-why-container" id="why-why-container">
+                <!-- Why rows rendered by JS -->
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary btn-sm" onclick="addWhyRow()">+ Thêm tầng (tối đa 8)</button>
+                <button class="btn btn-secondary btn-sm" onclick="removeWhyRow()">➖ Bỏ tầng cuối</button>
+                <button class="btn btn-success btn-sm" onclick="evaluateWhyChain()">Đánh giá chuỗi</button>
+            </div>
+
+            <div class="why-evaluation neutral" id="why-evaluation">
+                Chưa đánh giá. Nhập nguyên nhân và nhấn "Đánh giá chuỗi".
+            </div>
+
+            <!-- History Section -->
+            <div class="history-section" style="margin-top: 2rem;">
+                <h3>Lịch sử phiên</h3>
+                <div class="btn-group">
+                    <button class="btn btn-secondary btn-sm" onclick="loadHistory()">↺ Tải lịch sử</button>
+                </div>
+                <table class="history-table" id="history-table">
+                    <thead>
+                        <tr>
+                            <th>Ngày giờ</th>
+                            <th>Tên</th>
+                            <th>Tình trạng</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-body">
+                        <!-- History rows rendered by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Tài liệu trình bày — Fishbone & Why-Why trong bộ hồ sơ nhà máy ép phun theo ISO 9001. Ví dụ minh họa.</p>
+        <p>Cập nhật 01/10/2026 · Phiên bản 1.0</p>
+    </footer>
+
+    <!-- Back to Top -->
+    <button class="back-to-top" id="back-to-top" onclick="scrollToTop()">↑</button>
+
+    <!-- Modal for viewing saved session -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <h3 id="modal-title">Xem phiên đã lưu</h3>
+            <div id="modal-content"></div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal()">Đóng</button>
+                <button class="btn btn-primary" onclick="loadFromModal()">Nạp vào công cụ</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generic keywords for Why-Why warning
+        const GENERIC_KEYWORDS = [
+            'quen', 'quên', 'không để ý', 'không chú ý', 'lười', 'chủ quan', 'vội',
+            'do công nhân', 'do con người', 'do nhân viên', 'cẩu thả', 'chưa quan tâm',
+            'thiếu ý thức', 'vô tình', 'do quản lý', 'kém', 'carelessness', 'forgot',
+            'human error', 'lack of', 'không kiểm tra', 'không báo', 'không có',
+            'không nhắc', 'không dặn', 'không hướng dẫn', 'không để tâm'
+        ];
+
+        const GENERIC_REGEX = new RegExp(GENERIC_KEYWORDS.join('|'), 'i');
+
+        // State
+        let whyRows = 1;
+        let currentModalData = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load auto-saved form
+            loadAutoSavedForm();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Initial render
+            renderFishboneDiagram();
+            renderWhyRows();
+            updateProgress();
+            
+            // Load history
+            loadHistory();
+            
+            // Reveal animation
+            revealOnScroll();
+        });
+
+        function setupEventListeners() {
+            // Fishbone inputs
+            const fishboneInputs = ['man', 'machine', 'material', 'method', 'measurement', 'environment'];
+            fishboneInputs.forEach(m => {
+                document.getElementById(`fishbone-${m}`).addEventListener('input', function() {
+                    renderFishboneDiagram();
+                    updateProgress();
+                    autoSaveForm();
+                });
+            });
+
+            // Problem statement
+            document.getElementById('problem-statement').addEventListener('input', function() {
+                renderFishboneDiagram();
+                updateProgress();
+                autoSaveForm();
+            });
+
+            // Session name
+            document.getElementById('session-name').addEventListener('input', autoSaveForm);
+
+            // Why-Why inputs (delegated)
+            document.getElementById('why-why-container').addEventListener('input', function(e) {
+                if (e.target.classList.contains('why-answer')) {
+                    checkGenericWarning(e.target);
+                }
+                updateProgress();
+                autoSaveForm();
+            });
+
+            // Scroll spy
+            window.addEventListener('scroll', function() {
+                updateNavActive();
+                updateBackToTop();
+            });
+
+            // Back to top
+            document.getElementById('back-to-top').addEventListener('click', scrollToTop);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function getCauses(branch) {
+            const textarea = document.getElementById(`fishbone-${branch}`);
+            if (!textarea) return [];
+            return textarea.value.split('\n')
+                .map(line => line.trim())
+                .filter(line => line.length > 0);
+        }
+
+        function renderFishboneDiagram() {
+            const problem = document.getElementById('problem-statement').value.trim() || 'Chưa nhập vấn đề';
+            document.getElementById('fishbone-center-text').textContent = `Vấn đề: ${problem}`;
+
+            const branches = [
+                { id: 'man', label: 'Man (Con người)' },
+                { id: 'machine', label: 'Machine (Máy móc)' },
+                { id: 'material', label: 'Material (Vật liệu)' },
+                { id: 'method', label: 'Method (Phương pháp)' },
+                { id: 'measurement', label: 'Measurement (Đo lường)' },
+                { id: 'environment', label: 'Environment (Môi trường)' }
+            ];
+
+            const container = document.getElementById('fishbone-branches-display');
+            container.innerHTML = '';
+
+            branches.forEach(branch => {
+                const causes = getCauses(branch.id);
+                const causesHtml = causes.length > 0
+                    ? causes.map(cause => `<span class="cause-chip">${escapeHtml(cause)}</span>`).join('')
+                    : '<em style="color: var(--gray-400);">Chưa nhập</em>';
+
+                const branchHtml = `
+                    <div class="fishbone-branch">
+                        <h4>${branch.label}</h4>
+                        <div class="fishbone-causes">${causesHtml}</div>
+                    </div>
+                `;
+                container.innerHTML += branchHtml;
+            });
+        }
+
+        function addWhyRow() {
+            if (whyRows >= 8) {
+                alert('Tối đa 8 tầng');
+                return;
+            }
+            whyRows++;
+            renderWhyRows();
+            updateProgress();
+        }
+
+        function removeWhyRow() {
+            if (whyRows <= 1) {
+                return;
+            }
+            whyRows--;
+            renderWhyRows();
+            updateProgress();
+        }
+
+        function renderWhyRows() {
+            const container = document.getElementById('why-why-container');
+            container.innerHTML = '';
+
+            for (let i = 1; i <= whyRows; i++) {
+                const savedValue = localStorage.getItem(`fishbone-whywhy-why-${i}`) || '';
+                const rowHtml = `
+                    <div class="why-row">
+                        <div class="why-label">Lần ${i}</div>
+                        <div class="why-input">
+                            <textarea 
+                                class="why-answer" 
+                                id="why-answer-${i}" 
+                                placeholder="Tại sao (lần ${i})? Trả lời..."
+                                rows="2"
+                            >${escapeHtml(savedValue)}</textarea>
+                            <div class="warning-message" id="why-warning-${i}">
+                                ⚠️ Trả lời có vẻ CHUNG CHUNG — hãy đặc biệt hóa: quy trình/bước nào thiếu? điều kiện nào không đạt? thiết bị/checklist nào không có?
+                            </div>
+                        </div>
+                        ${i > 1 ? `<button class="btn btn-danger btn-sm why-remove-btn" onclick="removeWhyRow()">➖</button>` : ''}
+                    </div>
+                `;
+                container.innerHTML += rowHtml;
+            }
+
+            // Re-attach warning checks
+            document.querySelectorAll('.why-answer').forEach(input => {
+                input.addEventListener('input', function() {
+                    checkGenericWarning(this);
+                    autoSaveForm();
+                });
+                // Check on initial render
+                checkGenericWarning(input);
+            });
+        }
+
+        function checkGenericWarning(input) {
+            const value = input.value;
+            const warningEl = document.getElementById(`why-warning-${input.id.replace('why-answer-', 'why-warning-')}`);
+            
+            if (GENERIC_REGEX.test(value)) {
+                input.classList.add('input-warning');
+                if (warningEl) warningEl.classList.add('show');
+            } else {
+                input.classList.remove('input-warning');
+                if (warningEl) warningEl.classList.remove('show');
+            }
+        }
+
+        function evaluateWhyChain() {
+            const answers = [];
+            for (let i = 1; i <= whyRows; i++) {
+                const input = document.getElementById(`why-answer-${i}`);
+                if (input && input.value.trim()) {
+                    answers.push({
+                        level: i,
+                        answer: input.value.trim(),
+                        isGeneric: GENERIC_REGEX.test(input.value)
+                    });
+                }
+            }
+
+            const evalEl = document.getElementById('why-evaluation');
+            
+            if (answers.length === 0) {
+                evalEl.className = 'why-evaluation neutral';
+                evalEl.textContent = 'Chưa có dữ liệu để đánh giá.';
+                return;
+            }
+
+            const lastAnswer = answers[answers.length - 1];
+            const hasGenericWarning = answers.some(a => a.isGeneric);
+
+            if (answers.length < 4) {
+                evalEl.className = 'why-evaluation warning';
+                evalEl.textContent = `Còn nông (${answers.length} tầng) — đào thêm ít nhất tới tầng 4–5`;
+            } else if (lastAnswer.isGeneric) {
+                evalEl.className = 'why-evaluation warning';
+                evalEl.textContent = 'Tầng cuối vẫn chung chung — đặc biệt hóa hơn nữa';
+            } else if (hasGenericWarning) {
+                evalEl.className = 'why-evaluation warning';
+                evalEl.textContent = 'Có tầng chung chung — xem lại các cảnh báo cam';
+            } else {
+                evalEl.className = 'why-evaluation success';
+                evalEl.textContent = `Đạt (${answers.length} tầng) — hãy chuyển hành động sang biểu mẫu 5W2H`;
+            }
+
+            updateProgress();
+        }
+
+        function updateProgress() {
+            // Problem
+            const problem = document.getElementById('problem-statement').value.trim();
+            const problemChip = document.getElementById('progress-problem');
+            if (problem) {
+                problemChip.textContent = 'Vấn đề: đã nhập ✓';
+                problemChip.classList.add('complete');
+            } else {
+                problemChip.textContent = 'Vấn đề: chưa nhập';
+                problemChip.classList.remove('complete');
+            }
+
+            // Fishbone branches with causes
+            const branches = ['man', 'machine', 'material', 'method', 'measurement', 'environment'];
+            let branchesWithCauses = 0;
+            branches.forEach(branch => {
+                const causes = getCauses(branch);
+                if (causes.length > 0) branchesWithCauses++;
+            });
+
+            const fishboneChip = document.getElementById('progress-fishbone');
+            fishboneChip.textContent = `Nguyên nhân: ${branchesWithCauses}/6 nhánh`;
+            if (branchesWithCauses >= 6) {
+                fishboneChip.classList.add('complete');
+            } else if (branchesWithCauses > 0) {
+                fishboneChip.classList.remove('complete');
+            } else {
+                fishboneChip.classList.remove('complete');
+            }
+
+            // Why layers
+            let whyLayers = 0;
+            for (let i = 1; i <= whyRows; i++) {
+                const input = document.getElementById(`why-answer-${i}`);
+                if (input && input.value.trim()) whyLayers++;
+            }
+
+            const whyChip = document.getElementById('progress-why');
+            whyChip.textContent = `Tầng: ${whyLayers}/5`;
+            if (whyLayers >= 5) {
+                whyChip.classList.add('complete');
+            } else if (whyLayers > 0) {
+                whyChip.classList.remove('complete');
+            }
+        }
+
+        function saveSession() {
+            const sessionName = document.getElementById('session-name').value.trim();
+            if (!sessionName) {
+                alert('Vui lòng nhập tên phiên trước khi lưu');
+                document.getElementById('session-name').focus();
+                return;
+            }
+
+            const branches = {};
+            ['man', 'machine', 'material', 'method', 'measurement', 'environment'].forEach(m => {
+                branches[m] = getCauses(m);
+            });
+
+            const whyAnswers = [];
+            for (let i = 1; i <= whyRows; i++) {
+                const input = document.getElementById(`why-answer-${i}`);
+                if (input) {
+                    whyAnswers.push(input.value.trim());
+                }
+            }
+
+            const session = {
+                name: sessionName,
+                problem: document.getElementById('problem-statement').value.trim(),
+                branches: branches,
+                whyAnswers: whyAnswers,
+                savedAt: new Date().toISOString()
+            };
+
+            // Get existing history
+            let history = JSON.parse(localStorage.getItem('fishbone-whywhy-history-v1') || '[]');
+            
+            // Check if session with same name exists
+            const existingIndex = history.findIndex(s => s.name === sessionName);
+            if (existingIndex >= 0) {
+                if (!confirm(`Phiên "${sessionName}" đã tồn tại. Ghi đè?`)) {
+                    return;
+                }
+                history.splice(existingIndex, 1);
+            }
+
+            // Add to beginning, max 15
+            history.unshift(session);
+            if (history.length > 15) {
+                history = history.slice(0, 15);
+            }
+
+            localStorage.setItem('fishbone-whywhy-history-v1', JSON.stringify(history));
+            alert('Đã lưu phiên: ' + sessionName);
+            loadHistory();
+        }
+
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('fishbone-whywhy-history-v1') || '[]');
+            const tbody = document.getElementById('history-body');
+            tbody.innerHTML = '';
+
+            if (history.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--gray-400);">Chưa có lịch sử</td></tr>';
+                return;
+            }
+
+            history.forEach((session, index) => {
+                const branchesWithCauses = Object.values(session.branches || {}).filter(causes => causes.length > 0).length;
+                const whyLayers = (session.whyAnswers || []).filter(a => a).length;
+                const status = `Nguyên nhân: ${branchesWithCauses}/6 · Tầng: ${whyLayers}`;
+                const date = new Date(session.savedAt).toLocaleString('vi-VN');
+
+                const rowHtml = `
+                    <tr>
+                        <td>${date}</td>
+                        <td>${escapeHtml(session.name)}</td>
+                        <td>${status}</td>
+                        <td class="history-actions">
+                            <button class="btn btn-primary btn-sm" onclick="viewSession(${index})">Xem lại</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteSession(${index})">Xóa</button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += rowHtml;
+            });
+        }
+
+        function viewSession(index) {
+            const history = JSON.parse(localStorage.getItem('fishbone-whywhy-history-v1') || '[]');
+            const session = history[index];
+            currentModalData = session;
+
+            const modalTitle = document.getElementById('modal-title');
+            const modalContent = document.getElementById('modal-content');
+
+            modalTitle.textContent = `Xem: ${session.name}`;
+            
+            let contentHtml = `
+                <p><strong>Vấn đề:</strong> ${escapeHtml(session.problem || '—')}</p>
+                <p><strong>Ngày lưu:</strong> ${new Date(session.savedAt).toLocaleString('vi-VN')}</p>
+                
+                <h4 style="margin-top: 1.5rem;">Fishbone 6M:</h4>
+                <ul>
+            `;
+
+            const branchLabels = {
+                man: 'Man (Con người)',
+                machine: 'Machine (Máy móc)',
+                material: 'Material (Vật liệu)',
+                method: 'Method (Phương pháp)',
+                measurement: 'Measurement (Đo lường)',
+                environment: 'Environment (Môi trường)'
+            };
+
+            Object.keys(branchLabels).forEach(key => {
+                const causes = session.branches?.[key] || [];
+                contentHtml += `<li><strong>${branchLabels[key]}:</strong> ${causes.length > 0 ? causes.map(escapeHtml).join(' · ') : '—'}</li>`;
+            });
+
+            contentHtml += '</ul>';
+
+            if (session.whyAnswers && session.whyAnswers.length > 0) {
+                contentHtml += `<h4 style="margin-top: 1.5rem;">Why-Why (${session.whyAnswers.filter(a => a).length} tầng):</h4><ol>`;
+                session.whyAnswers.forEach((answer, i) => {
+                    if (answer) {
+                        contentHtml += `<li>${escapeHtml(answer)}</li>`;
+                    }
+                });
+                contentHtml += '</ol>';
+            }
+
+            modalContent.innerHTML = contentHtml;
+            document.getElementById('modal-overlay').classList.add('show');
+        }
+
+        function loadFromModal() {
+            if (!currentModalData) return;
+
+            const session = currentModalData;
+            document.getElementById('session-name').value = session.name;
+            document.getElementById('problem-statement').value = session.problem || '';
+
+            // Load branches
+            if (session.branches) {
+                Object.keys(session.branches).forEach(key => {
+                    const textarea = document.getElementById(`fishbone-${key}`);
+                    if (textarea) {
+                        textarea.value = (session.branches[key] || []).join('\n');
+                    }
+                });
+            }
+
+            // Load why answers
+            if (session.whyAnswers && session.whyAnswers.length > 0) {
+                whyRows = session.whyAnswers.length;
+                renderWhyRows();
+                session.whyAnswers.forEach((answer, i) => {
+                    const input = document.getElementById(`why-answer-${i + 1}`);
+                    if (input) {
+                        input.value = answer;
+                        checkGenericWarning(input);
+                    }
+                });
+            }
+
+            renderFishboneDiagram();
+            updateProgress();
+            closeModal();
+            autoSaveForm();
+        }
+
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.remove('show');
+            currentModalData = null;
+        }
+
+        function deleteSession(index) {
+            if (!confirm('Xóa phiên này khỏi lịch sử?')) {
+                return;
+            }
+
+            let history = JSON.parse(localStorage.getItem('fishbone-whywhy-history-v1') || '[]');
+            history.splice(index, 1);
+            localStorage.setItem('fishbone-whywhy-history-v1', JSON.stringify(history));
+            loadHistory();
+        }
+
+        function clearForm() {
+            if (!confirm('Xóa toàn bộ nội dung công cụ? (Lịch sử vẫn giữ nguyên)')) {
+                return;
+            }
+
+            document.getElementById('session-name').value = '';
+            document.getElementById('problem-statement').value = '';
+
+            ['man', 'machine', 'material', 'method', 'measurement', 'environment'].forEach(m => {
+                document.getElementById(`fishbone-${m}`).value = '';
+            });
+
+            whyRows = 1;
+            renderWhyRows();
+            renderFishboneDiagram();
+            updateProgress();
+
+            document.getElementById('why-evaluation').className = 'why-evaluation neutral';
+            document.getElementById('why-evaluation').textContent = 'Chưa đánh giá. Nhập nguyên nhân và nhấn "Đánh giá chuỗi".';
+
+            localStorage.removeItem('fishbone-whywhy-form-v1');
+        }
+
+        function fillExample() {
+            document.getElementById('session-name').value = 'KL-102';
+            document.getElementById('problem-statement').value = '15% sản phẩm PA66 có bong bóng khí, ca đêm 28/09/2026';
+
+            // Fill Fishbone branches
+            const example = {
+                man: 'Vận hành mới chưa đào tạo\nBỏ qua bước kiểm tra độ ẩm',
+                machine: 'Máy sấy không có cảnh báo\nNhiệt khuôn lệch',
+                material: 'Độ ẩm hạt PA66 cao\nHạt mới chưa đủ giờ sấy',
+                method: 'Thiếu WI kiểm tra độ ẩm\nChecklist đầu ca thiếu mục',
+                measurement: 'Không có thiết bị đo độ ẩm nhanh\nTiêu chuẩn độ ẩm mơ hồ',
+                environment: 'Độ ẩm xưởng cao (mùa mưa)\nNhiệt độ không ổn định'
+            };
+
+            Object.keys(example).forEach(key => {
+                document.getElementById(`fishbone-${key}`).value = example[key];
+            });
+
+            // Fill Why-Why
+            whyRows = 5;
+            renderWhyRows();
+
+            const whyExample = [
+                'Độ ẩm hạt PA66 quá cao khi phun',
+                'Hạt mới sấy chưa đủ 4h ở 80°C',
+                'Tăng ca mở máy sớm, không ai kiểm tra',
+                'Máy sấy không có tín hiệu/cảnh báo khi chưa đạt',
+                'Thiết bị không đo độ ẩm + checklist thiếu mục này'
+            ];
+
+            whyExample.forEach((answer, i) => {
+                const input = document.getElementById(`why-answer-${i + 1}`);
+                if (input) {
+                    input.value = answer;
+                    checkGenericWarning(input);
+                }
+            });
+
+            renderFishboneDiagram();
+            updateProgress();
+            autoSaveForm();
+        }
+
+        function autoSaveForm() {
+            const formData = {
+                sessionName: document.getElementById('session-name').value,
+                problem: document.getElementById('problem-statement').value,
+                branches: {},
+                whyRows: whyRows,
+                whyAnswers: []
+            };
+
+            ['man', 'machine', 'material', 'method', 'measurement', 'environment'].forEach(m => {
+                formData.branches[m] = document.getElementById(`fishbone-${m}`).value;
+            });
+
+            for (let i = 1; i <= whyRows; i++) {
+                const input = document.getElementById(`why-answer-${i}`);
+                if (input) {
+                    formData.whyAnswers.push(input.value);
+                    // Also save individual why answers for persistence across row changes
+                    localStorage.setItem(`fishbone-whywhy-why-${i}`, input.value);
+                }
+            }
+
+            localStorage.setItem('fishbone-whywhy-form-v1', JSON.stringify(formData));
+        }
+
+        function loadAutoSavedForm() {
+            const formData = JSON.parse(localStorage.getItem('fishbone-whywhy-form-v1') || 'null');
+            if (!formData) return;
+
+            document.getElementById('session-name').value = formData.sessionName || '';
+            document.getElementById('problem-statement').value = formData.problem || '';
+
+            if (formData.branches) {
+                Object.keys(formData.branches).forEach(key => {
+                    const textarea = document.getElementById(`fishbone-${key}`);
+                    if (textarea) {
+                        textarea.value = formData.branches[key] || '';
+                    }
+                });
+            }
+
+            if (formData.whyRows) {
+                whyRows = formData.whyRows;
+                renderWhyRows();
+
+                if (formData.whyAnswers) {
+                    formData.whyAnswers.forEach((answer, i) => {
+                        const input = document.getElementById(`why-answer-${i + 1}`);
+                        if (input && answer) {
+                            input.value = answer;
+                            checkGenericWarning(input);
+                        }
+                    });
+                }
+            }
+        }
+
+        function printPage() {
+            window.print();
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateBackToTop() {
+            const btn = document.getElementById('back-to-top');
+            if (window.scrollY > 500) {
+                btn.classList.add('show');
+            } else {
+                btn.classList.remove('show');
+            }
+        }
+
+        function updateNavActive() {
+            const sections = ['tong-quan', 'fishbone', 'why-why', 'ket-hop', 'lien-he', 'cong-cu'];
+            const scrollPos = window.scrollY + 100;
+
+            sections.forEach(id => {
+                const section = document.getElementById(id);
+                if (section) {
+                    const top = section.offsetTop;
+                    const height = section.offsetHeight;
+                    const link = document.querySelector(`.nav-links a[href="#${id}"]`);
+
+                    if (scrollPos >= top && scrollPos < top + height) {
+                        document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+                        if (link) link.classList.add('active');
+                    }
+                }
+            });
+        }
+
+        function revealOnScroll() {
+            const reveals = document.querySelectorAll('.reveal');
+
+            const revealOnScroll = () => {
+                const windowHeight = window.innerHeight;
+                const elementVisible = 100;
+
+                reveals.forEach(reveal => {
+                    const elementTop = reveal.getBoundingClientRect().top;
+                    if (elementTop < windowHeight - elementVisible) {
+                        reveal.classList.add('show');
+                    }
+                });
+            };
+
+            window.addEventListener('scroll', revealOnScroll);
+            revealOnScroll(); // Initial check
+        }
+    </script>
+</body>
+</html>

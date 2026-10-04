@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8D — Giải quyết vấn đề 8 bước | Nhà máy ép phun</title>
+    <style>
+        :root {
+            --navy-dark: #0a1628;
+            --navy-primary: #122442;
+            --amber-primary: #d97706;
+            --amber-light: #fbbf24;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --success: #16a34a;
+            --error: #dc2626;
+            --border-radius: 6px;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --transition: all 0.2s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-margin-top: 80px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            background: var(--bg-light);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        .nav {
+            position: sticky;
+            top: 0;
+            background: var(--navy-dark);
+            padding: 12px 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            color: var(--white);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--gray-200);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--amber-light);
+        }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-primary) 100%);
+            color: var(--white);
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Sections */
+        section {
+            padding: 50px 0;
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        section:nth-child(even) {
+            background: var(--bg-light);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--navy-dark);
+            margin-bottom: 30px;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--amber-primary);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+        }
+
+        .card h3 {
+            color: var(--navy-primary);
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+
+        .card p {
+            color: var(--gray-700);
+            margin-bottom: 12px;
+        }
+
+        /* Tables */
+        .table-responsive {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border: 1px solid var(--gray-200);
+        }
+
+        th {
+            background: var(--navy-primary);
+            color: var(--white);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        tr:nth-child(even) {
+            background: var(--gray-100);
+        }
+
+        tr:hover {
+            background: var(--gray-200);
+        }
+
+        /* Callouts */
+        .callout {
+            padding: 16px 20px;
+            border-left: 4px solid var(--amber-primary);
+            background: #fffbeb;
+            margin: 20px 0;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        }
+
+        .callout-warning {
+            border-left-color: var(--error);
+            background: #fef2f2;
+        }
+
+        .callout-success {
+            border-left-color: var(--success);
+            background: #f0fdf4;
+        }
+
+        /* Worksheet */
+        .worksheet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding: 20px;
+            background: var(--navy-primary);
+            border-radius: var(--border-radius);
+            color: var(--white);
+        }
+
+        .worksheet-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .progress-chip {
+            background: var(--amber-primary);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--amber-light);
+            transition: width 0.3s ease;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--border-radius);
+            font-size: 0.95rem;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--amber-primary);
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.1);
+        }
+
+        .form-input.error {
+            border-color: var(--error);
+            background: #fef2f2;
+        }
+
+        textarea.form-input {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--navy-dark);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .form-label span {
+            color: var(--gray-600);
+            font-weight: 400;
+            font-size: 0.85rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--amber-primary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: #b45309;
+        }
+
+        .btn-secondary {
+            background: var(--gray-200);
+            color: var(--gray-800);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-300);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        .btn-success:hover {
+            background: #15803d;
+        }
+
+        .btn-danger {
+            background: var(--error);
+            color: var(--white);
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        .status-message {
+            padding: 16px;
+            border-radius: var(--border-radius);
+            margin-top: 16px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .status-message.success {
+            background: #f0fdf4;
+            color: var(--success);
+            border: 1px solid var(--success);
+            display: block;
+        }
+
+        .status-message.error {
+            background: #fef2f2;
+            color: var(--error);
+            border: 1px solid var(--error);
+            display: block;
+        }
+
+        /* History Table */
+        .history-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid var(--gray-200);
+        }
+
+        .history-table td {
+            font-size: 0.85rem;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-badge.complete {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-badge.incomplete {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--navy-dark);
+            color: var(--gray-300);
+            padding: 30px 0;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        /* Back to top */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--amber-primary);
+            color: var(--white);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            border: none;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background: var(--amber-light);
+            transform: translateY(-3px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .section-title {
+                font-size: 1.4rem;
+            }
+
+            .worksheet-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Print */
+        @media print {
+            .nav, .back-to-top, .btn-group, .no-print {
+                display: none !important;
+            }
+
+            body {
+                background: var(--white);
+            }
+
+            section {
+                page-break-inside: avoid;
+                padding: 20px 0;
+            }
+
+            .worksheet-header {
+                background: var(--navy-dark) !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            textarea.form-input {
+                border: 1px solid var(--gray-300);
+                min-height: 80px;
+            }
+
+            th {
+                background: var(--navy-primary) !important;
+                color: var(--white) !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            tr:nth-child(even) {
+                background: var(--gray-100) !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+
+        /* Reveal animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="container nav-container">
+            <div class="nav-logo">8D — Giải quyết vấn đề</div>
+            <ul class="nav-links">
+                <li><a href="#tong-quan">Tổng quan</a></li>
+                <li><a href="#8-buoc">8 bước</a></li>
+                <li><a href="#chi-tiet">Chi tiết</a></li>
+                <li><a href="#vi-du">Ví dụ KL-102</a></li>
+                <li><a href="#lien-he">Liên hệ</a></li>
+                <li><a href="#worksheet">Worksheet 8D</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero">
+        <div class="container">
+            <h1>8D — Giải quyết vấn đề 8 bước</h1>
+            <p>8 Disciplines · ISO 9001 §10.2 Hành động khắc phục · từ khiếu nại đến ngăn tái phát</p>
+        </div>
+    </header>
+
+    <!-- Tổng quan -->
+    <section id="tong-quan">
+        <div class="container">
+            <h2 class="section-title">Tổng quan về 8D</h2>
+            
+            <div class="card reveal">
+                <h3>8D là gì?</h3>
+                <p><strong>8D (8 Disciplines)</strong> là phương pháp giải quyết vấn đề gồm 8 bước có hệ thống, được Ford Motor phát triển và áp dụng rộng rãi trong ngành sản xuất. Phương pháp này tập trung vào việc tìm nguyên nhân gốc rễ và ngăn ngừa tái phát vấn đề.</p>
+                <p>8D là <strong>hạt nhân của Điều §10.2 ISO 9001</strong> về Hành động khắc phục (Corrective Action), giúp chuyển từ xử lý triệu chứng sang giải quyết tận gốc vấn đề.</p>
+            </div>
+
+            <div class="card reveal">
+                <h3>Khi nào dùng 8D?</h3>
+                <p><strong>SỬ DỤNG 8D khi:</strong></p>
+                <ul style="margin-left: 20px; margin-bottom: 12px;">
+                    <li>Khiếu nại từ khách hàng (customer complaint)</li>
+                    <li>Vấn đề tái diễn nhiều lần (recurring problem)</li>
+                    <li>Vấn đề an toàn hoặc rủi ro nghiêm trọng</li>
+                    <li>Chi phí phế liệu lớn hoặc ảnh hưởng KPI</li>
+                    <li>Khách hàng yêu cầu báo cáo 8D chính thức</li>
+                </ul>
+                <p><strong>KHÔNG dùng 8D cho:</strong> lỗi nhỏ một lần, vấn đề đã biết nguyên nhân rõ ràng — dùng CAPA đơn giản hoặc xử lý nhanh.</p>
+            </div>
+
+            <div class="callout callout-warning reveal">
+                <strong>CẢNH BÁO D0:</strong> D0 (Chuẩn bị & Chặn khẩn cấp) không chính thức thuộc 8 bước nhưng BẮT BUỘC trong thực tế. Nhiều tổ chức gọi là "8D với D0". Phân biệt rõ: <strong>D3 (hành động tạm thời) ≠ D5/D6 (hành động vĩnh viễn)</strong>.
+            </div>
+        </div>
+    </section>
+
+    <!-- 8 Bước -->
+    <section id="8-buoc">
+        <div class="container">
+            <h2 class="section-title">Bảng tóm tắt 8 bước (D0–D8)</h2>
+            
+            <div class="table-responsive reveal">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Bước</th>
+                            <th>Tên</th>
+                            <th>Mục tiêu</th>
+                            <th>Công cụ chính</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>D0</strong></td>
+                            <td>Chuẩn bị & chặn khẩn cấp</td>
+                            <td>Đánh giá mức độ, chặn hàng nghi ngờ, bảo vệ khách</td>
+                            <td>Sàng lọc, phong tỏa lô</td>
+                        </tr>
+                        <tr>
+                            <td><strong>D1</strong></td>
+                            <td>Lập nhóm</td>
+                            <td>Nhóm đa chức năng + trưởng nhóm + sponsor</td>
+                            <td>Team charter</td>
+                        </tr>
+                        <tr>
+                            <td><strong>D2</strong></td>
+                            <td>Mô tả vấn đề</td>
+                            <td>Vấn đề đo được, cụ thể, không mơ hồ</td>
+                            <td>5W2H + Is/Is-Not</td>
+                        </tr>
+                        <tr>
+                            <td><strong>D3</strong></td>
+                            <td>Hành động chứa (ICA)</td>
+                            <td>Biện pháp tạm thời bảo vệ khách</td>
+                            <td>100% kiểm tra, khoá kho</td>
+                        </tr>
+                        <tr>
+                            <td><strong>D4</strong></td>
+                            <td>Tìm nguyên nhân gốc (RCA)</td>
+                            <td>Nguyên nhân xảy ra + không phát hiện + hệ thống</td>
+                            <td>Fishbone, Why-Why</td>
+                        </tr>
+                        <tr>
+                            <td><strong>D5</strong></td>
+                            <td>Chọn & kiểm chứng PCA</td>
+                            <td>Khắc phục vĩnh viễn + thử nghiệm offline</td>
+                            <td>Thử nghiệm, DOE</td>
+                        </tr>
+                        <tr>
+                            <td><strong>D6</strong></td>
+                            <td>Triển khai & xác nhận</td>
+                            <td>Áp dụng PCA + đo lại chứng minh hiệu quả</td>
+                            <td>KPI, đo phế trước/sau</td>
+                        </tr>
+                        <tr>
+                            <td><strong>D7</strong></td>
+                            <td>Ngăn tái phát</td>
+                            <td>Chuẩn hóa, Poka-Yoke, triển khai ngang</td>
+                            <td>Control Plan, PFMEA, training</td>
+                        </tr>
+                        <tr>
+                            <td><strong>D8</strong></td>
+                            <td>Đóng hồ sơ</td>
+                            <td>Khen thưởng, bài học, đóng vòng lặp</td>
+                            <td>Lessons learned</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chi tiết -->
+    <section id="chi-tiet">
+        <div class="container">
+            <h2 class="section-title">Chi tiết các bước quan trọng</h2>
+
+            <div class="card reveal">
+                <h3>D0 — Chuẩn bị & Chặn khẩn cấp</h3>
+                <p><strong>Mục tiêu:</strong> Ngăn hàng xấu tới khách TRƯỚC khi hiểu nguyên nhân.</p>
+                <p><strong>Hành động tức thì:</strong></p>
+                <ul style="margin-left: 20px;">
+                    <li>Khóa lô nghi ngờ (quarantine)</li>
+                    <li>Sàng lọc 100% kho thành phẩm + hàng trên xe</li>
+                    <li>Thông báo khách hàng nếu hàng đã giao</li>
+                    <li>Đánh giá mức độ nghiêm trọng (an toàn, pháp lý, tài chính)</li>
+                </ul>
+            </div>
+
+            <div class="card reveal">
+                <h3>D2 — Mô tả vấn đề với Is/Is-Not</h3>
+                <p>Bảng Is/Is-Not giúp thu hẹp phạm vi, tránh lan man. Ví dụ "Bong bóng khí KL-102":</p>
+                
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Câu hỏi</th>
+                                <th>Là (Is)</th>
+                                <th>Không phải (Is-Not)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>What</strong></td>
+                                <td>Bong bóng khí gần cổng phun, KL-102</td>
+                                <td>Không ở sản phẩm khác</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Where</strong></td>
+                                <td>Máy IM-03, khu vực gần phễu</td>
+                                <td>Không máy khác</td>
+                            </tr>
+                            <tr>
+                                <td><strong>When</strong></td>
+                                <td>Ca 2, ~40 phút sau khởi động</td>
+                                <td>Không xảy ra ca 1 sáng</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Who/How</strong></td>
+                                <td>Khi chạy PA66 đen</td>
+                                <td>Không ở PA66 trắng</td>
+                            </tr>
+                            <tr>
+                                <td><strong>How much</strong></td>
+                                <td>52 sp/tuần (4%)</td>
+                                <td>Mục tiêu ≤10 sp</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="callout callout-warning reveal">
+                <strong>D4 — 3 TẦNG NGUYÊN NHÂN (QUAN TRỌNG):</strong><br><br>
+                <strong>① Nguyên nhân xảy ra (Occurrence)</strong> — Fishbone + Why-Why: tại sao vấn đề xuất hiện?<br>
+                <strong>② Nguyên nhân trốn thoát (Escape)</strong> — Vì sao QC không bắt được? (thiếu checklist? thiếu thiết bị? thiếu tiêu chuẩn?)<br>
+                <strong>③ Nguyên nhân hệ thống (System)</strong> — Vì sao quy trình không chặn? (PFMEA/Control Plan thiếu)<br><br>
+                <strong>80% vấn đề tái phát vì chỉ sửa nguyên nhân xảy ra mà bỏ quên "vì sao nó lọt qua kiểm soát".</strong> Thêm Why thứ hai: xảy ra? → không gì chặn? → quy trình cho phép?
+            </div>
+
+            <div class="card reveal">
+                <h3>D5 → D6 — Từ giải pháp đến xác nhận</h3>
+                <p><strong>D5:</strong> Đưa 2–3 phương án → chọn phương án tối ưu → thử nghiệm offline/dây chuyền nhỏ.</p>
+                <p><strong>D6:</strong> Triển khai phương án đã chọn + <strong>ĐO LẠI</strong> đúng chỉ số đã định nghĩa ở D2 trong 2–4 tuần. Nếu không cải thiện → quay lại D4.</p>
+            </div>
+
+            <div class="card reveal">
+                <h3>D7 — Ngăn tái phát (dễ bị bỏ nhất)</h3>
+                <p><strong>Chuẩn hóa:</strong> Cập nhật WI/Control Plan/PFMEA/SOP</p>
+                <p><strong>Poka-Yoke:</strong> Thiết kế không cho phép vận hành khi chưa đạt điều kiện (ví dụ: máy không chạy nếu máy sấy chưa đủ giờ/nhiệt độ)</p>
+                <p><strong>Triển khai ngang:</strong> Áp dụng cho sản phẩm/máy tương tự trong toàn xưởng</p>
+                <p><strong>Đào tạo lại:</strong> Training vận hành/bảo trì/QC về thay đổi</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ví dụ KL-102 -->
+    <section id="vi-du">
+        <div class="container">
+            <h2 class="section-title">Ví dụ KL-102 — Chạy đủ 8D</h2>
+            
+            <div class="table-responsive reveal">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 80px;">Bước</th>
+                            <th>Nội dung</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>D0</strong></td>
+                            <td>Khóa lô PA66 đang chạy; sàng lọc 100% kho thành phẩm 3 ngày; thông báo khách</td>
+                        </tr>
+                        <tr>
+                            <td><strong>D1</strong></td>
+                            <td>Trưởng nhóm QA; thành viên: kỹ thuật quy trình, vận hành ca 2, QC, bảo trì</td>
+                        </tr>
+                        <tr>
+                            <td><strong>D2</strong></td>
+                            <td>5W2H + Is/Is-Not: bong bóng khí, máy IM-03, ca 2, PA66 đen, 52 sp/tuần (4%)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>D3</strong></td>
+                            <td>100% kiểm tra mắt + tạm tách lô ca 2; chưa xác nhận nguyên nhân</td>
+                        </tr>
+                        <tr>
+                            <td><strong>D4</strong></td>
+                            <td>Fishbone: độ ẩm hạt cao (máy sấy mới khởi động chưa đủ 4h/80°C) → Why-Why: ca 2 tăng ca khởi động khi chưa đủ giờ sấy, không ai kiểm tra; Escape: checklist đầu ca thiếu mục đo độ ẩm; System: quy trình sấy/nạp liệu không có cảnh báo</td>
+                        </tr>
+                        <tr>
+                            <td><strong>D5</strong></td>
+                            <td>Chọn: ① lắp cảnh báo độ ẩm (Poka-Yoke) ② sửa WI ghi giờ sấy tối thiểu + tiêu chuẩn độ ẩm ③ thêm mục checklist; thử offline 2 ca</td>
+                        </tr>
+                        <tr>
+                            <td><strong>D6</strong></td>
+                            <td>Triển khai 3 hành động; đo 2 tuần: 52 → ~8 sp/tuần (đạt mục tiêu ≤10)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>D7</strong></td>
+                            <td>Cập nhật WI-KT-004, Control Plan, PFMEA; Poka-Yoke chặn máy khi sấy chưa đạt; áp dụng PA66/PET toàn xưởng; training vận hành</td>
+                        </tr>
+                        <tr>
+                            <td><strong>D8</strong></td>
+                            <td>Đóng hồ sơ 8D (chữ ký trưởng nhóm + sponsor), lưu bài học, khen thưởng nhóm</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Liên hệ -->
+    <section id="lien-he">
+        <div class="container">
+            <h2 class="section-title">Liên hệ 8D với Bộ tài liệu</h2>
+            
+            <div class="table-responsive reveal">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Giai đoạn 8D</th>
+                            <th>Dùng gì</th>
+                            <th>File liên hệ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Chọn vấn đề nghiêm trọng</td>
+                            <td>Pareto ABC (lãng phí lớn nhất)</td>
+                            <td>6-tools</td>
+                        </tr>
+                        <tr>
+                            <td>D2 — Mô tả</td>
+                            <td>5W2H + biểu mẫu</td>
+                            <td>5w2h</td>
+                        </tr>
+                        <tr>
+                            <td>D4 — Nguyên nhân</td>
+                            <td>Fishbone, Why-Why, SPC</td>
+                            <td>6-tools</td>
+                        </tr>
+                        <tr>
+                            <td>D5–D6 — Hiệu quả</td>
+                            <td>KPI phế theo giờ, OEE</td>
+                            <td>kpi-nha-may-theo-gio</td>
+                        </tr>
+                        <tr>
+                            <td>D7 — Chuẩn hóa</td>
+                            <td>Control Plan / PFMEA</td>
+                            <td>giai-doan-6-qms</td>
+                        </tr>
+                        <tr>
+                            <td>D3/D6 — Phế liệu</td>
+                            <td>Khái niệm Defects</td>
+                            <td>7-lang-phi</td>
+                        </tr>
+                        <tr>
+                            <td>Toàn bộ</td>
+                            <td>§10.2 Hành động khắc phục</td>
+                            <td>giai-doan-6-qms</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="callout callout-success reveal">
+                <strong>Dòng chảy chuẩn:</strong> KPI/Khiếu nại → Pareto → 8D → Fishbone/Why-Why (D4) + 5W2H (action plan D5–D7) → đo lại KPI → đóng 8D → cập nhật Control Plan/PFMEA.
+            </div>
+        </div>
+    </section>
+
+    <!-- Worksheet 8D -->
+    <section id="worksheet">
+        <div class="container">
+            <h2 class="section-title">Worksheet 8D Tương tác</h2>
+            
+            <div class="card reveal">
+                <p style="margin-bottom: 20px;"><strong>Hướng dẫn:</strong> Điền theo thứ tự từ D0 đến D8. Bước nào chưa đủ điều kiện thì note "Còn mở". Chỉ đóng hồ sơ khi đủ 9/9 ô.</p>
+                
+                <div class="worksheet-header">
+                    <div class="worksheet-title">Báo cáo 8D</div>
+                    <div class="progress-container">
+                        <span class="progress-chip" id="progress-chip">Đã điền 0/9</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="report-name">Tên báo cáo / Mã 8D <span>(bắt buộc để lưu)</span></label>
+                    <input type="text" id="report-name" class="form-input" placeholder="VD: 8D-KL102-2026-001 hoặc Bong bóng khí KL-102">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="d0">D0 — Chuẩn bị & chặn khẩn cấp <span>(đánh giá mức độ, chặn hàng nghi ngờ)</span></label>
+                    <textarea id="d0" class="form-input" placeholder="Ví dụ: Khóa lô PA66 đang chạy; sàng lọc 100% kho thành phẩm 3 ngày; thông báo khách hàng về khả năng ảnh hưởng"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="d1">D1 — Lập nhóm <span>(trưởng nhóm + thành viên đa chức năng)</span></label>
+                    <textarea id="d1" class="form-input" placeholder="Ví dụ: Trưởng nhóm QA Nguyễn Văn A; thành viên: kỹ thuật quy trình, vận hành ca 2, QC, bảo trì"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="d2">D2 — Mô tả vấn đề <span>(5W2H + Is/Is-Not)</span></label>
+                    <textarea id="d2" class="form-input" placeholder="Ví dụ: What: bong bóng khí gần cổng phun KL-102 | Where: máy IM-03 | When: ca 2, 40 phút sau khởi động | Who/How: PA66 đen | How much: 52 sp/tuần (4%)"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="d3">D3 — Hành động chứa (ICA) <span>(biện pháp tạm thời bảo vệ khách)</span></label>
+                    <textarea id="d3" class="form-input" placeholder="Ví dụ: 100% kiểm tra mắt thành phẩm ca 2; tạm tách lô nghi ngờ; chưa xác nhận nguyên nhân"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="d4">D4 — Nguyên nhân gốc (RCA) <span>(Fishbone → Why-Why → xảy ra + trốn thoát + hệ thống)</span></label>
+                    <textarea id="d4" class="form-input" placeholder="Ví dụ: Occurrence: độ ẩm hạt cao do máy sấy chưa đủ 4h/80°C | Escape: checklist đầu ca thiếu mục đo độ ẩm | System: quy trình sấy không có cảnh báo"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="d5">D5 — Chọn & kiểm chứng PCA <span>(2-3 phương án + thử nghiệm offline)</span></label>
+                    <textarea id="d5" class="form-input" placeholder="Ví dụ: ① Lắp Poka-Yoke cảnh báo độ ẩm ② Sửa WI ghi giờ sấy tối thiểu ③ Thêm mục checklist; thử offline 2 ca"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="d6">D6 — Triển khai & xác nhận hiệu quả <span>(áp dụng PCA + đo lại KPI 2-4 tuần)</span></label>
+                    <textarea id="d6" class="form-input" placeholder="Ví dụ: Triển khai 3 hành động; đo 2 tuần: 52 → ~8 sp/tuần (đạt mục tiêu ≤10)"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="d7">D7 — Ngăn tái phát <span>(chuẩn hóa + Poka-Yoke + triển khai ngang)</span></label>
+                    <textarea id="d7" class="form-input" placeholder="Ví dụ: Cập nhật WI-KT-004, Control Plan, PFMEA; Poka-Yoke chặn máy khi sấy chưa đạt; áp dụng PA66/PET toàn xưởng; training"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="d8">D8 — Đóng hồ sơ <span>(khen thưởng + bài học + chữ ký)</span></label>
+                    <textarea id="d8" class="form-input" placeholder="Ví dụ: Đóng hồ sơ 8D với chữ ký trưởng nhóm QA + sponsor; lưu lessons learned; khen thưởng nhóm"></textarea>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-success" id="btn-check">✓ Kiểm tra đầy đủ</button>
+                    <button type="button" class="btn btn-primary" id="btn-save">💾 Lưu báo cáo</button>
+                    <button type="button" class="btn btn-secondary" id="btn-reset">↺ Xóa trống worksheet</button>
+                    <button type="button" class="btn btn-secondary" id="btn-print">🖨 In worksheet</button>
+                </div>
+
+                <div id="status-message" class="status-message"></div>
+
+                <div class="callout" style="margin-top: 20px;">
+                    <strong>Ghi chú:</strong> Tại D5/D6/D7, dùng biểu mẫu 5W2H (file <code>5w2h-...</code>) để giao hành động cụ thể cho từng người. Auto-save vào localStorage mỗi 30 giây.
+                </div>
+
+                <!-- History Section -->
+                <div class="history-section">
+                    <h3 style="color: var(--navy-dark); margin-bottom: 16px; font-size: 1.3rem;">Lịch sử báo cáo đã lưu</h3>
+                    <div class="table-responsive">
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Ngày giờ</th>
+                                    <th>Tên báo cáo</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-body">
+                                <tr>
+                                    <td colspan="4" style="text-align: center; color: var(--gray-600);">Chưa có báo cáo nào được lưu</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>Tài liệu trình bày — 8D trong bộ hồ sơ nhà máy ép phun theo ISO 9001. Ví dụ mang tính minh họa.</p>
+            <p style="margin-top: 8px;">Cập nhật 01/10/2026 · Phiên bản 1.0</p>
+        </div>
+    </footer>
+
+    <!-- Back to top -->
+    <button class="back-to-top" id="back-to-top" title="Lên đầu trang">↑</button>
+
+    <script>
+        // Constants
+        const FORM_FIELDS = ['report-name', 'd0', 'd1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8'];
+        const D_FIELDS = ['d0', 'd1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8'];
+        const FORM_STORAGE_KEY = '8d-form-v1';
+        const HISTORY_STORAGE_KEY = '8d-history-v1';
+        const MAX_HISTORY = 15;
+
+        // DOM Elements
+        const reportNameInput = document.getElementById('report-name');
+        const progressChip = document.getElementById('progress-chip');
+        const progressFill = document.getElementById('progress-fill');
+        const statusMessage = document.getElementById('status-message');
+        const historyBody = document.getElementById('history-body');
+        const backToTopBtn = document.getElementById('back-to-top');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadForm();
+            renderHistory();
+            updateProgress();
+            setupEventListeners();
+            setupAutoSave();
+            setupReveal();
+            setupNavHighlight();
+        });
+
+        // Event Listeners
+        function setupEventListeners() {
+            // Form inputs
+            FORM_FIELDS.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('input', updateProgress);
+                }
+            });
+
+            // Buttons
+            document.getElementById('btn-check').addEventListener('click', checkForm);
+            document.getElementById('btn-save').addEventListener('click', saveReport);
+            document.getElementById('btn-reset').addEventListener('click', resetForm);
+            document.getElementById('btn-print').addEventListener('click', printForm);
+
+            // Back to top
+            backToTopBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    backToTopBtn.classList.add('visible');
+                } else {
+                    backToTopBtn.classList.remove('visible');
+                }
+            });
+        }
+
+        // Auto-save setup
+        function setupAutoSave() {
+            setInterval(() => {
+                const formData = getFormData();
+                if (hasContent(formData)) {
+                    localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(formData));
+                }
+            }, 30000);
+        }
+
+        // Reveal animation on scroll
+        function setupReveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            
+            const revealOnScroll = () => {
+                reveals.forEach(el => {
+                    const windowHeight = window.innerHeight;
+                    const elementTop = el.getBoundingClientRect().top;
+                    const elementVisible = 100;
+                    
+                    if (elementTop < windowHeight - elementVisible) {
+                        el.classList.add('active');
+                    }
+                });
+            };
+
+            window.addEventListener('scroll', revealOnScroll);
+            revealOnScroll();
+        }
+
+        // Nav highlight on scroll
+        function setupNavHighlight() {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-links a');
+
+            const highlightNav = () => {
+                const scrollPos = window.scrollY + 150;
+
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.offsetHeight;
+                    const sectionId = section.getAttribute('id');
+
+                    if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === `#${sectionId}`) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            };
+
+            window.addEventListener('scroll', highlightNav);
+        }
+
+        // Get form data
+        function getFormData() {
+            const data = {
+                reportName: reportNameInput.value.trim(),
+                timestamp: new Date().toISOString()
+            };
+            
+            D_FIELDS.forEach(field => {
+                const el = document.getElementById(field);
+                data[field] = el ? el.value.trim() : '';
+            });
+            
+            return data;
+        }
+
+        // Check if form has content
+        function hasContent(data) {
+            return data.reportName || D_FIELDS.some(f => data[f]);
+        }
+
+        // Update progress
+        function updateProgress() {
+            let filledCount = 0;
+            
+            D_FIELDS.forEach(field => {
+                const el = document.getElementById(field);
+                if (el && el.value.trim()) {
+                    filledCount++;
+                }
+            });
+
+            const percentage = (filledCount / 9) * 100;
+            
+            progressChip.textContent = `Đã điền ${filledCount}/9`;
+            progressFill.style.width = `${percentage}%`;
+
+            return filledCount;
+        }
+
+        // Check form completeness
+        function checkForm() {
+            let missingFields = [];
+            let filledCount = 0;
+
+            D_FIELDS.forEach(field => {
+                const el = document.getElementById(field);
+                if (el) {
+                    if (el.value.trim()) {
+                        filledCount++;
+                        el.classList.remove('error');
+                    } else {
+                        el.classList.add('error');
+                        missingFields.push(field.toUpperCase());
+                    }
+                }
+            });
+
+            if (filledCount === 9) {
+                statusMessage.className = 'status-message success';
+                statusMessage.textContent = '✓ ĐỦ 9/9 — Sẵn sàng đóng hồ sơ. Nhấn "Lưu báo cáo" để lưu lại.';
+            } else {
+                statusMessage.className = 'status-message error';
+                statusMessage.textContent = `⚠ Còn thiếu: ${missingFields.join(', ')}. Vui lòng điền đủ các ô trên.`;
+            }
+
+            updateProgress();
+        }
+
+        // Save report
+        function saveReport() {
+            const reportName = reportNameInput.value.trim();
+            
+            if (!reportName) {
+                statusMessage.className = 'status-message error';
+                statusMessage.textContent = '⚠ Vui lòng nhập tên báo cáo / mã 8D trước khi lưu.';
+                reportNameInput.focus();
+                return;
+            }
+
+            const formData = getFormData();
+            let filledCount = 0;
+            D_FIELDS.forEach(field => {
+                if (formData[field]) filledCount++;
+            });
+
+            const historyItem = {
+                name: reportName,
+                timestamp: new Date().toISOString(),
+                complete: filledCount === 9,
+                filledCount: filledCount,
+                data: formData
+            };
+
+            // Get existing history
+            let history = getHistory();
+            
+            // Add new item at beginning
+            history.unshift(historyItem);
+            
+            // Keep only MAX_HISTORY items
+            if (history.length > MAX_HISTORY) {
+                history = history.slice(0, MAX_HISTORY);
+            }
+
+            // Save to localStorage
+            localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(history));
+            
+            // Also save current form
+            localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(formData));
+
+            // Render updated history
+            renderHistory();
+
+            statusMessage.className = 'status-message success';
+            statusMessage.textContent = `✓ Đã lưu báo cáo "${escapeHtml(reportName)}" (${filledCount}/9 ô).`;
+        }
+
+        // Get history from localStorage
+        function getHistory() {
+            try {
+                const history = localStorage.getItem(HISTORY_STORAGE_KEY);
+                return history ? JSON.parse(history) : [];
+            } catch (e) {
+                console.error('Error reading history:', e);
+                return [];
+            }
+        }
+
+        // Render history table
+        function renderHistory() {
+            const history = getHistory();
+            
+            if (history.length === 0) {
+                historyBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--gray-600);">Chưa có báo cáo nào được lưu</td></tr>';
+                return;
+            }
+
+            historyBody.innerHTML = history.map((item, index) => `
+                <tr>
+                    <td>${formatDateTime(item.timestamp)}</td>
+                    <td>${escapeHtml(item.name)}</td>
+                    <td>
+                        <span class="status-badge ${item.complete ? 'complete' : 'incomplete'}">
+                            ${item.complete ? '✓ Đủ 9/9' : `⚠ Thiếu ${9 - item.filledCount}`}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-secondary" onclick="loadReportFromHistory(${index})">Xem lại</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteFromHistory(${index})">Xóa</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Load report from history
+        window.loadReportFromHistory = function(index) {
+            const history = getHistory();
+            if (index >= 0 && index < history.length) {
+                const item = history[index];
+                const data = item.data;
+
+                reportNameInput.value = data.reportName || '';
+                
+                D_FIELDS.forEach(field => {
+                    const el = document.getElementById(field);
+                    if (el) {
+                        el.value = data[field] || '';
+                    }
+                });
+
+                updateProgress();
+                
+                statusMessage.className = 'status-message success';
+                statusMessage.textContent = `✓ Đã nạp báo cáo "${escapeHtml(item.name)}" từ lịch sử.`;
+                
+                window.scrollTo({ top: document.getElementById('worksheet').offsetTop - 100, behavior: 'smooth' });
+            }
+        };
+
+        // Delete from history
+        window.deleteFromHistory = function(index) {
+            if (confirm('Bạn có chắc chắn muốn xóa báo cáo này khỏi lịch sử?')) {
+                let history = getHistory();
+                if (index >= 0 && index < history.length) {
+                    history.splice(index, 1);
+                    localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(history));
+                    renderHistory();
+                    
+                    statusMessage.className = 'status-message success';
+                    statusMessage.textContent = '✓ Đã xóa báo cáo khỏi lịch sử.';
+                }
+            }
+        };
+
+        // Reset form
+        function resetForm() {
+            if (confirm('Bạn có chắc chắn muốn xóa trống toàn bộ worksheet? Thao tác này không thể hoàn tác.')) {
+                reportNameInput.value = '';
+                
+                D_FIELDS.forEach(field => {
+                    const el = document.getElementById(field);
+                    if (el) {
+                        el.value = '';
+                        el.classList.remove('error');
+                    }
+                });
+
+                statusMessage.className = 'status-message';
+                statusMessage.textContent = '';
+                
+                updateProgress();
+                
+                // Clear auto-save
+                localStorage.removeItem(FORM_STORAGE_KEY);
+            }
+        }
+
+        // Load form from localStorage
+        function loadForm() {
+            try {
+                const saved = localStorage.getItem(FORM_STORAGE_KEY);
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    
+                    if (data.reportName) {
+                        reportNameInput.value = data.reportName;
+                    }
+                    
+                    D_FIELDS.forEach(field => {
+                        const el = document.getElementById(field);
+                        if (el && data[field]) {
+                            el.value = data[field];
+                        }
+                    });
+                }
+            } catch (e) {
+                console.error('Error loading form:', e);
+            }
+        }
+
+        // Print form
+        function printForm() {
+            window.print();
+        }
+
+        // Format date time
+        function formatDateTime(isoString) {
+            const date = new Date(isoString);
+            return date.toLocaleString('vi-VN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

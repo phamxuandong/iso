@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bộ câu hỏi Tự đánh giá & Đánh giá chéo ISO 9001 — Nhà máy ép phun</title>
+<style>
+:root {
+  --navy-dark: #0a1628;
+  --navy: #122442;
+  --amber: #d97706;
+  --amber-light: #fbbf24;
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --success: #16a34a;
+  --warning: #ca8a04;
+  --danger: #dc2626;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+.container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+header {
+  background: linear-gradient(135deg, var(--navy-dark), var(--navy));
+  color: white;
+  padding: 30px 20px;
+  text-align: center;
+}
+header h1 { font-size: 1.8rem; margin-bottom: 10px; }
+header p { opacity: 0.9; max-width: 800px; margin: 0 auto; }
+.nav-sticky {
+  position: sticky;
+  top: 0;
+  background: var(--navy);
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.nav-sticky nav {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 15px;
+  flex-wrap: wrap;
+}
+.nav-sticky button {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+}
+.nav-sticky button:hover, .nav-sticky button.active {
+  background: var(--amber);
+  border-color: var(--amber);
+}
+.step { display: none; padding: 30px 20px; }
+.step.active { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.card {
+  background: var(--surface);
+  border-radius: 10px;
+  padding: 25px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border: 1px solid var(--border);
+}
+.card h2 { color: var(--navy); margin-bottom: 15px; font-size: 1.4rem; }
+.card h3 { color: var(--navy); margin: 20px 0 10px; font-size: 1.1rem; }
+.intro-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
+.intro-item { background: var(--bg); padding: 20px; border-radius: 8px; border-left: 4px solid var(--amber); }
+.intro-item strong { color: var(--navy); display: block; margin-bottom: 8px; }
+.warning-box {
+  background: #fef3c7;
+  border: 1px solid var(--amber);
+  border-radius: 8px;
+  padding: 15px;
+  margin: 20px 0;
+  color: #92400e;
+}
+.tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid var(--border); padding-bottom: 10px; }
+.tab-btn {
+  padding: 12px 24px;
+  background: var(--bg);
+  border: none;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: all 0.2s;
+}
+.tab-btn.active { background: var(--navy); color: white; }
+.question-grid { display: grid; gap: 15px; }
+.question-item {
+  background: var(--bg);
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  page-break-inside: avoid;
+}
+.question-item label { display: block; font-weight: 600; margin-bottom: 10px; color: var(--navy); }
+.question-item select, .question-item input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+}
+.question-item select:focus, .question-item input:focus {
+  outline: none;
+  border-color: var(--amber);
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.1);
+}
+.progress-bar {
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 20px 0;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--amber), var(--amber-light));
+  transition: width 0.3s;
+}
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-primary { background: var(--navy); color: white; }
+.btn-primary:hover { background: var(--navy-dark); }
+.btn-secondary { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+.btn-secondary:hover { background: var(--border); }
+.btn-success { background: var(--success); color: white; }
+.btn-warning { background: var(--amber); color: white; }
+.btn-danger { background: var(--danger); color: white; }
+.btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+.role-btn, .pair-btn {
+  padding: 15px 20px;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+  margin: 8px;
+  display: inline-block;
+  min-width: 280px;
+}
+.role-btn:hover, .pair-btn:hover { border-color: var(--amber); background: #fffbeb; }
+.role-btn.selected, .pair-btn.selected { border-color: var(--navy); background: var(--navy); color: white; }
+.role-btn strong, .pair-btn strong { display: block; color: var(--navy); margin-bottom: 5px; }
+.role-btn.selected strong, .pair-btn.selected strong { color: white; }
+.role-count { font-size: 0.85rem; opacity: 0.8; }
+.result-badge {
+  display: inline-block;
+  padding: 15px 30px;
+  border-radius: 10px;
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 20px 0;
+}
+.result-good { background: #dcfce7; color: var(--success); border: 2px solid var(--success); }
+.result-warning { background: #fef3c7; color: var(--warning); border: 2px solid var(--warning); }
+.result-danger { background: #fee2e2; color: var(--danger); border: 2px solid var(--danger); }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 20px 0; }
+.stat-card { background: var(--bg); padding: 15px; border-radius: 8px; text-align: center; }
+.stat-card .value { font-size: 1.8rem; font-weight: bold; color: var(--navy); }
+.stat-card .label { font-size: 0.85rem; color: var(--text-muted); }
+.weakness-list { list-style: none; margin: 15px 0; }
+.weakness-item {
+  padding: 12px;
+  background: #fef2f2;
+  border-left: 4px solid var(--danger);
+  margin-bottom: 10px;
+  border-radius: 0 6px 6px 0;
+}
+.weakness-item.partial { background: #fef3c7; border-left-color: var(--warning); }
+.weakness-item strong { color: var(--danger); }
+.weakness-item.partial strong { color: var(--warning); }
+.history-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+.history-table th, .history-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
+.history-table th { background: var(--bg); font-weight: 600; color: var(--navy); }
+.history-table tr:hover { background: var(--bg); }
+.input-group { margin: 15px 0; }
+.input-group label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--navy); }
+.input-group input { width: 100%; max-width: 400px; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; }
+.back-to-top {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: var(--navy);
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 99;
+}
+.back-to-top.visible { display: flex; }
+@media print {
+  .nav-sticky, .btn-group, .back-to-top, .tabs, .no-print { display: none !important; }
+  body { background: white; }
+  .card { box-shadow: none; border: 1px solid #ccc; }
+  .question-item { break-inside: avoid; }
+  .print-check-boxes { display: block !important; }
+  .question-item select, .question-item input { display: none; }
+}
+.print-check-boxes { display: none; margin-top: 10px; }
+.check-row { display: flex; gap: 20px; font-size: 0.9rem; }
+.check-row span { display: flex; align-items: center; gap: 5px; }
+.check-box { width: 18px; height: 18px; border: 2px solid var(--text); display: inline-block; }
+.schedule-table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+.schedule-table th, .schedule-table td { padding: 10px; border: 1px solid var(--border); text-align: center; }
+.schedule-table th { background: var(--navy); color: white; }
+.hidden { display: none; }
+</style>
+</head>
+<body>
+<header>
+<h1>📋 Bộ câu hỏi Tự đánh giá & Đánh giá chéo ISO 9001</h1>
+<p>Nhà máy ép phun — Công cụ nâng cao nhận thức chất lượng theo ISO 9001:2015</p>
+</header>
+
+<div class="nav-sticky">
+<nav>
+<button class="active" data-step="0">Giới thiệu</button>
+<button data-step="1">Chọn phiếu</button>
+<button data-step="2">Trả lời</button>
+<button data-step="3">Kết quả</button>
+<button data-step="4">Lịch sử</button>
+</nav>
+</div>
+
+<div class="container">
+<!-- BƯỚC 0: GIỚI THIỆU -->
+<div id="step0" class="step active">
+<div class="card">
+<h2>🎯 Mục đích</h2>
+<p>Công cụ này giúp mọi người trong nhà máy:</p>
+<ul style="margin: 15px 0 15px 25px;">
+<li><strong>Tự đánh giá</strong> mức độ hiểu biết và tuân thủ ISO 9001 theo vai trò của mình</li>
+<li><strong>Đánh giá chéo</strong> giữa các bộ phận để cải thiện phối hợp</li>
+<li><strong>Xác định điểm yếu</strong> để đưa vào kế hoạch cải tiến (5W2H/Kaizen)</li>
+<li><strong>Tạo lịch sử</strong> theo dõi tiến độ cải thiện theo thời gian</li>
+</ul>
+
+<div class="warning-box">
+<strong>⚠️ Lưu ý quan trọng:</strong> Đây là công cụ nâng cao nhận thức, KHÔNG thay thế cuộc đánh giá nội bộ độc lập theo yêu cầu §9.2 ISO 9001:2015. Kết quả dùng để tham chiếu và lập kế hoạch cải tiến.
+</div>
+
+<h2>📖 Cách dùng (4 bước)</h2>
+<div class="intro-grid">
+<div class="intro-item">
+<strong>BƯỚC 1 — Chọn phiếu</strong>
+Chọn "Tự đánh giá" theo vai trò hoặc "Đánh giá chéo" giữa bộ phận
+</div>
+<div class="intro-item">
+<strong>BƯỚC 2 — Trả lời</strong>
+Trả lời từng câu với mức: Đạt / Một phần / Chưa đạt / Không áp dụng
+</div>
+<div class="intro-item">
+<strong>BƯỚC 3 — Kết quả</strong>
+Xem % điểm, danh sách điểm yếu, lưu phiếu và in nếu cần
+</div>
+<div class="intro-item">
+<strong>BƯỚC 4 — Hành động</strong>
+Đưa điểm yếu vào kế hoạch khắc phục (5W2H/Kaizen) hoặc phiếu NC cho audit nội bộ
+</div>
+</div>
+
+<h2>📅 Kế hoạch vận hành năm</h2>
+<table class="schedule-table">
+<tr><th>Quý</th><th>Việc</th><th>Chịu trách nhiệm</th></tr>
+<tr><td>Mỗi quý</td><td>Tự đánh giá (1 lần/quý)</td><td>Từng nhân viên</td></tr>
+<tr><td>Mỗi quý</td><td>Đánh giá chéo (1 lần/quý)</td><td>Các bộ phận liên quan</td></tr>
+<tr><td>Cuối quý</td><td>QA tổng hợp kết quả</td><td>Trưởng phòng QA</td></tr>
+<tr><td>Cuối quý</td><td>Lập kế hoạch hành động 5W2H/Kaizen</td><td>Quản lý bộ phận</td></tr>
+<tr><td>Hàng năm</td><td>Auditor nội bộ kiểm tra lại</td><td>Auditor được chỉ định</td></tr>
+</table>
+
+<h2>📋 Bảng phân công phiếu</h2>
+<table class="schedule-table">
+<tr><th>Vai trò/Bộ phận</th><th>Phiếu tự đánh giá</th><th>Phiếu đánh giá chéo</th></tr>
+<tr><td>Mọi người</td><td>A — Chung (20 câu)</td><td>—</td></tr>
+<tr><td>Vận hành máy</td><td>B — Vận hành (35 câu)</td><td>SX → Bảo trì, SX → Kỹ thuật, SX → Kho</td></tr>
+<tr><td>QC/QA</td><td>C — QC/QA (30 câu)</td><td>QC → Sản xuất</td></tr>
+<tr><td>Kho</td><td>D — Kho (25 câu)</td><td>Kho → Mua hàng</td></tr>
+<tr><td>Bảo trì</td><td>E — Bảo trì (20 câu)</td><td>—</td></tr>
+<tr><td>Kỹ thuật</td><td>F — Kỹ thuật (20 câu)</td><td>—</td></tr>
+<tr><td>QL – NS – Mua hàng</td><td>G — Quản lý (22 câu)</td><td>—</td></tr>
+<tr><td>Bán hàng</td><td>H — Bán hàng (15 câu)</td><td>—</td></tr>
+<tr><td>Toàn công ty</td><td>—</td><td>Toàn công ty → EHS</td></tr>
+</table>
+
+<div class="btn-group">
+<button class="btn btn-primary" onclick="goToStep(1)">Bắt đầu →</button>
+</div>
+</div>
+</div>
+
+<!-- BƯỚC 1: CHỌN PHIẾU -->
+<div id="step1" class="step">
+<div class="card">
+<h2>📝 Chọn loại đánh giá</h2>
+<div class="tabs">
+<button class="tab-btn active" onclick="switchTab('self')">Tự đánh giá (theo vai trò)</button>
+<button class="tab-btn" onclick="switchTab('cross')">Đánh giá chéo (giữa bộ phận)</button>
+</div>
+
+<div id="self-tab">
+<h3>Chọn vai trò của bạn:</h3>
+<div class="btn-group" style="display:block;">
+<button class="role-btn" data-role="A" onclick="selectRole('A')"><strong>[A] Chung cho mọi người</strong><span class="role-count">20 câu hỏi — Áp dụng cho tất cả nhân viên</span></button>
+<button class="role-btn" data-role="B" onclick="selectRole('B')"><strong>[B] Vận hành máy</strong><span class="role-count">35 câu hỏi — Công nhân đứng máy ép phun</span></button>
+<button class="role-btn" data-role="C" onclick="selectRole('C')"><strong>[C] QC/QA</strong><span class="role-count">30 câu hỏi — Nhân viên kiểm tra chất lượng</span></button>
+<button class="role-btn" data-role="D" onclick="selectRole('D')"><strong>[D] Kho nguyên liệu/thành phẩm</strong><span class="role-count">25 câu hỏi — Thủ kho, nhân viên kho</span></button>
+<button class="role-btn" data-role="E" onclick="selectRole('E')"><strong>[E] Bảo trì</strong><span class="role-count">20 câu hỏi — Kỹ thuật viên bảo trì</span></button>
+<button class="role-btn" data-role="F" onclick="selectRole('F')"><strong>[F] Kỹ thuật quy trình</strong><span class="role-count">20 câu hỏi — Kỹ sư quy trình, khuôn mẫu</span></button>
+<button class="role-btn" data-role="G" onclick="selectRole('G')"><strong>[G] Quản lý – nhân sự – mua hàng</strong><span class="role-count">22 câu hỏi — Quản lý, HR, thu mua</span></button>
+<button class="role-btn" data-role="H" onclick="selectRole('H')"><strong>[H] Bán hàng & khách hàng</strong><span class="role-count">15 câu hỏi — Kinh doanh, chăm sóc khách hàng</span></button>
+</div>
+</div>
+
+<div id="cross-tab" class="hidden">
+<h3>Chọn cặp đánh giá chéo:</h3>
+<div class="btn-group" style="display:block;">
+<button class="pair-btn" data-pair="kho-mh" onclick="selectPair('kho-mh')"><strong>[Kho → Mua hàng]</strong><span class="role-count">8 câu — Kho đánh giá hiệu quả mua hàng</span></button>
+<button class="pair-btn" data-pair="sx-bt" onclick="selectPair('sx-bt')"><strong>[Sản xuất → Bảo trì]</strong><span class="role-count">8 câu — Sản xuất đánh giá hỗ trợ bảo trì</span></button>
+<button class="pair-btn" data-pair="sx-kt" onclick="selectPair('sx-kt')"><strong>[Sản xuất → Kỹ thuật]</strong><span class="role-count">8 câu — Sản xuất đánh giá hỗ trợ kỹ thuật</span></button>
+<button class="pair-btn" data-pair="sx-kho" onclick="selectPair('sx-kho')"><strong>[Sản xuất → Kho]</strong><span class="role-count">8 câu — Sản xuất đánh giá cấp liệu từ kho</span></button>
+<button class="pair-btn" data-pair="qc-sx" onclick="selectPair('qc-sx')"><strong>[QC → Sản xuất]</strong><span class="role-count">8 câu — QC đánh giá tuân thủ từ sản xuất</span></button>
+<button class="pair-btn" data-pair="tc-ehs" onclick="selectPair('tc-ehs')"><strong>[Toàn công ty → EHS]</strong><span class="role-count">8 câu — Toàn công ty đánh giá an toàn</span></button>
+</div>
+</div>
+
+<div id="selected-info" class="warning-box hidden" style="margin-top:20px;">
+<strong>✓ Đã chọn:</strong> <span id="selected-name"></span><br>
+<strong>Số câu:</strong> <span id="selected-count"></span> câu
+<button class="btn btn-primary" style="margin-top:15px;" onclick="goToStep(2)">Tiếp tục →</button>
+</div>
+</div>
+</div>
+
+<!-- BƯỚC 2: TRẢ LỜI -->
+<div id="step2" class="step">
+<div class="card">
+<h2 id="questionnaire-title">Trả lời câu hỏi</h2>
+<div class="input-group">
+<label for="respondent-name">Tên người trả lời / Bộ phận:</label>
+<input type="text" id="respondent-name" placeholder="Ví dụ: Nguyễn Văn A / Tổ ép 1">
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+<p style="text-align:right; font-size:0.9rem; color:var(--text-muted);">Tiến độ: <span id="progress-text">0%</span></p>
+<div id="questions-container" class="question-grid"></div>
+<div class="btn-group">
+<button class="btn btn-secondary" onclick="goToStep(1)">← Quay lại</button>
+<button class="btn btn-secondary" onclick="saveDraft()">💾 Lưu nháp</button>
+<button class="btn btn-primary" onclick="calculateScore()">Chấm điểm →</button>
+</div>
+</div>
+</div>
+
+<!-- BƯỚC 3: KẾT QUẢ -->
+<div id="step3" class="step">
+<div class="card">
+<h2>📊 Kết quả đánh giá</h2>
+<p><strong>Phiếu:</strong> <span id="result-questionnaire"></span></p>
+<p><strong>Người trả lời:</strong> <span id="result-respondent"></span></p>
+<p><strong>Ngày:</strong> <span id="result-date"></span></p>
+
+<div id="result-badge" class="result-badge"></div>
+
+<div class="stats-grid">
+<div class="stat-card"><div class="value" id="stat-dat" style="color:var(--success)">0</div><div class="label">Đạt (2đ)</div></div>
+<div class="stat-card"><div class="value" id="stat-motphan" style="color:var(--warning)">0</div><div class="label">Một phần (1đ)</div></div>
+<div class="stat-card"><div class="value" id="stat-chua" style="color:var(--danger)">0</div><div class="label">Chưa đạt (0đ)</div></div>
+<div class="stat-card"><div class="value" id="stat-apdung" style="color:var(--navy)">0</div><div class="label">Tổng áp dụng</div></div>
+</div>
+
+<h3>📉 Điểm yếu cần cải thiện</h3>
+<ul id="weakness-list" class="weakness-list"></ul>
+
+<div class="warning-box">
+<strong>💡 Gợi ý hành động:</strong> Đưa các điểm yếu vào kế hoạch khắc phục (5W2H/Kaizen) hoặc tạo phiếu NC (Non-Conformity) cho audit nội bộ.
+</div>
+
+<div class="btn-group">
+<button class="btn btn-secondary" onclick="goToStep(1)">↺ Làm phiếu khác</button>
+<button class="btn btn-success" onclick="saveResult()">💾 Lưu phiếu</button>
+<button class="btn btn-primary" onclick="printResult()">🖨 In phiếu</button>
+</div>
+</div>
+</div>
+
+<!-- BƯỚC 4: LỊCH SỬ -->
+<div id="step4" class="step">
+<div class="card">
+<h2>📜 Lịch sử phiếu đã lưu</h2>
+<p style="color:var(--text-muted); margin-bottom:15px;">Dữ liệu lưu trong trình duyệt (tối đa 100 phiếu)</p>
+<div id="history-container"></div>
+<div class="btn-group">
+<button class="btn btn-secondary" onclick="goToStep(0)">← Về trang chính</button>
+<button class="btn btn-danger" onclick="clearHistory()" id="clear-history-btn" style="display:none;">🗑 Xóa tất cả lịch sử</button>
+</div>
+</div>
+</div>
+</div>
+
+<button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+
+<script>
+// DỮ LIỆU CÂU HỎI
+const questionnaires = {
+  A: {
+    id: 'A',
+    name: '[A] Chung cho mọi người',
+    type: 'self',
+    questions: [
+      'Tôi có bản mô tả công việc/phân công nhiệm vụ rõ ràng và hiểu trách nhiệm của mình không?',
+      'Tôi có được hướng dẫn/đào tạo công việc trước khi làm chính thức và có hồ sơ đào tạo không?',
+      'Tôi có biết mục tiêu chất lượng của bộ phận mình (phế %, OEE, giao đúng hạn...) của tháng này không?',
+      'Tôi có hiểu ý nghĩa chính sách chất lượng/ISO của công ty (không cần thuộc lòng) không?',
+      'Tôi có dùng đúng phiên bản tài liệu mới nhất (WI, bản vẽ) và biết nơi tìm khi cần không?',
+      'Nếu phát hiện tài liệu cũ/lỗi, tôi có báo người phụ trách để cập nhật không?',
+      'Tôi có biết kênh/hòm tiếp nhận ý tưởng cải tiến và báo sự cố của công ty không?',
+      'Tháng qua tôi có đóng góp ít nhất 1 ý tưởng cải tiến hoặc báo 1 điểm lãng phí không?',
+      'Tôi có chấp hành quy định an toàn (mặc PPE đúng khu vực, biết lối thoát hiểm) không?',
+      'Tôi có biết người cần báo khi cần hỗ trợ (ca trưởng/quản đốc/QA) không?',
+      'Khi phát hiện sản phẩm/lô không phù hợp, tôi có báo cáo kịp thời thay vì giấu đi không?',
+      'Tôi có được phổ biến kết quả chất lượng của tổ (bảng hiệu quả tuần) không?',
+      'Khi làm thay ca/người khác, tôi có được bàn giao hướng dẫn rõ ràng không?',
+      'Khu vực làm việc của tôi có đạt 5S (sạch sẽ, ngăn nắp, đúng chỗ) không?',
+      'Tôi có biết cách xử lý khi sự cố (cháy, tai nạn, tràn hóa chất) không?',
+      'Tôi có phân loại rác/phế đúng và tiết kiệm năng lượng theo quy định không?',
+      'Khi quy trình/WI thay đổi ảnh hưởng việc mình, tôi có được thông báo kịp không?',
+      'Tôi có thấy việc báo cáo trung thực được khuyến khích hơn che giấu không?',
+      'Tôi có biết "khách hàng nội bộ" của mình (người nhận kết quả việc tôi) là ai không?',
+      'Ủc kiến của tôi về cách cải thiện điều kiện làm việc có được lắng nghe/trao đổi không?'
+    ]
+  },
+  B: {
+    id: 'B',
+    name: '[B] Vận hành máy',
+    type: 'self',
+    questions: [
+      'Tôi có kiểm tra thông số máy (nhiệt/áp/thời gian) đúng WI/tấm thông số trước khi chạy và đầu ca không?',
+      'Nếu thấy thông số lệch, tôi có dừng và báo ca trưởng/kỹ thuật, không tự ý sửa không?',
+      'Tôi có được đào tạo vận hành máy ép phun trước khi đứng máy chính thức không?',
+      'Tôi có ghi nhận ca đầy đủ (số lượng sản xuất, phế, sự cố) trên phiếu/tờ ghi không?',
+      'Sản phẩm/khay của tôi có thẻ nhận diện (tên sp, ca, máy, số khuôn) để truy vết không?',
+      'Khi phát hiện phế/hàng lạ, tôi có để riêng + dán nhãn + báo ngay không?',
+      'Tôi có không để lẫn sản phẩm đạt và không đạt trong cùng khay không?',
+      'Tôi có thao tác vệ sinh khuôn/lấy phôi đúng WI (không tự ý đổi cách) không?',
+      'Tôi có biết các khuyết tật thường gặp (bong bóng, thiếu nhựa, cháy) để tự phát hiện sớm không?',
+      'Tôi có báo lô bất thường cho QC/kỹ thuật kịp thời, không chờ đến cuối ca không?',
+      'Khu vực máy của tôi có đủ dụng cụ/vật tư đúng quy định (găng tay, khăn, dụng cụ gắp) không?',
+      'Tôi có vệ sinh máy/khu vực cuối ca và bàn giao sạch cho ca sau không?',
+      'Tôi có tuân thủ an toàn máy (không mở khóa an toàn, không đưa tay vào khu vực khuôn khi máy chạy) không?',
+      'Tôi có biết nút dừng khẩn cấp (E-stop) ở đâu và cách dùng khi sự cố không?',
+      'Tôi có kiểm tra nguyên liệu (loại hạt/màu) trước khi nạp, đúng phiếu cấp liệu không?',
+      'Khi nguyên liệu sắp hết/sai loại, tôi có báo kho thay vì tự ý lấy hạt khác không?',
+      'Tôi có ghi nhận máy dừng/mất điện/trục trặc vào nhật ký máy không?',
+      'Tôi có tuân thủ lịch vệ sinh/bảo trì do bộ phận bảo trì yêu cầu không?',
+      'Tôi có báo bảo trì ngay khi máy có dấu hiệu lạ (rung, ồn, rò dầu, nhiệt trôi) không?',
+      'Tôi có được huấn luyện 5S và tự thực hiện checklist 5S hằng ca không?',
+      'Tôi có để dụng cụ/khuôn đúng nơi quy định để không mất thời gian tìm không?',
+      'Tôi có dùng thiết bị đo (cân/calip) đúng cách và báo khi hết hạn hiệu chuẩn không?',
+      'Tôi có tự kiểm tra sản phẩm đúng tần suất yêu cầu và ghi kết quả không?',
+      'Tôi có hiểu tiêu chuẩn chấp nhận (mẫu so sánh) để tự phân loại đúng không?',
+      'Tôi có được đào tạo an toàn hóa chất/nhựa nóng và chấp hành PPE phù hợp không?',
+      'Khi phát hiện khuôn bất thường (lệch, mòn, sứt), tôi có báo kịp không?',
+      'Tôi có tham gia họp đầu ca và nắm kế hoạch sản xuất/đổi khuôn hôm nay không?',
+      'Khi khởi động máy sấy, tôi có kiểm tra hạt đã đủ giờ sấy/độ ẩm theo quy định không?',
+      'Tôi có thu gom phế đúng thùng (trắng/đen/tái chế) và không lẫn tạp chất không?',
+      'Tôi có đeo bảo hộ (nút tai, kính, giày) đúng khu vực quy định không?',
+      'Tôi có biết lối thoát hiểm và điểm tập trung khi khẩn cấp của phân xưởng không?',
+      'Tôi có báo cáo trung thực số lượng sản xuất/phế trên phiếu không?',
+      'Khi chuyển đổi khuôn/sản phẩm, tôi có theo đúng trình tự an toàn và quy trình không?',
+      'Sau khi đổi khuôn, tôi có chờ QC xác nhận sản phẩm đầu tiên đạt mới chạy liên tục không?',
+      'Tôi có chủ động đề xuất cải tiến thao tác/giảm lãng phí tại máy không?'
+    ]
+  },
+  C: {
+    id: 'C',
+    name: '[C] QC/QA',
+    type: 'self',
+    questions: [
+      'Tôi có đủ thiết bị đo (calip, thước, cân) đã hiệu chuẩn còn hạn để kiểm tra không?',
+      'Tôi có danh mục thiết bị đo và theo dõi hạn hiệu chuẩn đúng chu kỳ không?',
+      'Kết quả kiểm tra có được ghi hồ sơ đầy đủ (số liệu thật, ký tên, giờ) không?',
+      'Tôi có kiểm tra đúng tiêu chuẩn/dung sai trên bản vẽ không?',
+      'Tôi có đọc đúng bản vẽ trước khi kiểm tra từng sản phẩm không?',
+      'Tôi có lập kế hoạch kiểm tra (tần suất, cỡ mẫu) cho đặc tính quan trọng không?',
+      'Khu vực QC có nhận diện rõ hàng chờ kiểm / hàng đạt / hàng không đạt không?',
+      'Khi phát hiện không phù hợp, tôi có lập phiếu (8.7) và để riêng hàng NC không?',
+      'Lô NC có được chuyển sang hành động khắc phục gốc rễ (10.2/8D) đúng quy trình không?',
+      'Tôi có theo dõi tỉ lệ phế theo tuần (Check Sheet/Pareto) để biết vấn đề lớn nhất không?',
+      'Tôi có tham gia phân tích nguyên nhân (Fishbone/Why-Why) khi phế cao không?',
+      'Tôi có báo sớm cho sản xuất khi thấy xu hướng phế tăng không?',
+      'Tôi có sử dụng biểu đồ kiểm soát cho đặc tính quan trọng và xử lý khi bất thường không?',
+      'Tôi có kiểm tra độ ẩm hạt/nhiệt độ theo yêu cầu và ghi hồ sơ không?',
+      'Thiết bị đo có được bảo quản đúng nơi, tránh va đập, và theo dõi khi mượn/trả không?',
+      'Tôi có được đào tạo kỹ năng đo và kiểm tra độ chụm giữa các người đo không?',
+      'Hồ sơ kiểm tra có được lưu trữ đủ, đúng và giữ sau khi giao hàng không?',
+      'Tôi có đối chiếu kết quả kiểm tra nguyên liệu đầu vào (độ ẩm/tem lô) không?',
+      'Tôi có kiểm tra sản phẩm đầu tiên sau đổi khuôn và ghi hồ sơ không?',
+      'Khiếu nại khách có được xử lý theo quy trình và theo dõi đến khi đóng không?',
+      'Hồ sơ xử lý khiếu nại có kèm hành động khắc phục và xác minh hiệu quả không?',
+      'Tôi có tổng hợp chỉ số chất lượng (phế %, PPM, khiếu nại) cho báo cáo hàng tháng không?',
+      'Tôi có cung cấp số liệu chất lượng cho review lãnh đạo khi được yêu cầu không?',
+      'Mẫu chuẩn/mẫu đầu có được quản lý đúng nơi, đúng hạn sử dụng không?',
+      'Khi dụng cụ đo bị rớt/nghi lỗi, tôi có dừng dùng và xử lý trước khi tiếp tục không?',
+      'Bảng kết quả QC đầu máy có được cập nhật để sản xuất thấy không?',
+      'Khách vào nhà máy có được hướng dẫn an toàn/bảo mật theo quy trình không?',
+      'Tôi có tổ chức đào tạo nhận biết khuyết tật cho công nhân định kỳ không?',
+      'Tôi có tham gia kiểm tra sản phẩm cuối (OQC) đúng tiêu chuẩn trước khi giao không?',
+      'Sự cố an toàn trong khu vực QC có được báo cáo và xử lý không?'
+    ]
+  },
+  D: {
+    id: 'D',
+    name: '[D] Kho nguyên liệu/thành phẩm',
+    type: 'self',
+    questions: [
+      'Nguyên liệu nhập về có được đối chiếu đơn mua/chứng từ trước khi nhập kho không?',
+      'Khi nhận nguyên liệu, tôi có kiểm tra tem lô/độ ẩm/COA theo yêu cầu không?',
+      'Mọi bao/thùng hạt có tem nhãn rõ (loại, màu, lô, ngày nhập) không?',
+      'Tôi có áp dụng FIFO (xuất lô cũ trước) cho nguyên liệu không?',
+      'Kho có đủ điều kiện bảo quản hạt (khô, mát, tránh ẩm/nguồn nhiệt) không?',
+      'Có khu vực riêng "chờ kiểm tra/chờ phê duyệt" cho nguyên liệu mới về không?',
+      'Khi cấp liệu, tôi có giao đúng loại/màu/lô theo phiếu yêu cầu không?',
+      'Tôi có ghi sổ/thẻ kho cập nhật (nhập–xuất–tồn) chính xác không?',
+      'Tồn kho được kiểm kê định kỳ và chênh lệch được xử lý không?',
+      'Thành phẩm chỉ được nhập kho sau khi QC phê duyệt (không nhận hàng chưa xác nhận) không?',
+      'Hàng chờ kiểm/không đạt có khu riêng + nhãn rõ, không lẫn hàng đạt không?',
+      'Kho thành phẩm có bảo quản đúng quy cách (không đè nát, đúng ngăn) không?',
+      'Tôi có xuất hàng đúng phiếu xuất (đúng sp, số lượng, lô) không?',
+      'Xe nâng được kiểm tra đầu ca và chỉ người có chứng chỉ vận hành dùng không?',
+      'Tôi có tuân thủ an toàn kho (giao thông nội bộ, tốc độ, cảnh báo) không?',
+      'Phế liệu/CTNH có được phân loại đúng thùng/nhãn và bàn giao đúng định kỳ không?',
+      'Khu vực phế có hạn chế ra vào và ghi nhận khối lượng không?',
+      'Tôi có báo sớm khi nguyên liệu sắp hết/nguy cơ thiếu để mua hàng bổ sung không?',
+      'Hồ sơ xuất/nhập có được lưu trữ để truy vết (lô → ca → khách) không?',
+      'Tôi có được đào tạo quy trình kho và an toàn trước khi làm việc không?',
+      'Pallet/thùng/khay vận chuyển có được kiểm tra sạch/đủ trước khi dùng không?',
+      'Tôi có dùng đúng phiếu cấp liệu khi giao hạt cho tổ ép và ký nhận đầy đủ không?',
+      'Hàng trả về/từ chối có được xử lý theo quy trình và ghi hồ sơ không?',
+      'Khi nhập/xuất sai, tôi có báo trung thực để sửa ngay không?',
+      'Kho có được áp dụng 5S (kẻ vạch, nhãn vị trí, ngăn nắp) không?'
+    ]
+  },
+  E: {
+    id: 'E',
+    name: '[E] Bảo trì',
+    type: 'self',
+    questions: [
+      'Tôi có danh sách máy móc/thiết bị và lịch bảo trì phòng ngừa đầy đủ không?',
+      'Lịch bảo trì định kỳ có được thực hiện đúng hạn và ghi hồ sơ không?',
+      'Khi nhận điện báo máy hỏng, tôi có xử lý kịp thời theo mức ưu tiên không?',
+      'Thời gian dừng máy (downtime) có được ghi nhận và phân tích nguyên nhân không?',
+      'Tôi có theo dõi MTTR/MTBF để đánh giá hiệu quả bảo trì không?',
+      'Phụ tùng thay thế được quản lý (tồn tối thiểu, đúng chủng loại) không?',
+      'Sửa xong, tôi có bàn giao và xác nhận với vận hành trước khi chạy lại không?',
+      'Mỗi công việc sửa chữa có được ghi lệnh bảo trì/nhật ký máy không?',
+      'Sau bảo trì, tôi có kiểm tra an toàn (khóa an toàn, che chắn) trước khi vận hành không?',
+      'Tôi có áp dụng khóa/biển (LOTO) khi làm việc trên máy có điện/thủy lực không?',
+      'Thiết bị đo/bơm/van có được bảo trì/hiệu chuẩn đúng chu kỳ không?',
+      'Hỏng hóc lặp lại có được phân tích gốc rễ thay vì vá tạm không?',
+      'Tôi có phối hợp kỹ thuật/vận hành giảm thời gian dừng (hỗ trợ SMED/đổi khuôn) không?',
+      'Tôi có được đào tạo về máy ép phun (thủy lực, nhiệt, an toàn) trước khi sửa không?',
+      'Dụng cụ bảo trì được kiểm định quản lý và tôi dùng PPE đúng không?',
+      'Tôi có phản hồi cho vận hành cách phòng ngừa hư hỏng do thao tác không?',
+      'Có quy trình xử lý sự cố khẩn cấp (rò dầu, rò nhiệt, cháy) và tôi thuộc không?',
+      'Kết quả theo dõi rung/áp (bảo trì dự đoán) có được ghi nhận và dùng không?',
+      'Khi thay phụ tùng (khuôn/van), tôi có xác nhận đúng thông số kỹ thuật không?',
+      'Có kế hoạch giảm dừng máy hằng tháng (kaizen bảo trì) không?'
+    ]
+  },
+  F: {
+    id: 'F',
+    name: '[F] Kỹ thuật quy trình',
+    type: 'self',
+    questions: [
+      'WI/tấm thông số từng sản phẩm có đầy đủ (nhiệt/áp/tốc độ/thời gian/lực kẹp) và đúng thực tế không?',
+      'Tôi có quy trình phê duyệt WI trước khi ban hành và cập nhật khi đổi thông số không?',
+      'Thông số chuẩn có được lưu trong hồ sơ/hệ thống quản lý khuôn không?',
+      'Khi đổi khuôn, tôi có soạn sẵn thông số để vận hành nạp nhanh (hỗ trợ SMED) không?',
+      'Sản phẩm mới/cải tiến có được chạy thử và phê duyệt mẫu đầu (FAI) đúng quy trình không?',
+      'Quá trình mới có được khảo sát năng lực (Cpk) trước khi chạy đại trà không?',
+      'Tôi có kiểm soát thay đổi (khuôn/máy/vật liệu) và cập nhật tài liệu khi thay đổi không?',
+      'Tôi có phân tích khuyết tật (bong bóng, thiếu nhựa, cháy) bằng Fishbone/Why-Why khi phế cao không?',
+      'Tôi có tối ưu thông số bằng thử nghiệm có cấu trúc thay vì "chỉnh mò" không?',
+      'Tôi có phối hợp QC/bảo trì xác định nhân tố ảnh hưởng (nhiệt khuôn, độ ẩm hạt) không?',
+      'Khuôn có được kiểm soát (vệ sinh, sửa chữa, tồn trữ) và có hồ sơ quản lý khuôn không?',
+      'Khuôn có được mã hóa/quét và quản lý vị trí trong kho khuôn rõ ràng không?',
+      'Tôi có quy định khi nào cần sửa khuôn (mòn/ăn mòn) dựa trên dữ liệu chất lượng không?',
+      'Sau khi sửa khuôn, tôi có yêu cầu chạy thử và cập nhật hồ sơ không?',
+      'Tôi có hỗ trợ vận hành hiểu và áp đúng thông số trên WI không?',
+      'Tôi có khảo sát ảnh hưởng môi trường (độ ẩm xưởng với hạt hút ẩm) khi lập quy trình không?',
+      'Tài liệu kỹ thuật có được kiểm soát phiên bản tránh lẫn cũ/mới không?',
+      'Bài học kinh nghiệm sau sự cố/cải tiến thành công có được ghi lại không?',
+      'Tôi có hướng dẫn vận hành nhận biết nguy hiểm khi tự chỉnh thông số không?',
+      'Khi khách thay đổi bản vẽ/yêu cầu, tôi có quy trình cập nhật và thông báo không?'
+    ]
+  },
+  G: {
+    id: 'G',
+    name: '[G] Quản lý – nhân sự – mua hàng',
+    type: 'self',
+    questions: [
+      'Chính sách chất lượng có được công bố phổ biến đến mọi người không?',
+      'Mục tiêu chất lượng năm có cụ thể, đo được và phân bổ tới từng bộ phận không?',
+      'Kết quả mục tiêu có được theo dõi định kỳ và truyền thông lại không?',
+      'Review lãnh đạo (9.3) có họp định kỳ với đủ đầu vào không?',
+      'Quyết định/hành động từ review có được triển khai và theo dõi không?',
+      'Sơ đồ tổ chức/phân công trách nhiệm có rõ ràng và cập nhật không?',
+      'Mô tả công việc có đủ cho từng vị trí và xác định năng lực yêu cầu không?',
+      'Kế hoạch đào tạo năm có được lập từ nhu cầu năng lực và thực hiện không?',
+      'Hồ sơ đào tạo/năng lực (xe nâng, hàn, QC) có được lưu trữ đầy đủ không?',
+      'Đánh giá nhân viên định kỳ có gắn với mục tiêu chất lượng không?',
+      'Đơn mua hàng có nêu rõ yêu cầu (chủng loại, chất lượng, COA) cho nhà cung cấp không?',
+      'Nhà cung cấp nguyên liệu có được lựa chọn đánh giá theo tiêu chí rõ ràng không?',
+      'Có danh sách nhà cung cấp được duyệt và đánh giá lại định kỳ không?',
+      'Khi nhà cung cấp giao chậm/lỗi, có quy trình xử lý và khắc phục không?',
+      'Hợp đồng/đơn hàng có được rà soát yêu cầu trước khi chấp nhận không?',
+      'Thay đổi yêu cầu có được xử lý và ghi hồ sơ kịp thời không?',
+      'Tôi có tham gia đánh giá rủi ro/cơ hội định kỳ không?',
+      'Kiến thức tổ chức (kinh nghiệm, bài học) có được chia sẻ/lưu trữ không?',
+      'Truyền thông nội bộ (bảng tin, họp) có cập nhật chất lượng/an toàn không?',
+      'Có quy trình quản lý hồ sơ (phân loại, thời hạn lưu, hủy) đúng không?',
+      'Dữ liệu/bản vẽ/hồ sơ khách có được bảo mật theo quy định không?',
+      'Tôi có chủ động đề xuất nguồn lực (người/máy/ngân sách) để đạt mục tiêu không?'
+    ]
+  },
+  H: {
+    id: 'H',
+    name: '[H] Bán hàng & khách hàng',
+    type: 'self',
+    questions: [
+      'Yêu cầu khách (đơn hàng, thông số, bao bì, giao hàng) có được rà soát trước khi xác nhận không?',
+      'Thay đổi từ khách có được cập nhật và thông báo các bộ phận liên quan không?',
+      'Tôi có giữ hồ sơ liên lạc/yêu cầu khách đầy đủ không?',
+      'Đơn hàng có được theo dõi đến khi giao đúng hạn không?',
+      'Khiếu nại khách có được tiếp nhận chính thức, phân loại và chuyển QA xử lý không?',
+      'Kết quả xử lý khiếu nại có được phản hồi khách và lưu hồ sơ không?',
+      'Tôi có khảo sát sự hài lòng khách định kỳ và phân tích kết quả không?',
+      'Thông tin khách, giá, hồ sơ có được bảo mật không?',
+      'Tôi có thông báo sớm cho sản xuất về nhu cầu/đơn quan trọng không?',
+      'Yêu cầu đặc biệt (PPAP, chứng nhận, audit khách) có được chuẩn bị phối hợp không?',
+      'Hồ sơ giao hàng (phiếu giao, COA nếu khách yêu cầu) có đầy đủ không?',
+      'Khi có rủi ro trễ giao, tôi có chủ động báo khách sớm không?',
+      'Tôi có hỗ trợ kỹ thuật cho khách (tư vấn khuôn/vật liệu) khi cần không?',
+      'Hàng trả/từ chối từ khách có được phân tích nguyên nhân và phản hồi không?',
+      'Tôi có lưu lịch sử khách để phục vụ tốt hơn không?'
+    ]
+  },
+  'kho-mh': {
+    id: 'kho-mh',
+    name: '[Kho → Mua hàng]',
+    type: 'cross',
+    questions: [
+      'Nguyên liệu có về đúng hạn theo kế hoạch không?',
+      'Nguyên liệu về có đúng loại/màu/lô như yêu cầu không?',
+      'Chứng từ/COA đi kèm có đầy đủ cho mỗi lô hàng không?',
+      'Khi nhà cung cấp giao hàng hỏng, tôi có được bộ phận mua thông báo và xử lý rõ ràng không?',
+      'Khi tôi đề xuất thay đổi đơn hàng, mua hàng có cập nhật kịp không?',
+      'Vật tư phụ (thùng, bao bì, pallet) có được cấp đủ không?',
+      'Chất lượng lô hàng về có ổn định (ít phế/ẩm khi nhập) không?',
+      'Khi sắp thiếu nguyên liệu, tôi có được cảnh báo trước để chủ động không?'
+    ]
+  },
+  'sx-bt': {
+    id: 'sx-bt',
+    name: '[Sản xuất → Bảo trì]',
+    type: 'cross',
+    questions: [
+      'Máy hỏng có được sửa kịp thời trong ngày không?',
+      'Khi tôi báo sự cố, bảo trì có đến nhanh không?',
+      'Sửa xong có bàn giao rõ và kiểm tra lại cùng tôi không?',
+      'Thời gian dừng do máy có xu hướng giảm dần không?',
+      'Bảo trì có hướng dẫn tôi cách phòng tránh hư hỏng không?',
+      'Phụ tùng thay có đúng chủng loại không?',
+      'Lịch bảo trì (PM) có được thông báo để tôi chuẩn bị trước không?',
+      'Sau khi bảo trì, khu vực có được dọn sạch không?'
+    ]
+  },
+  'sx-kt': {
+    id: 'sx-kt',
+    name: '[Sản xuất → Kỹ thuật]',
+    type: 'cross',
+    questions: [
+      'WI/tấm thông số có rõ ràng và dễ làm theo không?',
+      'Thông số kỹ thuật cho có hợp lý (ít lỗi khi chạy) không?',
+      'Khi gặp lỗi, kỹ thuật có hỗ trợ nhanh không?',
+      'Thay đổi thông số có được thông báo/hướng dẫn kịp không?',
+      'Khuôn có được duy trì tốt (ít lỗi do khuôn) không?',
+      'Khi đổi khuôn, kỹ thuật có hỗ trợ thuận lợi theo quy trình không?',
+      'Sản phẩm mới có được chuẩn bị chạy thử tốt trước khi bàn giao không?',
+      'Kỹ thuật có lắng nghe phản hồi của công nhân không?'
+    ]
+  },
+  'sx-kho': {
+    id: 'sx-kho',
+    name: '[Sản xuất → Kho]',
+    type: 'cross',
+    questions: [
+      'Tôi có phải chờ thiếu nguyên liệu trong ca không?',
+      'Hạt kho cấp có đúng loại/màu/lô không?',
+      'Phiếu cấp liệu có đúng và giao kịp thời không?',
+      'Khu vực nhận liệu có gọn gàng (5S) không?',
+      'Khi thiếu liệu, kho có báo sớm không?',
+      'Phế liệu thu gom có được bàn giao đúng định kỳ không?',
+      'Thành phẩm nhập kho có đúng/đồng bộ không?',
+      'Kho khuôn/dụng cụ có cho mượn đủ và đúng loại không?'
+    ]
+  },
+  'qc-sx': {
+    id: 'qc-sx',
+    name: '[QC → Sản xuất]',
+    type: 'cross',
+    questions: [
+      'Sản xuất có tuân thủ thông số/điều kiện theo WI không?',
+      'Khi QC báo lô bất thường, sản xuất có phản hồi nhanh không?',
+      'Hàng không đạt có được để riêng/dán nhãn đúng không?',
+      'Sản phẩm đầu tiên sau đổi khuôn có chờ QC xác nhận không?',
+      'Ghi chép tự kiểm tra của sản xuất có đầy đủ/trung thực không?',
+      'Tình trạng che giấu phế có giảm không?',
+      'Khi phân tích nguyên nhân cùng QC, sản xuất có hợp tác tốt không?',
+      'Sản xuất có tiếp nhận góp ý của QC tích cực không?'
+    ]
+  },
+  'tc-ehs': {
+    id: 'tc-ehs',
+    name: '[Toàn công ty → EHS]',
+    type: 'cross',
+    questions: [
+      'Khu vực làm việc có an toàn (che chắn đủ, không rò rỉ) không?',
+      'PPE có được cấp đủ và đúng chủng loại không?',
+      'Lối thoát hiểm có luôn thông thoáng không?',
+      'Có tổ chức diễn tập phòng cháy định kỳ không?',
+      'Hóa chất/CTNH có được quản lý và dán nhãn đúng không?',
+      'Điều kiện lao động (bụi, tiếng ồn, chiếu sáng, nhiệt) có đạt không?',
+      'Sự cố an toàn có được điều tra và cải thiện không?',
+      'Đào tạo/chỉ dẫn an toàn có đầy đủ, thường xuyên không?'
+    ]
+  }
+};
+
+// STATE
+let currentQuestionnaire = null;
+let currentAnswers = {};
+let currentEvidence = {};
+
+// INIT
+document.addEventListener('DOMContentLoaded', () => {
+  loadDraft();
+  renderHistory();
+  setupNav();
+  setupScroll();
+});
+
+// NAVIGATION
+function setupNav() {
+  document.querySelectorAll('.nav-sticky button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const step = btn.dataset.step;
+      goToStep(parseInt(step));
+    });
+  });
+}
+
+function goToStep(step) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step' + step).classList.add('active');
+  document.querySelectorAll('.nav-sticky button').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.step) === step);
+  });
+  if (step === 2 && currentQuestionnaire) renderQuestions();
+  if (step === 4) renderHistory();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('self-tab').classList.toggle('hidden', tab !== 'self');
+  document.getElementById('cross-tab').classList.toggle('hidden', tab !== 'cross');
+  document.getElementById('selected-info').classList.add('hidden');
+  document.querySelectorAll('.role-btn, .pair-btn').forEach(b => b.classList.remove('selected'));
+  currentQuestionnaire = null;
+}
+
+// SELECTION
+function selectRole(role) {
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelector('.role-btn[data-role="' + role + '"]').classList.add('selected');
+  currentQuestionnaire = questionnaires[role];
+  showSelectedInfo();
+}
+
+function selectPair(pair) {
+  document.querySelectorAll('.pair-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelector('.pair-btn[data-pair="' + pair + '"]').classList.add('selected');
+  currentQuestionnaire = questionnaires[pair];
+  showSelectedInfo();
+}
+
+function showSelectedInfo() {
+  if (!currentQuestionnaire) return;
+  document.getElementById('selected-name').textContent = currentQuestionnaire.name;
+  document.getElementById('selected-count').textContent = currentQuestionnaire.questions.length;
+  document.getElementById('selected-info').classList.remove('hidden');
+}
+
+// RENDER QUESTIONS
+function renderQuestions() {
+  if (!currentQuestionnaire) return;
+  const container = document.getElementById('questions-container');
+  container.innerHTML = '';
+  document.getElementById('questionnaire-title').textContent = currentQuestionnaire.name;
+  
+  currentQuestionnaire.questions.forEach((q, idx) => {
+    const item = document.createElement('div');
+    item.className = 'question-item';
+    const ans = currentAnswers[idx] || '';
+    const evi = currentEvidence[idx] || '';
+    item.innerHTML = '<label>' + (idx + 1) + '. ' + escapeHtml(q) + '</label>' +
+      '<select data-idx="' + idx + '" onchange="updateAnswer(' + idx + ', this.value)">' +
+      '<option value="" ' + (ans === '' ? 'selected' : '') + '>— Chọn mức độ —</option>' +
+      '<option value="dat" ' + (ans === 'dat' ? 'selected' : '') + '>✓ Đạt (2đ)</option>' +
+      '<option value="motphan" ' + (ans === 'motphan' ? 'selected' : '') + '>~ Một phần (1đ)</option>' +
+      '<option value="chua" ' + (ans === 'chua' ? 'selected' : '') + '>✗ Chưa đạt (0đ)</option>' +
+      '<option value="na" ' + (ans === 'na' ? 'selected' : '') + '>— Không áp dụng</option>' +
+      '</select>' +
+      '<input type="text" data-idx="' + idx + '" value="' + escapeHtml(evi) + '" placeholder="Bằng chứng (1 dòng, tùy chọn)" onchange="updateEvidence(' + idx + ', this.value)">' +
+      '<div class="print-check-boxes"><div class="check-row">' +
+      '<span><span class="check-box"></span> Đạt</span>' +
+      '<span><span class="check-box"></span> Một phần</span>' +
+      '<span><span class="check-box"></span> Chưa đạt</span>' +
+      '<span><span class="check-box"></span> KNA</span>' +
+      '</div></div>';
+    container.appendChild(item);
+  });
+  updateProgress();
+}
+
+function updateAnswer(idx, value) {
+  if (value === '') delete currentAnswers[idx];
+  else currentAnswers[idx] = value;
+  updateProgress();
+  saveDraft();
+}
+
+function updateEvidence(idx, value) {
+  if (value === '') delete currentEvidence[idx];
+  else currentEvidence[idx] = value;
+  saveDraft();
+}
+
+function updateProgress() {
+  const total = currentQuestionnaire.questions.length;
+  const answered = Object.keys(currentAnswers).length;
+  const pct = Math.round((answered / total) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = pct + '%';
+}
+
+// SCORING
+function calculateScore() {
+  const answered = Object.keys(currentAnswers).filter(k => currentAnswers[k] !== 'na').length;
+  if (answered === 0) {
+    alert('Vui lòng trả lời ít nhất 1 câu (không tính "Không áp dụng").');
+    return;
+  }
+  
+  let totalPoints = 0;
+  let dat = 0, motphan = 0, chua = 0, na = 0;
+  
+  Object.values(currentAnswers).forEach(ans => {
+    if (ans === 'dat') { totalPoints += 2; dat++; }
+    else if (ans === 'motphan') { totalPoints += 1; motphan++; }
+    else if (ans === 'chua') { chua++; }
+    else if (ans === 'na') { na++; }
+  });
+  
+  const maxPoints = answered * 2;
+  const percentage = (totalPoints / maxPoints * 100).toFixed(1);
+  
+  document.getElementById('result-questionnaire').textContent = currentQuestionnaire.name;
+  document.getElementById('result-respondent').textContent = document.getElementById('respondent-name').value || 'Chưa điền tên';
+  document.getElementById('result-date').textContent = new Date().toLocaleString('vi-VN');
+  
+  const badge = document.getElementById('result-badge');
+  badge.textContent = percentage + '%';
+  badge.className = 'result-badge ' + (percentage >= 90 ? 'result-good' : percentage >= 70 ? 'result-warning' : 'result-danger');
+  
+  document.getElementById('stat-dat').textContent = dat;
+  document.getElementById('stat-motphan').textContent = motphan;
+  document.getElementById('stat-chua').textContent = chua;
+  document.getElementById('stat-apdung').textContent = answered;
+  
+  const weaknesses = [];
+  currentQuestionnaire.questions.forEach((q, idx) => {
+    const ans = currentAnswers[idx];
+    if (ans === 'chua') weaknesses.push({ q, level: 'Chưa đạt' });
+    else if (ans === 'motphan') weaknesses.push({ q, level: 'Một phần' });
+  });
+  
+  const list = document.getElementById('weakness-list');
+  list.innerHTML = '';
+  if (weaknesses.length === 0) {
+    list.innerHTML = '<li style="color:var(--success);">✓ Không có điểm yếu — Xuất sắc!</li>';
+  } else {
+    weaknesses.forEach(w => {
+      const li = document.createElement('li');
+      li.className = 'weakness-item' + (w.level === 'Một phần' ? ' partial' : '');
+      li.innerHTML = '<strong>[' + w.level + ']</strong> ' + escapeHtml(w.q);
+      list.appendChild(li);
+    });
+  }
+  
+  goToStep(3);
+}
+
+// STORAGE
+function saveDraft() {
+  if (!currentQuestionnaire) return;
+  localStorage.setItem('iso-selfaudit-response-v1', JSON.stringify({
+    questionnaireId: currentQuestionnaire.id,
+    answers: currentAnswers,
+    evidence: currentEvidence,
+    respondent: document.getElementById('respondent-name').value
+  }));
+}
+
+function loadDraft() {
+  const draft = localStorage.getItem('iso-selfaudit-response-v1');
+  if (draft) {
+    const data = JSON.parse(draft);
+    const q = questionnaires[data.questionnaireId];
+    if (q) {
+      currentQuestionnaire = q;
+      currentAnswers = data.answers || {};
+      currentEvidence = data.evidence || {};
+      document.getElementById('respondent-name').value = data.respondent || '';
+      showSelectedInfo();
+    }
+  }
+}
+
+function saveResult() {
+  const history = JSON.parse(localStorage.getItem('iso-selfaudit-history-v1') || '[]');
+  const answered = Object.keys(currentAnswers).filter(k => currentAnswers[k] !== 'na').length;
+  if (answered === 0) {
+    alert('Chưa có dữ liệu để lưu. Vui lòng trả lời ít nhất 1 câu.');
+    return;
+  }
+  
+  let totalPoints = 0;
+  Object.values(currentAnswers).forEach(ans => {
+    if (ans === 'dat') totalPoints += 2;
+    else if (ans === 'motphan') totalPoints += 1;
+  });
+  const percentage = (totalPoints / (answered * 2) * 100).toFixed(1);
+  
+  history.unshift({
+    date: new Date().toISOString(),
+    respondent: document.getElementById('respondent-name').value || 'Ẩn danh',
+    questionnaire: currentQuestionnaire.name,
+    percentage: percentage
+  });
+  
+  if (history.length > 100) history.length = 100;
+  localStorage.setItem('iso-selfaudit-history-v1', JSON.stringify(history));
+  localStorage.removeItem('iso-selfaudit-response-v1');
+  
+  alert('✓ Đã lưu phiếu vào lịch sử!');
+  goToStep(4);
+}
+
+function renderHistory() {
+  const history = JSON.parse(localStorage.getItem('iso-selfaudit-history-v1') || '[]');
+  const container = document.getElementById('history-container');
+  const clearBtn = document.getElementById('clear-history-btn');
+  
+  if (history.length === 0) {
+    container.innerHTML = '<p style="color:var(--text-muted);">Chưa có phiếu nào được lưu.</p>';
+    clearBtn.style.display = 'none';
+    return;
+  }
+  
+  clearBtn.style.display = 'inline-flex';
+  let html = '<table class="history-table"><tr><th>Ngày</th><th>Tên</th><th>Loại phiếu</th><th>%</th><th>Thao tác</th></tr>';
+  history.forEach((item, idx) => {
+    const date = new Date(item.date).toLocaleString('vi-VN');
+    const pctClass = item.percentage >= 90 ? 'color:var(--success)' : item.percentage >= 70 ? 'color:var(--warning)' : 'color:var(--danger)';
+    html += '<tr><td>' + escapeHtml(date) + '</td><td>' + escapeHtml(item.respondent) + '</td><td>' + escapeHtml(item.questionnaire) + '</td><td style="' + pctClass + ';font-weight:bold;">' + item.percentage + '%</td><td>' +
+      '<button class="btn btn-secondary" style="padding:6px 12px;font-size:0.85rem;" onclick="loadHistoryItem(' + idx + ')">Xem lại</button> ' +
+      '<button class="btn btn-danger" style="padding:6px 12px;font-size:0.85rem;" onclick="deleteHistoryItem(' + idx + ')">Xóa</button>' +
+      '</td></tr>';
+  });
+  html += '</table>';
+  container.innerHTML = html;
+}
+
+function loadHistoryItem(idx) {
+  const history = JSON.parse(localStorage.getItem('iso-selfaudit-history-v1') || '[]');
+  const item = history[idx];
+  alert('Phiếu đã lưu:\n\nNgày: ' + new Date(item.date).toLocaleString('vi-VN') + '\nTên: ' + item.respondent + '\nPhiếu: ' + item.questionnaire + '\nKết quả: ' + item.percentage + '%\n\n(Lưu ý: Chi tiết câu trả lời không được lưu để tiết kiệm bộ nhớ)');
+}
+
+function deleteHistoryItem(idx) {
+  if (!confirm('Xác nhận xóa phiếu này?')) return;
+  const history = JSON.parse(localStorage.getItem('iso-selfaudit-history-v1') || '[]');
+  history.splice(idx, 1);
+  localStorage.setItem('iso-selfaudit-history-v1', JSON.stringify(history));
+  renderHistory();
+}
+
+function clearHistory() {
+  if (!confirm('XÁC NHẬN XÓA TẤT CẢ LỊCH SỬ? Hành động này không thể hoàn tác.')) return;
+  localStorage.removeItem('iso-selfaudit-history-v1');
+  renderHistory();
+}
+
+function printResult() {
+  window.print();
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function setupScroll() {
+  window.addEventListener('scroll', () => {
+    const btn = document.getElementById('backToTop');
+    btn.classList.toggle('visible', window.scrollY > 500);
+  });
+}
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>7 QC Tools — Công cụ quản lý chất lượng</title>
+<style>
+:root {
+  --navy-dark: #0a1628;
+  --navy: #122442;
+  --amber: #d97706;
+  --amber-light: #fbbf24;
+  --bg: #f8fafc;
+  --white: #ffffff;
+  --text: #1e293b;
+  --text-light: #64748b;
+  --border: #e2e8f0;
+  --success: #16a34a;
+  --error: #dc2626;
+  --warning: #ea580c;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+}
+.nav {
+  position: sticky;
+  top: 0;
+  background: var(--navy-dark);
+  padding: 0.75rem 1rem;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+.nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  list-style: none;
+  max-width: 1200px;
+  margin: 0 auto;
+  justify-content: center;
+}
+.nav a {
+  color: var(--white);
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+.nav a:hover, .nav a.active { background: var(--amber); }
+.hero {
+  background: linear-gradient(135deg, var(--navy-dark), var(--navy));
+  color: var(--white);
+  padding: 3rem 1rem;
+  text-align: center;
+}
+.hero h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+.hero p { font-size: 1.1rem; opacity: 0.9; max-width: 800px; margin: 0 auto; }
+section {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  scroll-margin-top: 70px;
+}
+h2 {
+  color: var(--navy-dark);
+  border-bottom: 3px solid var(--amber);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+h3 { color: var(--navy); margin: 1.5rem 0 1rem; font-size: 1.2rem; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  background: var(--white);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+th, td { border: 1px solid var(--border); padding: 0.75rem; text-align: left; }
+th { background: var(--navy); color: var(--white); }
+tr:nth-child(even) { background: #f1f5f9; }
+.card {
+  background: var(--white);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border-left: 4px solid var(--amber);
+}
+.tool-section {
+  background: var(--white);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.tool-section h4 { color: var(--navy-dark); margin-bottom: 1rem; font-size: 1.1rem; }
+textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.9rem;
+  resize: vertical;
+}
+input[type="number"], input[type="text"] {
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  width: 100%;
+}
+button {
+  background: var(--amber);
+  color: var(--white);
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin: 0.5rem 0.5rem 0.5rem 0;
+  transition: background 0.2s;
+}
+button:hover { background: #b45309; }
+button.secondary { background: var(--navy); }
+button.secondary:hover { background: #1e3a5f; }
+.svg-container {
+  width: 100%;
+  overflow-x: auto;
+  margin: 1rem 0;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1rem;
+}
+svg { max-width: 100%; height: auto; }
+.strat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.strat-grid .header {
+  background: var(--navy);
+  color: var(--white);
+  padding: 0.5rem;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 4px;
+}
+.strat-grid input { text-align: center; font-weight: bold; }
+.strat-grid .highlight { background: #fecaca !important; border: 2px solid var(--error); }
+.quiz-question {
+  background: var(--white);
+  padding: 1.5rem;
+  margin: 1rem 0;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.quiz-question h4 { color: var(--navy-dark); margin-bottom: 1rem; }
+.quiz-options label {
+  display: block;
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  background: #f1f5f9;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.quiz-options label:hover { background: #e2e8f0; }
+.quiz-options input[type="radio"] { margin-right: 0.75rem; }
+.quiz-options.correct { background: #dcfce7 !important; border: 2px solid var(--success); }
+.quiz-options.incorrect { background: #fee2e2 !important; border: 2px solid var(--error); }
+.quiz-feedback {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  display: none;
+}
+.quiz-feedback.show { display: block; }
+.quiz-feedback.correct { background: #dcfce7; color: #166534; }
+.quiz-feedback.incorrect { background: #fee2e2; color: #991b1b; }
+.quiz-result {
+  background: var(--navy-dark);
+  color: var(--white);
+  padding: 1.5rem;
+  border-radius: 8px;
+  text-align: center;
+  margin: 1.5rem 0;
+}
+.quiz-result.pass { background: var(--success); }
+.quiz-result.fail { background: var(--error); }
+footer {
+  background: var(--navy-dark);
+  color: var(--white);
+  text-align: center;
+  padding: 2rem 1rem;
+  margin-top: 2rem;
+}
+.back-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: var(--amber);
+  color: var(--white);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.back-to-top.visible { opacity: 1; }
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s, transform 0.6s;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+@media (max-width: 768px) {
+  .nav ul { flex-direction: column; align-items: center; }
+  .hero h1 { font-size: 1.5rem; }
+  .strat-grid { grid-template-columns: repeat(2, 1fr); }
+  table { font-size: 0.85rem; }
+  th, td { padding: 0.5rem; }
+}
+@media print {
+  .nav, .back-to-top, button { display: none !important; }
+  section { page-break-inside: avoid; }
+  body { background: var(--white); }
+  .card, .tool-section { box-shadow: none; border: 1px solid #ccc; }
+}
+.info-box {
+  background: #eff6ff;
+  border-left: 4px solid #3b82f6;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 0 4px 4px 0;
+}
+.info-box.warning { background: #fffbeb; border-left-color: var(--amber); }
+.info-box.danger { background: #fef2f2; border-left-color: var(--error); }
+.stats-display {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+.stat-item {
+  background: #f1f5f9;
+  padding: 0.75rem;
+  border-radius: 4px;
+  text-align: center;
+}
+.stat-item .label { font-size: 0.8rem; color: var(--text-light); }
+.stat-item .value { font-size: 1.2rem; font-weight: bold; color: var(--navy-dark); }
+</style>
+</head>
+<body>
+<nav class="nav" id="nav">
+  <ul>
+    <li><a href="#tong-quan">Tổng quan</a></li>
+    <li><a href="#7-cong-cu">7 công cụ</a></li>
+    <li><a href="#quy-trinh">Quy trình</a></li>
+    <li><a href="#histogram-tool">Histogram</a></li>
+    <li><a href="#scatter-tool">Scatter</a></li>
+    <li><a href="#strat-tool">Stratification</a></li>
+    <li><a href="#check-tool">Check Sheet</a></li>
+    <li><a href="#trac-nghiem">Trắc nghiệm</a></li>
+  </ul>
+</nav>
+<header class="hero">
+  <h1>7 QC Tools — Công cụ quản lý chất lượng</h1>
+  <p>Ishikawa · ~80% vấn đề chất lượng giải quyết bằng 7 công cụ này · dữ liệu thay vì cảm tính</p>
+</header>
+<section id="tong-quan" class="reveal">
+  <h2>Tổng quan 7 QC Tools</h2>
+  <div class="card">
+    <p><strong>7 QC Tools</strong> (7 công cụ kiểm soát chất lượng) do tiến sĩ <strong>Kaoru Ishikawa</strong> tổng hợp và phổ biến vào những năm 1960. Đây là bộ công cụ thống kê cơ bản giúp giải quyết khoảng <strong>80% vấn đề chất lượng</strong> trong sản xuất.</p>
+    <p style="margin-top: 0.75rem;">Triết lý cốt lõi: <em>"Nói chuyện bằng số liệu, không phải bằng cảm tính."</em></p>
+  </div>
+  <h3>Bảng tổng quan 7 công cụ</h3>
+  <table>
+    <thead>
+      <tr><th>Công cụ</th><th>Vai trò</th><th>Câu hỏi nó trả lời</th><th>Ví dụ ép phun</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Check Sheet</strong></td><td>Thu thập & chuẩn hóa dữ liệu</td><td>Có bao nhiêu lỗi, loại nào?</td><td>Phiếu đếm phế theo ca/máy/loại</td></tr>
+      <tr><td><strong>Pareto</strong></td><td>Xếp hạng nguyên nhân 80/20</td><td>Vấn đề nào lớn nhất?</td><td>Phế bong bóng khí 52%</td></tr>
+      <tr><td><strong>Fishbone</strong></td><td>Tìm nguyên nhân tiềm năng</td><td>Vì sao xảy ra?</td><td>6M: độ ẩm hạt, nhiệt khuôn…</td></tr>
+      <tr><td><strong>Histogram</strong></td><td>Phân bố tần suất</td><td>Biến động ra sao?</td><td>50 phép đo đường kính lỗ 10±0.2</td></tr>
+      <tr><td><strong>Scatter</strong></td><td>Quan hệ 2 biến</td><td>A có liên quan B?</td><td>Nhiệt độ sấy ↔ độ ẩm hạt</td></tr>
+      <tr><td><strong>Control Chart</strong></td><td>Giám sát theo thời gian</td><td>Quá trình ổn định không?</td><td>X̄-R 5 sp/30 phút</td></tr>
+      <tr><td><strong>Stratification</strong></td><td>Phân tầng dữ liệu</td><td>Tập trung ca/máy/lô nào?</td><td>Phế chia theo ca 1/2/3</td></tr>
+    </tbody>
+  </table>
+  <div class="info-box warning">
+    <strong>Ghi chú:</strong> Một số tài liệu thay Stratification bằng Flow Chart (lưu đồ). Điểm chung của cả 7 công cụ: <strong>nói chuyện bằng số liệu</strong>, không phải cảm tính.
+  </div>
+</section>
+<section id="7-cong-cu" class="reveal">
+  <h2>1. Check Sheet — Phiếu kiểm tra</h2>
+  <div class="card">
+    <p><strong>Check Sheet</strong> là phiếu đếm đơn giản có cấu trúc, dùng để ghi dữ liệu ngay tại nguồn phát sinh. Đây là công cụ ĐẦU TIÊN trong mọi phân tích chất lượng — không có dữ liệu tốt, mọi phân tích sau đều vô nghĩa.</p>
+  </div>
+  <h3>Ví dụ: Phiếu đếm phế 1 ca</h3>
+  <table>
+    <thead><tr><th>Loại lỗi</th><th>Ca 1</th><th>Ca 2</th><th>Ca 3</th><th>Tổng</th></tr></thead>
+    <tbody>
+      <tr><td>Bong bóng khí</td><td>////// //</td><td>//////// /</td><td>/////</td><td><strong>21</strong></td></tr>
+      <tr><td>Cháy (burn)</td><td>//</td><td>///</td><td>/</td><td><strong>6</strong></td></tr>
+      <tr><td>Thiếu nhựa</td><td>/</td><td>//</td><td>/</td><td><strong>4</strong></td></tr>
+      <tr><td><strong>Tổng ca</strong></td><td><strong>10</strong></td><td><strong>14</strong></td><td><strong>7</strong></td><td><strong>31</strong></td></tr>
+    </tbody>
+  </table>
+  <h3>Lưu ý thiết kế Check Sheet</h3>
+  <ul style="margin: 1rem 0 1rem 1.5rem;">
+    <li><strong>Ít mục:</strong> Chỉ đếm những lỗi quan trọng (tối đa 5-7 loại)</li>
+    <li><strong>Ghi liền tại máy:</strong> Không nhớ rồi ghi sau — sai lệch ngay</li>
+    <li><strong>Kèm thông tin:</strong> Ca, giờ, máy, người vận hành, lô nguyên liệu</li>
+    <li><strong>Tick đơn giản:</strong> Dùng gạch (////) để đếm nhanh, ít sai</li>
+  </ul>
+</section>
+<section class="reveal">
+  <h2>2. Pareto & 3. Fishbone (tóm tắt)</h2>
+  <h3>Pareto — Nguyên tắc 80/20</h3>
+  <div class="card">
+    <p>Pareto xếp các loại lỗi/nguyên nhân từ lớn đến nhỏ, vẽ biểu đồ cột + đường tích lũy %. Mục tiêu: <strong>khoanh vùng 20% nguyên nhân gây 80% vấn đề</strong> để ưu tiên xử lý.</p>
+  </div>
+  <div class="info-box">
+    <strong>📊 Xem thực hành:</strong> Biểu đồ Pareto tương tác có trong file <code>6-tools</code> (đã có sẵn trong bộ tài liệu).
+  </div>
+  <h3>Fishbone — Xương cá / 6M</h3>
+  <div class="card">
+    <p>Fishbone (Ishikawa diagram) liệt kê nguyên nhân tiềm năng theo 6M: <strong>Man (người), Machine (máy), Material (nguyên liệu), Method (phương pháp), Measurement (đo lường), Mother Nature (môi trường)</strong>.</p>
+  </div>
+  <div class="info-box">
+    <strong>🐟 Xem thực hành:</strong> Công cụ Fishbone + Why-Why có trong file <code>fishbone-whywhy</code> (đã có sẵn trong bộ tài liệu).
+  </div>
+</section>
+<section class="reveal">
+  <h2>4. Histogram — Biểu đồ tần suất</h2>
+  <div class="card">
+    <p><strong>Histogram</strong> là biểu đồ cột thể hiện phân bố tần suất của một đặc tính chất lượng. Nó cho bạn thấy <strong>hình dạng</strong> của quá trình: có đối xứng không? Có nằm trong dung sai không? Có gì bất thường?</p>
+    <p style="margin-top: 0.75rem;"><em>"Histogram là bức ảnh chụp nhanh, Control Chart là đoạn phim theo thời gian."</em></p>
+  </div>
+  <h3>Cách đọc hình dạng Histogram</h3>
+  <table>
+    <thead><tr><th>Hình dạng</th><th>Ý nghĩa</th><th>Hành động</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Chuông cân đối giữa dung sai</strong></td><td>Quá trình tốt, phân bố chuẩn</td><td>Duy trì, giám sát bằng Control Chart</td></tr>
+      <tr><td><strong>Lệch tâm (dịch 1 phía)</strong></td><td>Trung bình lệch so với tâm dung sai</td><td>Điều chỉnh mean (liên hệ Cpk)</td></tr>
+      <tr><td><strong>Dẹt/rộng tràn dung sai</strong></td><td>Biến động quá lớn (σ cao)</td><td>Giảm biến động: khuôn, máy, nguyên liệu</td></tr>
+      <tr><td><strong>2 đỉnh (hai ngọn) ⚠️</strong></td><td>Trộn 2 nguồn (2 máy/ca/khuôn lòng)</td><td>Tách dữ liệu — không đồng nhất!</td></tr>
+      <tr><td><strong>Nhọn lẻ một phía</strong></td><td>Dữ liệu đã bị lọc phế</td><td>Kiểm tra quy trình ghi nhận dữ liệu</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="reveal">
+  <h2>5. Scatter — Biểu đồ tán xạ</h2>
+  <div class="card">
+    <p><strong>Scatter plot</strong> thể hiện mối quan hệ giữa 2 biến số. Mỗi điểm là một cặp giá trị (X, Y). Hình dạng đám mây điểm cho biết có tương quan hay không.</p>
+  </div>
+  <h3>Cách đọc Scatter</h3>
+  <table>
+    <thead><tr><th>Hình dạng</th><th>Kết luận</th><th>Ví dụ</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Chéo lên ↗</strong></td><td>Tương quan thuận (A↑ → B↑)</td><td>Áp suất phun ↑ → khối lượng sp ↑</td></tr>
+      <tr><td><strong>Chéo xuống ↘</strong></td><td>Tương quan nghịch (A↑ → B↓)</td><td>Nhiệt độ sấy ↑ → độ ẩm hạt ↓</td></tr>
+      <tr><td><strong>Đám mây tròn</strong></td><td>Không rõ tương quan</td><td>Độ ẩm không khí ↔ kích thước sp</td></tr>
+    </tbody>
+  </table>
+  <div class="info-box warning">
+    <strong>⚠️ CẢNH BÁO QUAN TRỌNG:</strong> Tương quan ≠ nguyên nhân! Scatter chỉ gợi ý hướng điều tra. Phải dùng Fishbone/Why-Why để xác nhận nguyên nhân thực sự.
+  </div>
+</section>
+<section class="reveal">
+  <h2>6. Control Chart — Biểu đồ kiểm soát</h2>
+  <div class="card">
+    <p><strong>Control Chart</strong> giám sát quá trình theo thời gian thực. Có 2 đường giới hạn: <strong>UCL/LCL = mean ± 3σ</strong>. Điểm vượt ra ngoài UCL/LCL hoặc vi phạm các quy tắc bất thường báo hiệu quá trình mất kiểm soát.</p>
+  </div>
+  <div class="info-box">
+    <strong>📈 Xem thực hành:</strong> Biểu đồ Control Chart (X̄-R) tương tác có trong file <code>spc-cpk</code> (đã có sẵn trong bộ tài liệu).
+  </div>
+</section>
+<section class="reveal">
+  <h2>7. Stratification — Phân tầng</h2>
+  <div class="card">
+    <p><strong>Stratification</strong> là kỹ thuật tách dữ liệu theo các yếu tố (ca, máy, lô nguyên liệu, khuôn…) trước khi phân tích. Giống như dùng <strong>kính lúp</strong> để tìm điểm tập trung vấn đề.</p>
+  </div>
+  <h3>Ví dụ: Phế 6% chung — tưởng ổn?</h3>
+  <p>Khi tách theo ca:</p>
+  <ul style="margin: 0.5rem 0 0.5rem 1.5rem;">
+    <li>Ca 1: phế 2.1%</li>
+    <li><strong>Ca 2: phế 12.3% ⚠️</strong></li>
+    <li>Ca 3: phế 2.8%</li>
+  </ul>
+  <p style="margin-top: 0.5rem;">Khi tách theo máy:</p>
+  <ul style="margin: 0.5rem 0 0.5rem 1.5rem;">
+    <li>IM-01: phế 2.5%</li>
+    <li>IM-02: phế 1.9%</li>
+    <li><strong>IM-03: phế 15.2% ⚠️</strong></li>
+  </ul>
+  <div class="info-box">
+    <strong>💡 Ghi chú:</strong> Stratification thường đi TRƯỚC Pareto — tách xong mới đếm. Nhiều khi tách theo ca/máy là tìm ra ngay nguyên nhân (ví dụ: ca 2 có nhân viên mới, IM-03 khuôn mòn).
+  </div>
+</section>
+<section id="quy-trinh" class="reveal">
+  <h2>Quy trình phối hợp 7 QC Tools</h2>
+  <div class="card">
+    <p>7 công cụ không dùng riêng lẻ — chúng phối hợp theo trình tự logic:</p>
+  </div>
+  <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.5rem 0; align-items: center; justify-content: center;">
+    <div style="background: var(--navy); color: white; padding: 1rem; border-radius: 8px; text-align: center; min-width: 120px;"><strong>1. Check Sheet</strong><br><small>Thu thập</small></div>
+    <span style="font-size: 1.5rem; color: var(--amber);">→</span>
+    <div style="background: var(--navy); color: white; padding: 1rem; border-radius: 8px; text-align: center; min-width: 120px;"><strong>2. Stratification</strong><br><small>Phân tầng</small></div>
+    <span style="font-size: 1.5rem; color: var(--amber);">→</span>
+    <div style="background: var(--navy); color: white; padding: 1rem; border-radius: 8px; text-align: center; min-width: 120px;"><strong>3. Pareto</strong><br><small>Ưu tiên</small></div>
+    <span style="font-size: 1.5rem; color: var(--amber);">→</span>
+    <div style="background: var(--navy); color: white; padding: 1rem; border-radius: 8px; text-align: center; min-width: 120px;"><strong>4. Fishbone</strong><br><small>Tìm gốc rễ</small></div>
+    <span style="font-size: 1.5rem; color: var(--amber);">→</span>
+    <div style="background: var(--navy); color: white; padding: 1rem; border-radius: 8px; text-align: center; min-width: 120px;"><strong>5. Histogram + Scatter</strong><br><small>Kiểm chứng</small></div>
+    <span style="font-size: 1.5rem; color: var(--amber);">→</span>
+    <div style="background: var(--navy); color: white; padding: 1rem; border-radius: 8px; text-align: center; min-width: 120px;"><strong>6. Control Chart</strong><br><small>Giám sát</small></div>
+    <span style="font-size: 1.5rem; color: var(--amber);">→</span>
+    <div style="background: var(--amber); color: white; padding: 1rem; border-radius: 8px; text-align: center; min-width: 120px;"><strong>Kaizen / 8D</strong><br><small>Hành động</small></div>
+  </div>
+  <div class="info-box">
+    <strong>Giải thích:</strong> Check Sheet thu thập dữ liệu (có ghi sẵn yếu tố để phân tầng) → Stratification tách theo ca/máy/lô → Pareto tìm vấn đề lớn nhất → Fishbone/Why-Why tìm gốc rễ → Histogram + Scatter kiểm chứng phân bố và quan hệ → Control Chart giám sát hằng ngày → Kaizen/8D khi có tín hiệu bất thường.
+  </div>
+</section>
+<section class="reveal">
+  <h2>Liên hệ bộ tài liệu</h2>
+  <table>
+    <thead><tr><th>Công cụ</th><th>Đã có trong</th><th>Ghi chú</th></tr></thead>
+    <tbody>
+      <tr><td>Pareto</td><td><code>6-tools</code></td><td>Ôn trong file đó</td></tr>
+      <tr><td>Fishbone / Why-Why</td><td><code>fishbone-whywhy</code></td><td>Ôn trong file đó</td></tr>
+      <tr><td>Control Chart</td><td><code>spc-cpk</code></td><td>Ôn trong file đó</td></tr>
+      <tr><td>Histogram</td><td><strong>File này</strong></td><td>Thực hành tương tác bên dưới</td></tr>
+      <tr><td>Scatter</td><td><strong>File này</strong></td><td>Thực hành tương tác bên dưới</td></tr>
+      <tr><td>Stratification</td><td><strong>File này</strong></td><td>Thực hành tương tác bên dưới</td></tr>
+      <tr><td>Check Sheet</td><td><strong>File này</strong></td><td>Thực hành tương tác bên dưới</td></tr>
+      <tr><td>Toàn bộ trong chu trình</td><td><code>kaizen-pdca</code>, <code>8d</code></td><td>Nguồn dữ liệu cho vòng lặp</td></tr>
+    </tbody>
+  </table>
+  <h3>3 sai lầm thường gặp</h3>
+  <div class="card" style="border-left-color: var(--error);">
+    <ol style="margin: 0.5rem 0 0.5rem 1.5rem;">
+      <li><strong>Vẽ để trang trí báo cáo</strong> — không hành động sau khi phân tích</li>
+      <li><strong>Chỉ dùng 1-2 công cụ</strong> — bỏ qua Check Sheet (dữ liệu rác) và Stratification (không tách tầng)</li>
+      <li><strong>Coi Scatter có quan hệ là đã có nguyên nhân</strong> — tương quan ≠ nhân quả!</li>
+    </ol>
+  </div>
+</section>
+<section id="histogram-tool" class="reveal">
+  <h2>🛠 Công cụ thực hành tương tác</h2>
+  <div class="tool-section">
+    <h4>A) Histogram — Biểu đồ tần suất</h4>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+      <div>
+        <label><strong>Dữ liệu</strong> (tối đa 60 số, mỗi dòng 1 số hoặc cách bằng dấu phẩy/space):</label>
+        <textarea id="hist-data" placeholder="10.01
+10.03
+9.98
+..."></textarea>
+      </div>
+      <div>
+        <label><strong>USL</strong> (giới hạn trên, tùy chọn):</label>
+        <input type="number" id="hist-usl" step="0.01" placeholder="10.2">
+        <label style="margin-top: 0.5rem; display: block;"><strong>LSL</strong> (giới hạn dưới, tùy chọn):</label>
+        <input type="number" id="hist-lsl" step="0.01" placeholder="9.8">
+        <div style="margin-top: 1rem;">
+          <button onclick="drawHistogram()">Vẽ Histogram</button>
+          <button class="secondary" onclick="histogramSample()">⚡ Ví dụ mẫu</button>
+          <button class="secondary" onclick="resetHistogram()">↺ Reset</button>
+        </div>
+      </div>
+    </div>
+    <div id="hist-stats" class="stats-display"></div>
+    <div id="hist-conclusion" class="info-box" style="display: none;"></div>
+    <div id="hist-svg" class="svg-container"></div>
+  </div>
+  <div id="scatter-tool" class="tool-section">
+    <h4>B) Scatter — Biểu đồ tán xạ</h4>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+      <div>
+        <label><strong>Dữ liệu</strong> (tối đa 50 cặp, mỗi dòng "x,y"):</label>
+        <textarea id="scatter-data" placeholder="60,0.30
+80,0.25
+100,0.20
+..."></textarea>
+      </div>
+      <div>
+        <label><strong>Trục X:</strong> <span id="scatter-xlabel">Biến độc lập</span></label><br>
+        <label><strong>Trục Y:</strong> <span id="scatter-ylabel">Biến phụ thuộc</span></label>
+        <div style="margin-top: 1rem;">
+          <button onclick="drawScatter()">Vẽ Scatter</button>
+          <button class="secondary" onclick="scatterSample()">⚡ Ví dụ mẫu</button>
+          <button class="secondary" onclick="resetScatter()">↺ Reset</button>
+        </div>
+      </div>
+    </div>
+    <div id="scatter-conclusion" class="info-box warning" style="display: none;"></div>
+    <div id="scatter-svg" class="svg-container"></div>
+  </div>
+  <div id="strat-tool" class="tool-section">
+    <h4>C) Stratification — Phân tầng</h4>
+    <p>Nhập số phế theo ca và máy để tìm điểm tập trung vấn đề:</p>
+    <div class="strat-grid" id="strat-grid">
+      <div class="header"></div><div class="header">IM-01</div><div class="header">IM-02</div><div class="header">IM-03</div>
+      <div class="header">Ca 1</div><input type="number" id="strat-1-1" value="12" min="0"><input type="number" id="strat-1-2" value="8" min="0"><input type="number" id="strat-1-3" value="30" min="0">
+      <div class="header">Ca 2</div><input type="number" id="strat-2-1" value="15" min="0"><input type="number" id="strat-2-2" value="9" min="0"><input type="number" id="strat-2-3" value="34" min="0">
+      <div class="header">Ca 3</div><input type="number" id="strat-3-1" value="10" min="0"><input type="number" id="strat-3-2" value="7" min="0"><input type="number" id="strat-3-3" value="28" min="0">
+    </div>
+    <div>
+      <button onclick="analyzeStrat()">Phân tích</button>
+      <button class="secondary" onclick="stratSample()">⚡ Ví dụ mẫu</button>
+      <button class="secondary" onclick="resetStrat()">↺ Reset</button>
+    </div>
+    <div id="strat-conclusion" class="info-box" style="display: none; margin-top: 1rem;"></div>
+  </div>
+  <div id="check-tool" class="tool-section">
+    <h4>D) Check Sheet — Phiếu kiểm tra</h4>
+    <p>Nhập số phế theo loại lỗi và ca:</p>
+    <table id="checksheet-table">
+      <thead><tr><th>Loại lỗi</th><th>Ca 1</th><th>Ca 2</th><th>Ca 3</th><th>Tổng</th></tr></thead>
+      <tbody>
+        <tr><td>Bong bóng khí</td><td><input type="number" id="cs-1-1" value="7" min="0"></td><td><input type="number" id="cs-1-2" value="9" min="0"></td><td><input type="number" id="cs-1-3" value="5" min="0"></td><td id="cs-total-1">-</td></tr>
+        <tr><td>Cháy (burn)</td><td><input type="number" id="cs-2-1" value="2" min="0"></td><td><input type="number" id="cs-2-2" value="3" min="0"></td><td><input type="number" id="cs-2-3" value="1" min="0"></td><td id="cs-total-2">-</td></tr>
+        <tr><td>Thiếu nhựa</td><td><input type="number" id="cs-3-1" value="1" min="0"></td><td><input type="number" id="cs-3-2" value="2" min="0"></td><td><input type="number" id="cs-3-3" value="1" min="0"></td><td id="cs-total-3">-</td></tr>
+        <tr><td>Loáng bề mặt</td><td><input type="number" id="cs-4-1" value="0" min="0"></td><td><input type="number" id="cs-4-2" value="1" min="0"></td><td><input type="number" id="cs-4-3" value="1" min="0"></td><td id="cs-total-4">-</td></tr>
+        <tr><td>Khác</td><td><input type="number" id="cs-5-1" value="1" min="0"></td><td><input type="number" id="cs-5-2" value="0" min="0"></td><td><input type="number" id="cs-5-3" value="1" min="0"></td><td id="cs-total-5">-</td></tr>
+        <tr style="font-weight: bold; background: var(--navy); color: white;"><td>Tổng ca</td><td id="cs-shift-1">-</td><td id="cs-shift-2">-</td><td id="cs-shift-3">-</td><td id="cs-grand-total">-</td></tr>
+      </tbody>
+    </table>
+    <div>
+      <button onclick="analyzeCheckSheet()">Tổng hợp</button>
+      <button class="secondary" onclick="checkSheetSample()">⚡ Ví dụ mẫu</button>
+      <button class="secondary" onclick="resetCheckSheet()">↺ Reset</button>
+    </div>
+    <div id="checksheet-conclusion" class="info-box" style="display: none; margin-top: 1rem;"></div>
+  </div>
+  <div style="text-align: center; margin-top: 1.5rem;">
+    <button onclick="window.print()">🖨 In tài liệu</button>
+  </div>
+</section>
+<section id="trac-nghiem" class="reveal">
+  <h2>📝 Trắc nghiệm 7 QC Tools</h2>
+  <p><strong>10 câu hỏi · ≥80% (8/10) để đạt · Chọn 1 đáp án đúng nhất</strong></p>
+  <form id="quiz-form">
+    <div class="quiz-question" data-q="1">
+      <h4>1. Bộ 7 QC Tools do ai tổng hợp và phổ biến?</h4>
+      <div class="quiz-options">
+        <label><input type="radio" name="q1" value="0"> Henry Ford</label>
+        <label><input type="radio" name="q1" value="1"> Kaoru Ishikawa</label>
+        <label><input type="radio" name="q1" value="2"> Shigeo Shingo</label>
+      </div>
+      <div class="quiz-feedback"></div>
+    </div>
+    <div class="quiz-question" data-q="2">
+      <h4>2. Khoảng bao nhiêu % vấn đề chất lượng có thể xử lý bằng 7 QC Tools?</h4>
+      <div class="quiz-options">
+        <label><input type="radio" name="q2" value="0"> ~20%</label>
+        <label><input type="radio" name="q2" value="1"> ~50%</label>
+        <label><input type="radio" name="q2" value="2"> ~80%</label>
+      </div>
+      <div class="quiz-feedback"></div>
+    </div>
+    <div class="quiz-question" data-q="3">
+      <h4>3. Công cụ nào dùng để thu thập dữ liệu chuẩn hóa ngay tại máy?</h4>
+      <div class="quiz-options">
+        <label><input type="radio" name="q3" value="0"> Check Sheet</label>
+        <label><input type="radio" name="q3" value="1"> Scatter</label>
+        <label><input type="radio" name="q3" value="2"> Stratification</label>
+      </div>
+      <div class="quiz-feedback"></div>
+    </div>
+    <div class="quiz-question" data-q="4">
+      <h4>4. Mục đích chính của Pareto?</h4>
+      <div class="quiz-options">
+        <label><input type="radio" name="q4" value="0"> Vẽ đẹp cho báo cáo</label>
+        <label><input type="radio" name="q4" value="1"> Xếp hạng nguyên nhân để chọn ưu tiên (80/20)</label>
+        <label><input type="radio" name="q4" value="2"> Thay thế Fishbone</label>
+      </div>
+      <div class="quiz-feedback"></div>
+    </div>
+    <div class="quiz-question" data-q="5">
+      <h4>5. Histogram có HAI ĐỈNH nghĩa là gì?</h4>
+      <div class="quiz-options">
+        <label><input type="radio" name="q5" value="0"> Quá trình rất ổn định</label>
+        <label><input type="radio" name="q5" value="1"> Đang trộn 2 nguồn quá trình (2 máy/ca/khuôn)</label>
+        <label><input type="radio" name="q5" value="2"> Dữ liệu quá ít</label>
+      </div>
+      <div class="quiz-feedback"></div>
+    </div>
+    <div class="quiz-question" data-q="6">
+      <h4>6. Histogram lệch tâm về một phía gợi ý điều gì?</h4>
+      <div class="quiz-options">
+        <label><input type="radio" name="q6" value="0"> Trung bình lệch so tâm dung sai — nên trung tâm hóa trước</label>
+        <label><input type="radio" name="q6" value="1"> Quá trình hoàn hảo</label>
+        <label><input type="radio" name="q6" value="2"> Cần tăng cỡ mẫu</label>
+      </div>
+      <div class="quiz-feedback"></div>
+    </div>
+    <div class="quiz-question" data-q="7">
+      <h4>7. Scatter cho thấy tương quan THUẬN nghĩa là?</h4>
+      <div class="quiz-options">
+        <label><input type="radio" name="q7" value="0"> X tăng thì Y tăng — nhưng chưa chứng minh quan hệ nhân quả</label>
+        <label><input type="radio" name="q7" value="1"> X tăng thì Y giảm</label>
+        <label><input type="radio" name="q7" value="2"> Không có liên hệ</label>
+      </div>
+      <div class="quiz-feedback"></div>
+    </div>
+    <div class="quiz-question" data-q="8">
+      <h4>8. Stratification dùng để làm gì?</h4>
+      <div class="quiz-options">
+        <label><input type="radio" name="q8" value="0"> Tách dữ liệu theo ca/máy/lô để tìm điểm tập trung vấn đề</label>
+        <label><input type="radio" name="q8" value="1"> Vẽ biểu đồ tuần tự</label>
+        <label><input type="radio" name="q8" value="2"> Thu thập thô lần đầu</label>
+      </div>
+      <div class="quiz-feedback"></div>
+    </div>
+    <div class="quiz-question" data-q="9">
+      <h4>9. Công cụ nào giám sát quá trình THEO TRÌNH TỰ THỜI GIAN với UCL/LCL = trung bình ± 3σ?</h4>
+      <div class="quiz-options">
+        <label><input type="radio" name="q9" value="0"> Pareto</label>
+        <label><input type="radio" name="q9" value="1"> Control Chart</label>
+        <label><input type="radio" name="q9" value="2"> Histogram</label>
+      </div>
+      <div class="quiz-feedback"></div>
+    </div>
+    <div class="quiz-question" data-q="10">
+      <h4>10. Sau khi Check Sheet thu thập xong, bước kế tiếp trong quy trình phối hợp?</h4>
+      <div class="quiz-options">
+        <label><input type="radio" name="q10" value="0"> Bỏ vào kho lưu trữ</label>
+        <label><input type="radio" name="q10" value="1"> Stratification (tách theo ca/máy/lô) rồi Pareto</label>
+        <label><input type="radio" name="q10" value="2"> Vẽ Scatter ngay</label>
+      </div>
+      <div class="quiz-feedback"></div>
+    </div>
+    <div style="text-align: center; margin-top: 1.5rem;">
+      <button type="button" onclick="gradeQuiz()">Chấm bài</button>
+      <button type="button" class="secondary" onclick="resetQuiz()">Làm lại</button>
+    </div>
+  </form>
+  <div id="quiz-result" class="quiz-result" style="display: none;"></div>
+</section>
+<footer>
+  <p>Tài liệu trình bày — 7 QC Tools trong bộ hồ sơ nhà máy ép phun theo ISO 9001.</p>
+  <p>Ví dụ minh họa. Cập nhật 01/10/2026 · Phiên bản 1.0</p>
+</footer>
+<div class="back-to-top" id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</div>
+<script>
+const SAVE_KEYS = { histogram: 'qct-histogram-v1', scatter: 'qct-scatter-v1', strat: 'qct-strat-v1', checksheet: 'qct-checksheet-v1', quiz: 'qct-quiz-v1' };
+const QUIZ_KEY = [1, 2, 0, 1, 1, 0, 0, 0, 1, 1];
+const QUIZ_EXPLANATIONS = [
+  'Kaoru Ishikawa tổng hợp 7 QC Tools vào những năm 1960.',
+  '7 QC Tools giải quyết khoảng 80% vấn đề chất lượng trong sản xuất.',
+  'Check Sheet là phiếu đếm dùng để thu thập dữ liệu ngay tại nguồn.',
+  'Pareto xếp hạng nguyên nhân theo nguyên tắc 80/20 để ưu tiên xử lý.',
+  '2 đỉnh trong Histogram báo hiệu trộn 2 nguồn quá trình không đồng nhất.',
+  'Lệch tâm nghĩa là trung bình không nằm giữa dung sai — cần điều chỉnh mean.',
+  'Tương quan thuận: X tăng thì Y tăng. Nhưng tương quan ≠ nguyên nhân!',
+  'Stratification tách dữ liệu theo yếu tố (ca/máy/lô) để tìm điểm tập trung.',
+  'Control Chart giám sát theo thời gian với UCL/LCL = mean ± 3σ.',
+  'Quy trình: Check Sheet → Stratification → Pareto → Fishbone → ...'
+];
+function escapeHtml(str) { if (!str) return ''; return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function saveToLocal(key, data) { try { localStorage.setItem(SAVE_KEYS[key], JSON.stringify(data)); } catch(e) {} }
+function loadFromLocal(key) { try { const data = localStorage.getItem(SAVE_KEYS[key]); return data ? JSON.parse(data) : null; } catch(e) { return null; } }
+function parseNumbers(text) { if (!text) return []; return text.split(/[\n,\s]+/).filter(s => s.trim()).map(s => parseFloat(s)).filter(n => !isNaN(n)); }
+function drawHistogram() {
+  const text = document.getElementById('hist-data').value;
+  const data = parseNumbers(text);
+  const usl = parseFloat(document.getElementById('hist-usl').value);
+  const lsl = parseFloat(document.getElementById('hist-lsl').value);
+  if (data.length < 3) { alert('Cần tối thiểu 3 số để vẽ histogram!'); return; }
+  const n = data.length;
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const mean = data.reduce((a,b) => a+b, 0) / n;
+  const variance = data.reduce((a,b) => a + Math.pow(b - mean, 2), 0) / (n - 1);
+  const sigma = Math.sqrt(variance);
+  const numBins = Math.min(10, Math.ceil(Math.sqrt(n)));
+  const binWidth = (max - min) / numBins || 0.01;
+  const bins = new Array(numBins).fill(0);
+  data.forEach(v => { let idx = Math.floor((v - min) / binWidth); if (idx >= numBins) idx = numBins - 1; bins[idx]++; });
+  const container = document.getElementById('hist-svg');
+  const width = 600, height = 300;
+  const padding = { top: 20, right: 30, bottom: 40, left: 50 };
+  const chartW = width - padding.left - padding.right;
+  const chartH = height - padding.top - padding.bottom;
+  const maxCount = Math.max(...bins);
+  const xScale = chartW / numBins;
+  const yScale = maxCount > 0 ? chartH / maxCount : 1;
+  let svg = '<svg viewBox="0 0 ' + width + ' ' + height + '" xmlns="http://www.w3.org/2000/svg">';
+  svg += '<rect width="100%" height="100%" fill="white"/>';
+  svg += '<line x1="' + padding.left + '" y1="' + (padding.top + chartH) + '" x2="' + (padding.left + chartW) + '" y2="' + (padding.top + chartH) + '" stroke="#333" stroke-width="2"/>';
+  svg += '<line x1="' + padding.left + '" y1="' + padding.top + '" x2="' + padding.left + '" y2="' + (padding.top + chartH) + '" stroke="#333" stroke-width="2"/>';
+  const barGap = 2;
+  bins.forEach((count, i) => {
+    const x = padding.left + i * xScale + barGap;
+    const barW = xScale - barGap * 2;
+    const barH = count * yScale;
+    const y = padding.top + chartH - barH;
+    const binCenter = min + (i + 0.5) * binWidth;
+    let fill = '#d97706';
+    if ((usl !== undefined && binCenter > usl) || (lsl !== undefined && binCenter < lsl)) { fill = '#dc2626'; }
+    svg += '<rect x="' + x + '" y="' + y + '" width="' + barW + '" height="' + barH + '" fill="' + fill + '" stroke="#0a1628" stroke-width="1"/>';
+  });
+  if (usl !== undefined) {
+    const xUsl = padding.left + (usl - min) / binWidth * xScale;
+    svg += '<line x1="' + xUsl + '" y1="' + padding.top + '" x2="' + xUsl + '" y2="' + (padding.top + chartH) + '" stroke="#dc2626" stroke-width="2" stroke-dasharray="5,5"/>';
+    svg += '<text x="' + (xUsl + 5) + '" y="' + (padding.top + 15) + '" font-size="11" fill="#dc2626">USL</text>';
+  }
+  if (lsl !== undefined) {
+    const xLsl = padding.left + (lsl - min) / binWidth * xScale;
+    svg += '<line x1="' + xLsl + '" y1="' + padding.top + '" x2="' + xLsl + '" y2="' + (padding.top + chartH) + '" stroke="#dc2626" stroke-width="2" stroke-dasharray="5,5"/>';
+    svg += '<text x="' + (xLsl + 5) + '" y="' + (padding.top + 15) + '" font-size="11" fill="#dc2626">LSL</text>';
+  }
+  svg += '<text x="' + (padding.left + chartW/2) + '" y="' + (height - 5) + '" text-anchor="middle" font-size="12">Giá trị</text>';
+  svg += '<text x="15" y="' + (padding.top + chartH/2) + '" text-anchor="middle" font-size="12" transform="rotate(-90, 15, ' + (padding.top + chartH/2) + ')">Tần suất</text>';
+  svg += '</svg>';
+  container.innerHTML = svg;
+  document.getElementById('hist-stats').innerHTML = '<div class="stat-item"><div class="label">n</div><div class="value">' + n + '</div></div>' + '<div class="stat-item"><div class="label">Min</div><div class="value">' + min.toFixed(3) + '</div></div>' + '<div class="stat-item"><div class="label">Max</div><div class="value">' + max.toFixed(3) + '</div></div>' + '<div class="stat-item"><div class="label">Mean</div><div class="value">' + mean.toFixed(3) + '</div></div>' + '<div class="stat-item"><div class="label">σ (mẫu)</div><div class="value">' + sigma.toFixed(4) + '</div></div>';
+  const conclusion = analyzeHistogramShape(bins, mean, min, max, usl, lsl, binWidth);
+  const conclusionBox = document.getElementById('hist-conclusion');
+  conclusionBox.innerHTML = '<strong>Kết luận:</strong> ' + conclusion;
+  conclusionBox.style.display = 'block';
+  conclusionBox.className = 'info-box' + (conclusion.includes('⚠️') ? ' danger' : '');
+  saveToLocal('histogram', { data: text, usl: document.getElementById('hist-usl').value, lsl: document.getElementById('hist-lsl').value });
+}
+function analyzeHistogramShape(bins, mean, min, max, usl, lsl, binWidth) {
+  let conclusions = [];
+  const peaks = [];
+  for (let i = 1; i < bins.length - 1; i++) { if (bins[i] > bins[i-1] && bins[i] > bins[i+1] && bins[i] > 0) { peaks.push(i); } }
+  if (peaks.length >= 2) {
+    let hasGap = false;
+    for (let i = 0; i < peaks.length - 1; i++) {
+      if (peaks[i+1] - peaks[i] > 1) {
+        const valleyHeight = Math.min(...bins.slice(peaks[i], peaks[i+1]+1));
+        const peakHeight = Math.max(bins[peaks[i]], bins[peaks[i+1]]);
+        if (valleyHeight < peakHeight * 0.5) hasGap = true;
+      }
+    }
+    if (hasGap || peaks.length > 2) { conclusions.push('⚠️ Phát hiện ≥2 đỉnh — có thể trộn 2 nguồn quá trình (2 máy/ca/khuôn). Nên tách dữ liệu bằng Stratification.'); }
+  }
+  if (usl !== undefined && lsl !== undefined) {
+    const target = (usl + lsl) / 2;
+    const tolerance = 0.25 * (usl - lsl);
+    if (Math.abs(mean - target) > tolerance) { conclusions.push('⚠️ Lệch tâm: mean lệch >25% dung sai. Cần điều chỉnh trung bình quá trình.'); }
+  }
+  if (usl !== undefined && max > usl) { conclusions.push('⚠️ Có điểm vượt USL — phế phẩm phía trên.'); }
+  if (lsl !== undefined && min < lsl) { conclusions.push('⚠️ Có điểm vượt LSL — phế phẩm phía dưới.'); }
+  if (conclusions.length === 0) { conclusions.push('✓ Phân bố ổn định, không có dấu hiệu bất thường rõ rệt.'); }
+  return conclusions.join(' ');
+}
+function histogramSample() {
+  const data = [];
+  for (let i = 0; i < 50; i++) {
+    const u1 = Math.random(); const u2 = Math.random();
+    const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+    data.push(10.01 + 0.05 * z + 0.02);
+  }
+  document.getElementById('hist-data').value = data.map(n => n.toFixed(4)).join('\n');
+  document.getElementById('hist-usl').value = '10.2';
+  document.getElementById('hist-lsl').value = '9.8';
+  drawHistogram();
+}
+function resetHistogram() {
+  document.getElementById('hist-data').value = '';
+  document.getElementById('hist-usl').value = '';
+  document.getElementById('hist-lsl').value = '';
+  document.getElementById('hist-stats').innerHTML = '';
+  document.getElementById('hist-conclusion').style.display = 'none';
+  document.getElementById('hist-svg').innerHTML = '';
+  localStorage.removeItem(SAVE_KEYS.histogram);
+}
+const savedHist = loadFromLocal('histogram');
+if (savedHist) { document.getElementById('hist-data').value = savedHist.data || ''; document.getElementById('hist-usl').value = savedHist.usl || ''; document.getElementById('hist-lsl').value = savedHist.lsl || ''; }
+function parsePairs(text) {
+  if (!text) return [];
+  return text.split('\n').filter(line => line.trim()).map(line => {
+    const parts = line.split(',');
+    if (parts.length >= 2) { const x = parseFloat(parts[0].trim()); const y = parseFloat(parts[1].trim()); if (!isNaN(x) && !isNaN(y)) return {x, y}; }
+    return null;
+  }).filter(p => p !== null);
+}
+function drawScatter() {
+  const text = document.getElementById('scatter-data').value;
+  const pairs = parsePairs(text);
+  if (pairs.length < 3) { alert('Cần tối thiểu 3 cặp để vẽ scatter!'); return; }
+  const xs = pairs.map(p => p.x); const ys = pairs.map(p => p.y);
+  const minX = Math.min(...xs); const maxX = Math.max(...xs); const minY = Math.min(...ys); const maxY = Math.max(...ys);
+  const container = document.getElementById('scatter-svg');
+  const width = 600, height = 300;
+  const padding = { top: 20, right: 30, bottom: 40, left: 50 };
+  const chartW = width - padding.left - padding.right; const chartH = height - padding.top - padding.bottom;
+  const xRange = maxX - minX || 1; const yRange = maxY - minY || 1;
+  let svg = '<svg viewBox="0 0 ' + width + ' ' + height + '" xmlns="http://www.w3.org/2000/svg">';
+  svg += '<rect width="100%" height="100%" fill="white"/>';
+  svg += '<line x1="' + padding.left + '" y1="' + (padding.top + chartH) + '" x2="' + (padding.left + chartW) + '" y2="' + (padding.top + chartH) + '" stroke="#333" stroke-width="2"/>';
+  svg += '<line x1="' + padding.left + '" y1="' + padding.top + '" x2="' + padding.left + '" y2="' + (padding.top + chartH) + '" stroke="#333" stroke-width="2"/>';
+  pairs.forEach(p => {
+    const cx = padding.left + (p.x - minX) / xRange * chartW;
+    const cy = padding.top + chartH - (p.y - minY) / yRange * chartH;
+    svg += '<circle cx="' + cx + '" cy="' + cy + '" r="5" fill="#d97706" stroke="#0a1628" stroke-width="1"/>';
+  });
+  svg += '<text x="' + (padding.left + chartW/2) + '" y="' + (height - 5) + '" text-anchor="middle" font-size="12">X</text>';
+  svg += '<text x="15" y="' + (padding.top + chartH/2) + '" text-anchor="middle" font-size="12" transform="rotate(-90, 15, ' + (padding.top + chartH/2) + ')">Y</text>';
+  svg += '</svg>';
+  container.innerHTML = svg;
+  const medianX = [...xs].sort((a,b) => a-b)[Math.floor(pairs.length/2)];
+  const leftHalf = pairs.filter(p => p.x < medianX); const rightHalf = pairs.filter(p => p.x >= medianX);
+  const meanLeftY = leftHalf.length > 0 ? leftHalf.reduce((a,p) => a+p.y, 0) / leftHalf.length : 0;
+  const meanRightY = rightHalf.length > 0 ? rightHalf.reduce((a,p) => a+p.y, 0) / rightHalf.length : 0;
+  const threshold = 0.05 * yRange;
+  let correlation = 'không rõ';
+  if (meanRightY - meanLeftY > threshold) { correlation = 'tương quan thuận (X↑ thì Y↑)'; }
+  else if (meanLeftY - meanRightY > threshold) { correlation = 'tương quan nghịch (X↑ thì Y↓)'; }
+  const conclusionBox = document.getElementById('scatter-conclusion');
+  conclusionBox.innerHTML = '<strong>Kết luận:</strong> ' + correlation + '. <strong>Lưu ý:</strong> Tương quan ≠ nguyên nhân! Dùng Fishbone/Why-Why để xác nhận.';
+  conclusionBox.style.display = 'block';
+  saveToLocal('scatter', { data: text });
+}
+function scatterSample() {
+  const data = [];
+  for (let i = 0; i < 10; i++) {
+    const x = 60 + i * 9;
+    const y = 0.4 - 0.0025 * x + (Math.random() - 0.5) * 0.02;
+    data.push(x.toFixed(0) + ',' + y.toFixed(3));
+  }
+  document.getElementById('scatter-data').value = data.join('\n');
+  document.getElementById('scatter-xlabel').textContent = 'Nhiệt độ sấy (°C)';
+  document.getElementById('scatter-ylabel').textContent = 'Độ ẩm hạt (%)';
+  drawScatter();
+}
+function resetScatter() {
+  document.getElementById('scatter-data').value = '';
+  document.getElementById('scatter-xlabel').textContent = 'Biến độc lập';
+  document.getElementById('scatter-ylabel').textContent = 'Biến phụ thuộc';
+  document.getElementById('scatter-conclusion').style.display = 'none';
+  document.getElementById('scatter-svg').innerHTML = '';
+  localStorage.removeItem(SAVE_KEYS.scatter);
+}
+const savedScatter = loadFromLocal('scatter');
+if (savedScatter) { document.getElementById('scatter-data').value = savedScatter.data || ''; }
+function analyzeStrat() {
+  const data = [];
+  for (let shift = 1; shift <= 3; shift++) { const row = []; for (let mch = 1; mch <= 3; mch++) { const val = parseInt(document.getElementById('strat-' + shift + '-' + mch).value) || 0; row.push(val); } data.push(row); }
+  const shiftTotals = data.map(row => row.reduce((a,b) => a+b, 0));
+  const machineTotals = [0, 0, 0];
+  for (let shift = 0; shift < 3; shift++) { for (let mch = 0; mch < 3; mch++) { machineTotals[mch] += data[shift][mch]; } }
+  const maxShift = Math.max(...shiftTotals); const maxShiftIdx = shiftTotals.indexOf(maxShift);
+  const maxMachine = Math.max(...machineTotals); const maxMachineIdx = machineTotals.indexOf(maxMachine);
+  let maxCell = 0; let maxCellPos = [0, 0];
+  for (let i = 0; i < 3; i++) { for (let j = 0; j < 3; j++) { if (data[i][j] > maxCell) { maxCell = data[i][j]; maxCellPos = [i, j]; } } }
+  document.querySelectorAll('.strat-grid input').forEach(inp => inp.classList.remove('highlight'));
+  document.getElementById('strat-' + (maxCellPos[0]+1) + '-' + (maxCellPos[1]+1)).classList.add('highlight');
+  const conclusionBox = document.getElementById('strat-conclusion');
+  conclusionBox.innerHTML = '<strong>Kết luận:</strong> Phế tập trung ở <strong>Ca ' + (maxShiftIdx+1) + '</strong> (tổng ' + maxShift + ') và <strong>IM-0' + (maxMachineIdx+1) + '</strong> (tổng ' + maxMachine + '). Ô cao nhất: Ca ' + (maxCellPos[0]+1) + '/IM-0' + (maxCellPos[1]+1) + ' với ' + maxCell + ' phế. <strong>Ưu tiên điều tra IM-0' + (maxMachineIdx+1) + ' ca ' + (maxShiftIdx+1) + '</strong> (khuôn/thiết lập/nguyên liệu).';
+  conclusionBox.style.display = 'block';
+  const saveData = {};
+  for (let i = 1; i <= 3; i++) { for (let j = 1; j <= 3; j++) { saveData['s' + i + 'm' + j] = document.getElementById('strat-' + i + '-' + j).value; } }
+  saveToLocal('strat', saveData);
+}
+function stratSample() {
+  const defaults = [[12, 8, 30], [15, 9, 34], [10, 7, 28]];
+  for (let i = 0; i < 3; i++) { for (let j = 0; j < 3; j++) { document.getElementById('strat-' + (i+1) + '-' + (j+1)).value = defaults[i][j]; } }
+  analyzeStrat();
+}
+function resetStrat() {
+  for (let i = 1; i <= 3; i++) { for (let j = 1; j <= 3; j++) { document.getElementById('strat-' + i + '-' + j).value = 0; document.getElementById('strat-' + i + '-' + j).classList.remove('highlight'); } }
+  document.getElementById('strat-conclusion').style.display = 'none';
+  localStorage.removeItem(SAVE_KEYS.strat);
+}
+const savedStrat = loadFromLocal('strat');
+if (savedStrat) { for (let i = 1; i <= 3; i++) { for (let j = 1; j <= 3; j++) { const key = 's' + i + 'm' + j; if (savedStrat[key] !== undefined) { document.getElementById('strat-' + i + '-' + j).value = savedStrat[key]; } } } }
+function analyzeCheckSheet() {
+  const defectTypes = ['Bong bóng khí', 'Cháy (burn)', 'Thiếu nhựa', 'Loáng bề mặt', 'Khác'];
+  const totals = []; const shiftTotals = [0, 0, 0];
+  for (let i = 1; i <= 5; i++) { let rowTotal = 0; for (let j = 1; j <= 3; j++) { const val = parseInt(document.getElementById('cs-' + i + '-' + j).value) || 0; rowTotal += val; shiftTotals[j-1] += val; } totals.push(rowTotal); document.getElementById('cs-total-' + i).textContent = rowTotal; }
+  for (let j = 0; j < 3; j++) { document.getElementById('cs-shift-' + (j+1)).textContent = shiftTotals[j]; }
+  const grandTotal = totals.reduce((a,b) => a+b, 0);
+  document.getElementById('cs-grand-total').textContent = grandTotal;
+  const maxDefect = Math.max(...totals); const maxDefectIdx = totals.indexOf(maxDefect);
+  for (let j = 1; j <= 3; j++) { document.getElementById('cs-' + (maxDefectIdx+1) + '-' + j).style.background = '#fecaca'; document.getElementById('cs-' + (maxDefectIdx+1) + '-' + j).style.border = '2px solid #dc2626'; }
+  const conclusionBox = document.getElementById('checksheet-conclusion');
+  conclusionBox.innerHTML = '<strong>Kết luận:</strong> Loại phế cao nhất là <strong>' + defectTypes[maxDefectIdx] + '</strong> với ' + maxDefect + ' tổng. <strong>Đưa vào Pareto</strong> để xếp ưu tiên xử lý — dùng biểu đồ Pareto trong file 6-tools.';
+  conclusionBox.style.display = 'block';
+  const saveData = {};
+  for (let i = 1; i <= 5; i++) { for (let j = 1; j <= 3; j++) { saveData['d' + i + 's' + j] = document.getElementById('cs-' + i + '-' + j).value; } }
+  saveToLocal('checksheet', saveData);
+}
+function checkSheetSample() {
+  const samples = [[7, 9, 5], [2, 3, 1], [1, 2, 1], [0, 1, 1], [1, 0, 1]];
+  for (let i = 0; i < 5; i++) { for (let j = 0; j < 3; j++) { document.getElementById('cs-' + (i+1) + '-' + (j+1)).value = samples[i][j]; document.getElementById('cs-' + (i+1) + '-' + (j+1)).style.background = ''; document.getElementById('cs-' + (i+1) + '-' + (j+1)).style.border = ''; } }
+  analyzeCheckSheet();
+}
+function resetCheckSheet() {
+  for (let i = 1; i <= 5; i++) { for (let j = 1; j <= 3; j++) { document.getElementById('cs-' + i + '-' + j).value = 0; document.getElementById('cs-' + i + '-' + j).style.background = ''; document.getElementById('cs-' + i + '-' + j).style.border = ''; } }
+  for (let i = 1; i <= 5; i++) { document.getElementById('cs-total-' + i).textContent = '-'; }
+  for (let j = 1; j <= 3; j++) { document.getElementById('cs-shift-' + j).textContent = '-'; }
+  document.getElementById('cs-grand-total').textContent = '-';
+  document.getElementById('checksheet-conclusion').style.display = 'none';
+  localStorage.removeItem(SAVE_KEYS.checksheet);
+}
+const savedCheckSheet = loadFromLocal('checksheet');
+if (savedCheckSheet) { for (let i = 1; i <= 5; i++) { for (let j = 1; j <= 3; j++) { const key = 'd' + i + 's' + j; if (savedCheckSheet[key] !== undefined) { document.getElementById('cs-' + i + '-' + j).value = savedCheckSheet[key]; } } } }
+function gradeQuiz() {
+  let score = 0; const answers = [];
+  for (let i = 1; i <= 10; i++) {
+    const selected = document.querySelector('input[name="q' + i + '"]:checked');
+    const userAnswer = selected ? parseInt(selected.value) : -1;
+    answers.push(userAnswer);
+    const questionEl = document.querySelector('.quiz-question[data-q="' + i + '"]');
+    const feedbackEl = questionEl.querySelector('.quiz-feedback');
+    const options = questionEl.querySelectorAll('.quiz-options label');
+    options.forEach(opt => { opt.classList.remove('correct', 'incorrect'); });
+    if (userAnswer === QUIZ_KEY[i-1]) {
+      score++; options[userAnswer].classList.add('correct');
+      feedbackEl.textContent = '✓ Đúng! ' + QUIZ_EXPLANATIONS[i-1];
+      feedbackEl.className = 'quiz-feedback show correct';
+    } else {
+      if (userAnswer >= 0) { options[userAnswer].classList.add('incorrect'); }
+      options[QUIZ_KEY[i-1]].classList.add('correct');
+      feedbackEl.textContent = '✗ Sai. Đáp án đúng: ' + (QUIZ_KEY[i-1]+1) + '. ' + QUIZ_EXPLANATIONS[i-1];
+      feedbackEl.className = 'quiz-feedback show incorrect';
+    }
+  }
+  const resultBox = document.getElementById('quiz-result');
+  const percentage = score * 10;
+  const passed = percentage >= 80;
+  resultBox.innerHTML = '<h3>Kết quả: ' + score + '/10 (' + percentage + '%)</h3>' + '<p style="font-size: 1.2rem; margin-top: 0.5rem;">' + (passed ? '✓ ĐẠT' : '✗ CHƯA ĐẠT (cần ≥80%)') + '</p>';
+  resultBox.className = 'quiz-result ' + (passed ? 'pass' : 'fail');
+  resultBox.style.display = 'block';
+  saveToLocal('quiz', { answers: answers, score: score, date: new Date().toISOString() });
+  resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+function resetQuiz() {
+  document.getElementById('quiz-form').reset();
+  document.querySelectorAll('.quiz-feedback').forEach(el => { el.className = 'quiz-feedback'; el.textContent = ''; });
+  document.querySelectorAll('.quiz-options label').forEach(el => { el.classList.remove('correct', 'incorrect'); });
+  document.getElementById('quiz-result').style.display = 'none';
+  localStorage.removeItem(SAVE_KEYS.quiz);
+}
+const savedQuiz = loadFromLocal('quiz');
+if (savedQuiz && savedQuiz.answers) { for (let i = 1; i <= 10; i++) { const answer = savedQuiz.answers[i-1]; if (answer >= 0) { const radio = document.querySelector('input[name="q' + i + '"][value="' + answer + '"]'); if (radio) radio.checked = true; } } }
+function updateActiveNav() {
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav a');
+  let current = '';
+  sections.forEach(section => { const sectionTop = section.offsetTop; if (window.scrollY >= sectionTop - 100) { current = section.getAttribute('id'); } });
+  navLinks.forEach(link => { link.classList.remove('active'); if (link.getAttribute('href') === '#' + current) { link.classList.add('active'); } });
+}
+function revealOnScroll() {
+  const reveals = document.querySelectorAll('.reveal');
+  reveals.forEach(el => { const windowHeight = window.innerHeight; const elementTop = el.getBoundingClientRect().top; const elementVisible = 100; if (elementTop < windowHeight - elementVisible) { el.classList.add('visible'); } });
+  const backToTop = document.getElementById('backToTop');
+  if (window.scrollY > 300) { backToTop.classList.add('visible'); } else { backToTop.classList.remove('visible'); }
+}
+window.addEventListener('scroll', () => { updateActiveNav(); revealOnScroll(); });
+window.addEventListener('DOMContentLoaded', () => { revealOnScroll(); updateActiveNav(); });
+</script>
+</body>
+</html>

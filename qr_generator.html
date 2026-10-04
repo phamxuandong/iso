@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>In Tem Mã QR 20 Máy Ép Phun — Dán Hiện Trường</title>
+    <style>
+        :root {
+            --navy-dark: #0a1628;
+            --navy-primary: #122442;
+            --amber-primary: #d97706;
+            --gray-200: #e2e8f0;
+            --gray-800: #1e293b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #f8fafc;
+            color: var(--gray-800);
+            padding: 20px;
+        }
+
+        .header-bar {
+            max-width: 1100px;
+            margin: 0 auto 20px;
+            background: var(--navy-dark);
+            color: #fff;
+            padding: 18px 24px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-print {
+            background: var(--amber-primary);
+            color: var(--navy-dark);
+            border: none;
+            padding: 10px 20px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .grid-cards {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        /* Tem dán máy ép */
+        .qr-card {
+            background: #fff;
+            border: 3px solid var(--navy-primary);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            position: relative;
+            break-inside: avoid;
+        }
+
+        .qr-left {
+            width: 140px;
+            height: 140px;
+            flex-shrink: 0;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+        }
+
+        .qr-right { flex: 1; }
+        .company-tag { font-size: 0.72rem; font-weight: 700; color: var(--amber-primary); text-transform: uppercase; letter-spacing: 1px; }
+        .machine-code-title { font-size: 2.2rem; font-weight: 900; color: var(--navy-primary); line-height: 1; margin: 4px 0; }
+        .machine-desc { font-size: 0.9rem; font-weight: 600; color: #475569; margin-bottom: 8px; }
+
+        .guide-box {
+            background: #f1f5f9;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: #334155;
+            line-height: 1.4;
+        }
+
+        @media print {
+            body { background: #fff; padding: 0; }
+            .header-bar, .no-print { display: none !important; }
+            .grid-cards { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+            .qr-card { border: 2px solid #000; box-shadow: none; margin-bottom: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-bar">
+        <div>
+            <h1 style="font-size:1.3rem;">🏷️ Bộ Tem Mã QR Dán 20 Máy Ép Phun</h1>
+            <p style="font-size:0.85rem;color:#cbd5e1;margin-top:3px;">In ra giấy Decal dán tại bảng điều khiển từng máy để công nhân/ca trưởng quét điện thoại</p>
+        </div>
+        <div style="display:flex;gap:12px;">
+            <button class="btn-print" onclick="window.print()">🖨 IN 20 TEM MÃ QR</button>
+            <a href="dashboard.html" style="background:#fff;color:var(--navy-dark);padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:700;font-size:0.9rem;">← Quay lại Dashboard</a>
+        </div>
+    </div>
+
+    <div class="grid-cards" id="qrContainer"></div>
+
+    <!-- Script generate QR codes using api.qrserver.com or SVG fallback -->
+    <script>
+        const tonnages = [120, 120, 160, 160, 200, 200, 250, 250, 250, 300, 300, 350, 350, 400, 450, 500, 550, 650, 800, 1000];
+
+        function renderQrCards() {
+            const container = document.getElementById('qrContainer');
+            let html = '';
+
+            for (let i = 1; i <= 20; i++) {
+                const code = 'M' + String(i).padStart(2, '0');
+                const ton = tonnages[i - 1];
+                // Link that QR code will open
+                const targetUrl = window.location.origin + window.location.pathname.replace('qr_generator.html', 'mobile.html') + `?m=${code}`;
+                const qrImgSrc = `https://api.qrserver.com/v1/create-qr-code/?size=140x140&margin=4&data=${encodeURIComponent(targetUrl)}`;
+
+                html += `
+                    <div class="qr-card">
+                        <div class="qr-left">
+                            <img src="${qrImgSrc}" alt="QR ${code}" width="130" height="130" onerror="this.src='https://chart.googleapis.com/chart?chs=130x130&cht=qr&chl=${encodeURIComponent(targetUrl)}'">
+                        </div>
+                        <div class="qr-right">
+                            <div class="company-tag">ISO 9001:2015 · GEMBA OPERATING SYSTEM</div>
+                            <div class="machine-code-title">MÁY ${code}</div>
+                            <div class="machine-desc">Máy Ép Phun Haitian ${ton} Tấn</div>
+                            <div class="guide-box">
+                                <strong>HƯỚNG DẪN QUÉT QR ĐIỆN THOẠI:</strong><br>
+                                1. Tích Checklist 5S & An toàn đầu ca (&lt; 60s)<br>
+                                2. Chụp ảnh gửi sự cố khuyết tật bavia/hỏng khuôn<br>
+                                3. Chốt sản lượng & Tự động tính OEE ca kíp
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        document.addEventListener('DOMContentLoaded', renderQrCards);
+    </script>
+</body>
+</html>

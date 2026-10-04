@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5W2H — Khung Kế Hoạch 7 Câu Hỏi | Nhà máy ép phun</title>
+    <style>
+        :root {
+            --navy-dark: #0a1628;
+            --navy-primary: #122442;
+            --navy-light: #1a365d;
+            --amber-primary: #d97706;
+            --amber-light: #fbbf24;
+            --amber-pale: #fef3c7;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --success: #16a34a;
+            --error: #dc2626;
+            --border-radius: 6px;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --transition: all 0.2s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-margin-top: 80px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            background: var(--bg-light);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Nav */
+        .nav {
+            position: sticky;
+            top: 0;
+            background: var(--navy-dark);
+            padding: 12px 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            color: var(--white);
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-logo a {
+            color: var(--amber-light);
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: 3px 8px;
+            border: 1px solid var(--amber-light);
+            border-radius: 4px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 18px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--gray-200);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--amber-light);
+        }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-primary) 100%);
+            color: var(--white);
+            padding: 50px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.2rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.05rem;
+            opacity: 0.9;
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        /* Sections */
+        section {
+            padding: 45px 0;
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        section:nth-child(even) {
+            background: var(--bg-light);
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            color: var(--navy-primary);
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--amber-primary);
+            display: inline-block;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 22px;
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow-sm);
+            border-left: 4px solid var(--navy-primary);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .card.amber { border-left-color: var(--amber-primary); }
+        .card.green { border-left-color: var(--success); }
+
+        .card h3 {
+            color: var(--navy-primary);
+            font-size: 1.15rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge {
+            background: var(--navy-primary);
+            color: var(--white);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-amber {
+            background: var(--amber-primary);
+        }
+
+        /* Table */
+        .table-responsive {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            background: var(--white);
+        }
+
+        th, td {
+            border: 1px solid var(--gray-200);
+            padding: 12px 14px;
+            text-align: left;
+        }
+
+        th {
+            background: var(--navy-primary);
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background: var(--gray-100);
+        }
+
+        /* Worksheet Form */
+        .form-box {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 8px;
+            border: 2px solid var(--navy-primary);
+            box-shadow: var(--shadow-md);
+            margin: 25px 0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 18px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.88rem;
+            color: var(--navy-primary);
+        }
+
+        label span {
+            color: var(--amber-primary);
+        }
+
+        input, select, textarea {
+            padding: 10px 12px;
+            border: 1px solid var(--gray-300);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--amber-primary);
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--amber-primary);
+            color: var(--navy-dark);
+        }
+
+        .btn-primary:hover {
+            background: #b45309;
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background: var(--navy-primary);
+            color: var(--white);
+        }
+
+        .btn-secondary:hover {
+            background: var(--navy-light);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--gray-300);
+            color: var(--gray-700);
+        }
+
+        .btn-outline:hover {
+            background: var(--gray-200);
+        }
+
+        /* Quiz */
+        .quiz-item {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: 6px;
+            padding: 18px;
+            margin-bottom: 15px;
+        }
+
+        .quiz-question {
+            font-weight: 600;
+            color: var(--navy-primary);
+            margin-bottom: 10px;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border: 1px solid var(--gray-200);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .quiz-option:hover {
+            background: var(--amber-pale);
+        }
+
+        .quiz-explanation {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            display: none;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--navy-dark);
+            color: var(--gray-300);
+            text-align: center;
+            padding: 25px 0;
+            font-size: 0.85rem;
+        }
+
+        .footer a {
+            color: var(--amber-light);
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.6rem; }
+            .nav-links { display: none; }
+            .form-box { padding: 18px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav class="nav">
+        <div class="container nav-container">
+            <div class="nav-logo">
+                <span>5W2H · Ép Phun</span>
+                <a href="index.html">← Trang chủ ISO</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#tong-quan">Tổng quan</a></li>
+                <li><a href="#khung-7-cau-hoi">7 Câu hỏi</a></li>
+                <li><a href="#vi-du">Ví dụ thực tế</a></li>
+                <li><a href="#worksheet">Worksheet biểu mẫu</a></li>
+                <li><a href="#trac-nghiem">Trắc nghiệm</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="hero">
+        <div class="container">
+            <h1>5W2H — Khung Kế Hoạch & Hành Động Khắc Phục</h1>
+            <p>7 câu hỏi cốt lõi biến sự cố sản xuất ép phun thành hành động có người phụ trách, thời hạn rõ ràng và định lượng chi phí — Đáp ứng ISO 9001:2015 (§6.2 & §10.2)</p>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- TỔNG QUAN -->
+        <section id="tong-quan">
+            <h2 class="section-title">1. Tổng Quan về 5W2H trong Nhà Máy Ép Phun</h2>
+            <p>Trong vận hành xưởng ép nhựa 20 máy, sự cố kỹ thuật (bavia, cong vênh, vệt đen, downtime khuôn) xảy ra hằng ca. Nếu chỉ ghi nhận chung chung như <em>"cần kiểm tra khuôn"</em> thì sự cố sẽ tái diễn. <strong>5W2H</strong> là công cụ lập kế hoạch thực thi hành động khắc phục (CAPA) và kế hoạch mục tiêu chất lượng không để lại kẽ hở:</p>
+
+            <div class="card-grid">
+                <div class="card amber">
+                    <h3><span class="badge badge-amber">ISO 9001 §10.2</span> Sự cố & Khắc phục</h3>
+                    <p>Khi có sự không phù hợp (NC), tổ chức phải: xác định hành động, người chịu trách nhiệm, ngày hoàn thành, bằng chứng và đánh giá hiệu lực.</p>
+                </div>
+                <div class="card">
+                    <h3><span class="badge">ISO 9001 §6.2</span> Mục tiêu Chất lượng</h3>
+                    <p>Mục tiêu phải chỉ rõ: Cần làm gì? Ai làm? Khi nào xong? Nguồn lực thế nào? Làm sao biết đã hoàn thành?</p>
+                </div>
+                <div class="card green">
+                    <h3><span class="badge" style="background:var(--success)">8D Bước D5-D6</span> Triển khai Hành động</h3>
+                    <p>5W2H là công cụ cụ thể hóa bước D5 (Chọn hành động khắc phục) và D6 (Triển khai & xác nhận kết quả) trong quy trình 8D.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7 CÂU HỎI -->
+        <section id="khung-7-cau-hoi">
+            <h2 class="section-title">2. Chi Tiết 7 Câu Hỏi 5W2H Chuẩn Hóa Ép Nhựa</h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Yếu tố</th>
+                            <th>Câu hỏi</th>
+                            <th>Ý nghĩa trong Nhà máy Ép Phun</th>
+                            <th>Ví dụ thực tế (Máy M05)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>WHAT</strong></td>
+                            <td>Làm việc gì? Vấn đề gì?</td>
+                            <td>Mô tả chính xác hành động hoặc khiếm khuyết sản phẩm (kèm mã lỗi, bản vẽ).</td>
+                            <td>Xử lý bavia tại mép phân khuôn nắp can 20L (Mã SP: NC-20L).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>WHY</strong></td>
+                            <td>Tại sao phải làm?</td>
+                            <td>Nguyên nhân gốc (từ 5-Why) và hậu quả nếu không làm (tỷ lệ phế, khiếu nại).</td>
+                            <td>Mặt ghép khuôn bị mòn 0.04mm do ép quá áp; phế ca đêm tăng vọt lên 4.2%.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>WHERE</strong></td>
+                            <td>Ở đâu? Vị trí nào?</td>
+                            <td>Vị trí máy ép, bộ khuôn, lòng khuôn (cavity), hoặc công đoạn xảy ra.</td>
+                            <td>Máy ép số 05 (Haitian 250T), Khuôn K-08, Cavity số 2 & 4.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>WHEN</strong></td>
+                            <td>Khi nào xong? Hạn chót?</td>
+                            <td>Mốc thời gian cụ thể (ngày, giờ bắt đầu và kết thúc nghiệm thu).</td>
+                            <td>Hạ khuôn lúc 14:00 ngày 02/10; Gia công xong trước 10:00 ngày 03/10.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>WHO</strong></td>
+                            <td>Ai chịu trách nhiệm?</td>
+                            <td>Người trực tiếp thực hiện và người nghiệm thu (phải có tên, mã nhân viên).</td>
+                            <td>Thực hiện: KTV Khuôn Nguyễn Văn A; Nghiệm thu: QA Trưởng Trần Thị B.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>HOW</strong></td>
+                            <td>Làm như thế nào?</td>
+                            <td>Phương pháp kỹ thuật, quy trình thao tác chuẩn (SOP), thiết bị sử dụng.</td>
+                            <td>Rà mặt phân khuôn bằng bột màu, mài phẳng lại bề mặt trên máy mài phẳng, siết lại bu lông định vị.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>HOW MUCH</strong></td>
+                            <td>Chi phí bao nhiêu? Lợi ích?</td>
+                            <td>Chi phí vật tư, nhân công gia công ngoài, hoặc số giờ dừng máy ước tính.</td>
+                            <td>Chi phí mài khuôn: 600.000 VNĐ; Dừng máy 4 giờ; Tiết kiệm 45kg nhựa phế/ngày (~1.800.000đ).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- VÍ DỤ -->
+        <section id="vi-du">
+            <h2 class="section-title">3. Ví Dụ Mẫu: Kế Hoạch 5W2H Cho 3 Tình Huống Ép Phun Điển Hình</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>Tình huống 1: Lỗi Bavia (Flash)</h3>
+                    <p><strong>What:</strong> Điều chỉnh áp suất kẹp khuôn và mài lại mặt tiếp xúc khuôn K-12.<br>
+                    <strong>Why:</strong> Lực kẹp không đủ và mặt khuôn bị rơ làm nhựa tràn ra ngoài.<br>
+                    <strong>Where:</strong> Máy ép Haitian 160T (M03).<br>
+                    <strong>When:</strong> 03/10/2026, hoàn thành trong ca ngày.<br>
+                    <strong>Who:</strong> Thợ căn chỉnh máy: Lê Văn Hùng.<br>
+                    <strong>How:</strong> Tăng lực kẹp lên 145 bar, kiểm tra lại khe hở chốt dẫn hướng.<br>
+                    <strong>How much:</strong> 0 VNĐ chi phí ngoài, 30 phút căn chỉnh.</p>
+                </div>
+                <div class="card">
+                    <h3>Tình huống 2: Khuyết tật Cong Vênh (Warpage)</h3>
+                    <p><strong>What:</strong> Lắp thêm đường nước giải nhiệt bổ sung cho lòng khuôn đáy hộp.<br>
+                    <strong>Why:</strong> Chênh lệch nhiệt độ giữa 2 nửa khuôn > 18°C gây ứng suất dư.<br>
+                    <strong>Where:</strong> Khuôn hộp thực phẩm KH-04, chạy trên máy M09.<br>
+                    <strong>When:</strong> Hạn chót 05/10/2026.<br>
+                    <strong>Who:</strong> Phòng Cơ điện & Khuôn mẫu (Lead: Kỹ sư Tuấn).<br>
+                    <strong>How:</strong> Khoan thêm 2 đường ống làm mát Ø10mm, vệ sinh cặn bẩn chiller.<br>
+                    <strong>How much:</strong> 1.200.000đ phụ kiện ống đồng, ROI thu hồi trong 3 ngày.</p>
+                </div>
+                <div class="card">
+                    <h3>Tình huống 3: Rò rỉ Dầu thủy lực đầu ca</h3>
+                    <p><strong>What:</strong> Thay gioăng phớt xi lanh kẹp khuôn máy M15.<br>
+                    <strong>Why:</strong> Áp suất tụt 12%, nguy cơ mất an toàn trượt ngã và nhiễm bẩn hạt nhựa.<br>
+                    <strong>Where:</strong> Phía sau bàn kẹp tĩnh máy M15.<br>
+                    <strong>When:</strong> Trước 11:30 hôm nay.<br>
+                    <strong>Who:</strong> Tổ Bảo trì (Ngô Văn Nam).<br>
+                    <strong>How:</strong> Khóa nguồn LOTO, xả áp, thay phớt NOK tiêu chuẩn, test chạy 5 chu kỳ.<br>
+                    <strong>How much:</strong> 450.000 VNĐ tiền phớt, tránh rủi ro dừng chuyền đột xuất.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- WORKSHEET BIỂU MẪU -->
+        <section id="worksheet">
+            <h2 class="section-title">4. Biểu Mẫu Tương Tác 5W2H (Lập & Lưu Trực Tiếp)</h2>
+            <p>Điền kế hoạch hành động khắc phục sự cố hoặc cải tiến xưởng ép phun. Dữ liệu được lưu trữ tự động:</p>
+
+            <div class="form-box">
+                <form id="form5w2h">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Mã Phiếu / Sự cố <span>*</span></label>
+                            <input type="text" id="actionCode" placeholder="VD: CAPA-M05-001" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Chọn Máy Ép Phun <span>*</span></label>
+                            <select id="machineSelect" required>
+                                <option value="">-- Chọn máy (01 - 20) --</option>
+                                <option value="Máy 01 (Haitian 120T)">Máy 01 (Haitian 120T)</option>
+                                <option value="Máy 02 (Haitian 160T)">Máy 02 (Haitian 160T)</option>
+                                <option value="Máy 03 (Haitian 160T)">Máy 03 (Haitian 160T)</option>
+                                <option value="Máy 04 (Haitian 200T)">Máy 04 (Haitian 200T)</option>
+                                <option value="Máy 05 (Haitian 250T)">Máy 05 (Haitian 250T)</option>
+                                <option value="Máy 06 (Haitian 250T)">Máy 06 (Haitian 250T)</option>
+                                <option value="Máy 07 (Haitian 300T)">Máy 07 (Haitian 300T)</option>
+                                <option value="Máy 08 (Haitian 350T)">Máy 08 (Haitian 350T)</option>
+                                <option value="Máy 09 (Haitian 400T)">Máy 09 (Haitian 400T)</option>
+                                <option value="Máy 10 (Haitian 450T)">Máy 10 (Haitian 450T)</option>
+                                <option value="Máy 11 đến 20 (Nhóm 2)">Máy 11 đến 20 (Nhóm máy phụ)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Phân loại Sự cố / Mục tiêu</label>
+                            <select id="actionType">
+                                <option value="Khuyết tật nhựa (Bavia, cong vênh, thiếu thịt)">Khuyết tật nhựa (Bavia, cong vênh, thiếu thịt)</option>
+                                <option value="Sự cố khuôn (Kẹt lừa, đứt ty, rò nước)">Sự cố khuôn (Kẹt lừa, đứt ty, rò nước)</option>
+                                <option value="Sự cố máy ép & thủy lực">Sự cố máy ép & thủy lực</option>
+                                <option value="5S & An toàn lao động">5S & An toàn lao động</option>
+                                <option value="Cải tiến Kaizen / SMED đổi khuôn">Cải tiến Kaizen / SMED đổi khuôn</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Hạn hoàn thành (WHEN) <span>*</span></label>
+                            <input type="date" id="actionWhen" required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label>1. WHAT — Cần làm hành động cụ thể gì? <span>*</span></label>
+                            <input type="text" id="actionWhat" placeholder="Mô tả hành động giải quyết dứt điểm..." required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label>2. WHY — Tại sao phải làm? (Nguyên nhân cốt lõi)</label>
+                            <input type="text" id="actionWhy" placeholder="Nguyên nhân gốc rễ và mục tiêu loại bỏ lãng phí...">
+                        </div>
+                        <div class="form-group">
+                            <label>3. WHERE — Địa điểm / Vị trí chi tiết</label>
+                            <input type="text" id="actionWhere" placeholder="VD: Lòng khuôn số 3, Chiller trạm 2...">
+                        </div>
+                        <div class="form-group">
+                            <label>4. WHO — Người chịu trách nhiệm chính <span>*</span></label>
+                            <input type="text" id="actionWho" placeholder="Tên KTV / Ca trưởng / QC..." required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label>5. HOW — Cách thức thực hiện (Quy trình / Kỹ thuật)</label>
+                            <textarea id="actionHow" rows="2" placeholder="Các bước kỹ thuật, công cụ hỗ trợ cần áp dụng..."></textarea>
+                        </div>
+                        <div class="form-group full-width">
+                            <label>6. HOW MUCH — Dự toán chi phí & Hiệu quả mang lại</label>
+                            <input type="text" id="actionHowMuch" placeholder="Chi phí vật tư, giờ dừng máy, số tiền tiết kiệm được...">
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">💾 Lưu Kế Hoạch 5W2H</button>
+                        <button type="button" class="btn btn-secondary" onclick="exportSample()">📋 Nạp ví dụ mẫu</button>
+                        <button type="button" class="btn btn-outline" onclick="clearForm()">Làm mới form</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- BẢNG DANH SÁCH ĐÃ LƯU -->
+            <div style="margin-top: 30px;">
+                <h3>📋 Danh Sách Kế Hoạch 5W2H Đã Lưu (<span id="savedCount">0</span>)</h3>
+                <div class="table-responsive">
+                    <table id="tableHistory">
+                        <thead>
+                            <tr>
+                                <th>Mã</th>
+                                <th>Máy</th>
+                                <th>Hành động (WHAT)</th>
+                                <th>Người làm (WHO)</th>
+                                <th>Hạn (WHEN)</th>
+                                <th>Chi phí/Lợi ích</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyBody">
+                            <tr>
+                                <td colspan="8" style="text-align: center; color: var(--gray-600);">Chưa có dữ liệu kế hoạch. Hãy tạo phiếu mới ở trên!</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TRẮC NGHIỆM -->
+        <section id="trac-nghiem">
+            <h2 class="section-title">5. Trắc Nghiệm Ôn Tập Kiến Thức 5W2H</h2>
+            <div id="quizContainer"></div>
+            <div class="btn-group" style="margin-top: 20px;">
+                <button class="btn btn-primary" onclick="gradeQuiz()">Chấm Điểm Trắc Nghiệm</button>
+                <span id="quizScore" style="font-weight: 700; align-self: center; font-size: 1.1rem; color: var(--navy-primary);"></span>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <p>Hệ thống Tài liệu ISO 9001:2015 Nhà máy Ép Phun 20 Máy · Phiên bản 1.0 (10/2026)</p>
+            <p style="margin-top: 5px;"><a href="index.html">← Quay lại Cổng tra cứu tài liệu</a></p>
+        </div>
+    </footer>
+
+    <script>
+        // Storage Key
+        const STORAGE_KEY = 'iso_5w2h_plan_list_v1';
+
+        // Load History
+        function loadHistory() {
+            const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            const tbody = document.getElementById('historyBody');
+            document.getElementById('savedCount').textContent = data.length;
+
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#64748b;">Chưa có dữ liệu kế hoạch. Hãy tạo phiếu mới ở trên!</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = data.map((item, index) => `
+                <tr>
+                    <td><strong>${escapeHtml(item.code)}</strong></td>
+                    <td>${escapeHtml(item.machine)}</td>
+                    <td>${escapeHtml(item.what)}</td>
+                    <td>${escapeHtml(item.who)}</td>
+                    <td>${escapeHtml(item.when)}</td>
+                    <td>${escapeHtml(item.howMuch || 'N/A')}</td>
+                    <td>
+                        <span class="badge ${item.status === 'Hoàn thành' ? 'badge-amber' : ''}" style="${item.status === 'Hoàn thành' ? 'background:var(--success)' : ''}">
+                            ${item.status}
+                        </span>
+                    </td>
+                    <td>
+                        <button onclick="toggleStatus(${index})" style="padding:3px 8px;font-size:0.75rem;cursor:pointer;">Đổi trạng thái</button>
+                        <button onclick="deletePlan(${index})" style="padding:3px 8px;font-size:0.75rem;cursor:pointer;color:red;">Xóa</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Save
+        document.getElementById('form5w2h').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newPlan = {
+                code: document.getElementById('actionCode').value.trim(),
+                machine: document.getElementById('machineSelect').value,
+                type: document.getElementById('actionType').value,
+                when: document.getElementById('actionWhen').value,
+                what: document.getElementById('actionWhat').value.trim(),
+                why: document.getElementById('actionWhy').value.trim(),
+                where: document.getElementById('actionWhere').value.trim(),
+                who: document.getElementById('actionWho').value.trim(),
+                how: document.getElementById('actionHow').value.trim(),
+                howMuch: document.getElementById('actionHowMuch').value.trim(),
+                status: 'Đang xử lý',
+                created: new Date().toLocaleDateString('vi-VN')
+            };
+
+            const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            data.unshift(newPlan);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            loadHistory();
+            clearForm();
+            alert('Đã lưu kế hoạch 5W2H thành công!');
+        });
+
+        function clearForm() {
+            document.getElementById('form5w2h').reset();
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('actionWhen').value = today;
+        }
+
+        function toggleStatus(index) {
+            const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            data[index].status = data[index].status === 'Hoàn thành' ? 'Đang xử lý' : 'Hoàn thành';
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            loadHistory();
+        }
+
+        function deletePlan(index) {
+            if (confirm('Bạn có chắc muốn xóa kế hoạch này?')) {
+                const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+                data.splice(index, 1);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+                loadHistory();
+            }
+        }
+
+        function exportSample() {
+            document.getElementById('actionCode').value = 'CAPA-M08-2026';
+            document.getElementById('machineSelect').value = 'Máy 08 (Haitian 350T)';
+            document.getElementById('actionType').value = 'Khuyết tật nhựa (Bavia, cong vênh, thiếu thịt)';
+            const d = new Date();
+            d.setDate(d.getDate() + 2);
+            document.getElementById('actionWhen').value = d.toISOString().split('T')[0];
+            document.getElementById('actionWhat').value = 'Hạ khuôn K-14 căn lại độ song song bàn kẹp và siết chặt cốt ty lừa';
+            document.getElementById('actionWhy').value = 'Khuôn bị rơ 0.05mm gây thiếu thịt góc sản phẩm yếm xe máy';
+            document.getElementById('actionWhere').value = 'Máy 08, Trạm khuôn số 2, Cavity 1';
+            document.getElementById('actionWho').value = 'Trần Văn Mạnh (Tổ trưởng Khuôn)';
+            document.getElementById('actionHow').value = 'Dùng đồng hồ so kiểm tra độ song song, căn lại tấm đệm shim 0.03mm';
+            document.getElementById('actionHowMuch').value = 'Thời gian dừng máy: 90 phút, tiết kiệm 120 sản phẩm hỏng/ca';
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        // Quiz Data
+        const quizData = [
+            {
+                q: "1. Câu hỏi 'WHERE' trong bảng 5W2H của xưởng ép phun nên chỉ ra điều gì cụ thể nhất?",
+                options: [
+                    "Chỉ cần ghi 'Trong phân xưởng sản xuất'",
+                    "Vị trí cụ thể: Mã máy ép, mã bộ khuôn và vị trí lòng khuôn (cavity)",
+                    "Tên công ty khách hàng đặt hàng",
+                    "Khu vực văn phòng QA"
+                ],
+                correct: 1,
+                exp: "Trong sản xuất ép phun, 'WHERE' phải chỉ rõ máy ép nào, khuôn nào, thậm chí lòng khuôn số mấy để khoanh vùng chính xác lỗi."
+            },
+            {
+                q: "2. Trong ISO 9001:2015, điều khoản nào bắt buộc tổ chức phải phân công trách nhiệm (WHO) và thời hạn (WHEN) cho hành động khắc phục?",
+                options: [
+                    "Điều khoản 4.1 (Bối cảnh tổ chức)",
+                    "Điều khoản 7.1 (Nguồn lực)",
+                    "Điều khoản 10.2 (Sự không phù hợp và hành động khắc phục)",
+                    "Điều khoản 5.2 (Chính sách chất lượng)"
+                ],
+                correct: 2,
+                exp: "Điều khoản 10.2 yêu cầu đánh giá nhu cầu hành động, phân công người thực hiện và xác nhận hiệu lực sau khi thực hiện."
+            },
+            {
+                q: "3. Câu hỏi 'HOW MUCH' trong 5W2H có ý nghĩa gì đối với việc cải tiến nhà máy?",
+                options: [
+                    "Chỉ để tính tiền phạt công nhân",
+                    "Định lượng nguồn lực, chi phí đầu tư và lợi ích tài chính mang lại (ROI)",
+                    "Không quan trọng trong sản xuất kỹ thuật",
+                    "Chỉ phục vụ cho phòng kế toán cuối năm"
+                ],
+                correct: 1,
+                exp: "HOW MUCH giúp quản đốc và ban giám đốc thấy được bài toán kinh tế: chi phí sửa chữa so với giá trị phế phẩm tiết kiệm được."
+            }
+        ];
+
+        function renderQuiz() {
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = quizData.map((item, qIdx) => `
+                <div class="quiz-item">
+                    <div class="quiz-question">${item.q}</div>
+                    <div class="quiz-options">
+                        ${item.options.map((opt, oIdx) => `
+                            <label class="quiz-option" id="q_${qIdx}_opt_${oIdx}">
+                                <input type="radio" name="quiz_${qIdx}" value="${oIdx}">
+                                ${opt}
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div class="quiz-explanation" id="exp_${qIdx}"></div>
+                </div>
+            `).join('');
+        }
+
+        function gradeQuiz() {
+            let score = 0;
+            quizData.forEach((item, qIdx) => {
+                const selected = document.querySelector(`input[name="quiz_${qIdx}"]:checked`);
+                const expDiv = document.getElementById(`exp_${qIdx}`);
+                expDiv.style.display = 'block';
+                expDiv.innerHTML = `<strong>Giải thích:</strong> ${item.exp}`;
+
+                if (selected && parseInt(selected.value) === item.correct) {
+                    score++;
+                    expDiv.style.background = '#dcfce7';
+                    expDiv.style.color = '#15803d';
+                } else {
+                    expDiv.style.background = '#fee2e2';
+                    expDiv.style.color = '#b91c1c';
+                }
+            });
+            document.getElementById('quizScore').textContent = `Kết quả: ${score}/${quizData.length} điểm (${Math.round((score/quizData.length)*100)}%)`;
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            loadHistory();
+            renderQuiz();
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('actionWhen').value = today;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,2699 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Giai đoạn 6 — Xây dựng Hệ thống Quản lý Chất lượng (QMS) theo ISO 9001:2015 cho nhà máy ép phun">
+    <meta name="author" content="ISO 9001:2015 Implementation Guide">
+    <title>Giai đoạn 6 — Xây dựng QMS theo ISO 9001:2015 | Nhà máy Ép phun</title>
+    <style>
+        /* ============================================
+           DESIGN SYSTEM — Industrial Professional
+           ============================================ */
+        :root {
+            /* Colors */
+            --color-navy-900: #0f172a;
+            --color-navy-800: #1e293b;
+            --color-navy-700: #334155;
+            --color-slate-600: #475569;
+            --color-slate-500: #64748b;
+            --color-slate-400: #94a3b8;
+            --color-slate-200: #e2e8f0;
+            --color-slate-100: #f1f5f9;
+            --color-white: #ffffff;
+            --color-amber-500: #f59e0b;
+            --color-amber-600: #d97706;
+            --color-amber-100: #fef3c7;
+            --color-red-500: #ef4444;
+            --color-red-600: #dc2626;
+            --color-green-600: #16a34a;
+            --color-blue-600: #2563eb;
+            
+            /* Spacing Scale (8px base) */
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-5: 1.25rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            --space-10: 2.5rem;
+            --space-12: 3rem;
+            --space-16: 4rem;
+            
+            /* Typography */
+            --font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, system-ui, -apple-system, sans-serif;
+            --font-mono: 'Consolas', 'Monaco', 'Courier New', monospace;
+            
+            --text-xs: 0.75rem;
+            --text-sm: 0.875rem;
+            --text-base: 1rem;
+            --text-lg: 1.125rem;
+            --text-xl: 1.25rem;
+            --text-2xl: 1.5rem;
+            --text-3xl: 1.875rem;
+            --text-4xl: 2.25rem;
+            
+            /* Borders & Shadows */
+            --border-radius-sm: 0.25rem;
+            --border-radius-md: 0.5rem;
+            --border-radius-lg: 0.75rem;
+            --border-radius-xl: 1rem;
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            
+            /* Transitions */
+            --transition-fast: 150ms ease;
+            --transition-base: 250ms ease;
+            --transition-slow: 350ms ease;
+        }
+        
+        /* ============================================
+           RESET & BASE
+           ============================================ */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+        
+        body {
+            font-family: var(--font-family);
+            font-size: var(--text-base);
+            line-height: 1.6;
+            color: var(--color-navy-900);
+            background-color: var(--color-slate-100);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* ============================================
+           TYPOGRAPHY
+           ============================================ */
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: var(--space-4);
+        }
+        
+        h1 { font-size: var(--text-4xl); }
+        h2 { font-size: var(--text-3xl); color: var(--color-navy-800); }
+        h3 { font-size: var(--text-2xl); color: var(--color-navy-700); }
+        h4 { font-size: var(--text-xl); color: var(--color-navy-700); }
+        
+        p {
+            margin-bottom: var(--space-4);
+        }
+        
+        strong {
+            font-weight: 600;
+            color: var(--color-navy-800);
+        }
+        
+        code {
+            font-family: var(--font-mono);
+            font-size: var(--text-sm);
+            background: var(--color-slate-200);
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--border-radius-sm);
+        }
+        
+        /* ============================================
+           LAYOUT
+           ============================================ */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 var(--space-6);
+        }
+        
+        .section {
+            padding: var(--space-12) 0;
+            border-bottom: 1px solid var(--color-slate-200);
+        }
+        
+        .section:last-child {
+            border-bottom: none;
+        }
+        
+        /* ============================================
+           HERO SECTION
+           ============================================ */
+        .hero {
+            background: linear-gradient(135deg, var(--color-navy-900) 0%, var(--color-navy-800) 100%);
+            color: var(--color-white);
+            padding: var(--space-16) 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .hero-badge {
+            display: inline-block;
+            background: var(--color-amber-500);
+            color: var(--color-navy-900);
+            font-size: var(--text-sm);
+            font-weight: 600;
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--border-radius-xl);
+            margin-bottom: var(--space-6);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .hero h1 {
+            font-size: clamp(1.75rem, 5vw, 2.5rem);
+            margin-bottom: var(--space-4);
+            color: var(--color-white);
+        }
+        
+        .hero-subtitle {
+            font-size: var(--text-xl);
+            color: var(--color-slate-200);
+            margin-bottom: var(--space-6);
+            font-weight: 400;
+        }
+        
+        .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: var(--space-4);
+            color: var(--color-slate-400);
+            font-size: var(--text-sm);
+        }
+        
+        .hero-meta span {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+        
+        .hero-meta span::before {
+            content: '•';
+            color: var(--color-amber-500);
+        }
+        
+        .hero-meta span:first-child::before {
+            display: none;
+        }
+        
+        /* ============================================
+           STICKY NAVIGATION
+           ============================================ */
+        .nav-container {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--color-white);
+            border-bottom: 2px solid var(--color-amber-500);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .nav-inner {
+            display: flex;
+            justify-content: center;
+            padding: var(--space-4) 0;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .nav-list {
+            display: flex;
+            gap: var(--space-2);
+            list-style: none;
+            margin: 0;
+            padding: 0 var(--space-4);
+        }
+        
+        .nav-item {
+            flex-shrink: 0;
+        }
+        
+        .nav-link {
+            display: block;
+            padding: var(--space-2) var(--space-4);
+            color: var(--color-slate-600);
+            text-decoration: none;
+            font-size: var(--text-sm);
+            font-weight: 500;
+            border-radius: var(--border-radius-md);
+            transition: all var(--transition-fast);
+            white-space: nowrap;
+        }
+        
+        .nav-link:hover {
+            background: var(--color-slate-100);
+            color: var(--color-navy-800);
+        }
+        
+        .nav-link.active {
+            background: var(--color-amber-500);
+            color: var(--color-navy-900);
+        }
+        
+        /* Mobile nav toggle */
+        .nav-toggle {
+            display: none;
+            position: fixed;
+            bottom: var(--space-6);
+            right: var(--space-6);
+            z-index: 1000;
+            background: var(--color-amber-500);
+            color: var(--color-navy-900);
+            border: none;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            transition: transform var(--transition-fast);
+        }
+        
+        .nav-toggle:hover {
+            transform: scale(1.05);
+        }
+        
+        /* ============================================
+           CARDS & PANELS
+           ============================================ */
+        .card {
+            background: var(--color-white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-6);
+            margin-bottom: var(--space-6);
+            border-left: 4px solid var(--color-amber-500);
+        }
+        
+        .card-title {
+            font-size: var(--text-xl);
+            color: var(--color-navy-800);
+            margin-bottom: var(--space-4);
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+        
+        .card-title .icon {
+            width: 32px;
+            height: 32px;
+            background: var(--color-amber-100);
+            border-radius: var(--border-radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-amber-600);
+            font-size: var(--text-lg);
+        }
+        
+        /* ============================================
+           TABLES
+           ============================================ */
+        .table-container {
+            overflow-x: auto;
+            margin: var(--space-6) 0;
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--color-white);
+            font-size: var(--text-sm);
+        }
+        
+        th, td {
+            padding: var(--space-3) var(--space-4);
+            text-align: left;
+            border-bottom: 1px solid var(--color-slate-200);
+        }
+        
+        th {
+            background: var(--color-navy-800);
+            color: var(--color-white);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: var(--text-xs);
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+        
+        tr:hover {
+            background: var(--color-slate-100);
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .table-highlight {
+            background: var(--color-amber-100) !important;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--border-radius-xl);
+            font-size: var(--text-xs);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .badge-warning {
+            background: var(--color-amber-500);
+            color: var(--color-navy-900);
+        }
+        
+        .badge-danger {
+            background: var(--color-red-500);
+            color: var(--color-white);
+        }
+        
+        .badge-success {
+            background: var(--color-green-600);
+            color: var(--color-white);
+        }
+        
+        .badge-info {
+            background: var(--color-blue-600);
+            color: var(--color-white);
+        }
+        
+        /* ============================================
+           PDCA DIAGRAM
+           ============================================ */
+        .pdca-container {
+            display: flex;
+            justify-content: center;
+            padding: var(--space-8) 0;
+        }
+        
+        .pdca-svg {
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        .pdca-circle {
+            fill: none;
+            stroke-width: 3;
+        }
+        
+        .pdca-text {
+            font-size: 14px;
+            font-weight: 600;
+            text-anchor: middle;
+        }
+        
+        .pdca-arrow {
+            fill: var(--color-amber-500);
+        }
+        
+        /* ============================================
+           PYRAMID DIAGRAM
+           ============================================ */
+        .pyramid-container {
+            display: flex;
+            justify-content: center;
+            padding: var(--space-8) 0;
+        }
+        
+        .pyramid-svg {
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .pyramid-level {
+            stroke: var(--color-white);
+            stroke-width: 2;
+        }
+        
+        .pyramid-text {
+            font-size: 12px;
+            font-weight: 600;
+            text-anchor: middle;
+            fill: var(--color-white);
+        }
+        
+        /* ============================================
+           TRACEABILITY FLOW
+           ============================================ */
+        .flow-container {
+            display: flex;
+            justify-content: center;
+            padding: var(--space-8) 0;
+        }
+        
+        .flow-svg {
+            max-width: 700px;
+            width: 100%;
+        }
+        
+        .flow-box {
+            fill: var(--color-white);
+            stroke: var(--color-navy-700);
+            stroke-width: 2;
+            rx: 8;
+        }
+        
+        .flow-text {
+            font-size: 13px;
+            font-weight: 500;
+            text-anchor: middle;
+            fill: var(--color-navy-800);
+        }
+        
+        .flow-arrow {
+            stroke: var(--color-amber-500);
+            stroke-width: 3;
+            fill: none;
+            marker-end: url(#arrowhead);
+        }
+        
+        /* ============================================
+           TIMELINE / GANTT
+           ============================================ */
+        .timeline-container {
+            padding: var(--space-8) 0;
+            overflow-x: auto;
+        }
+        
+        .timeline {
+            position: relative;
+            min-width: 800px;
+            padding: var(--space-8) 0;
+        }
+        
+        .timeline-axis {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--color-slate-300);
+            border-radius: 2px;
+        }
+        
+        .timeline-milestone {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-4);
+        }
+        
+        .milestone-marker {
+            width: 20px;
+            height: 20px;
+            background: var(--color-amber-500);
+            border-radius: 50%;
+            border: 3px solid var(--color-white);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .milestone-label {
+            font-size: var(--text-xs);
+            font-weight: 600;
+            color: var(--color-navy-700);
+            text-align: center;
+            white-space: nowrap;
+        }
+        
+        .milestone-bar {
+            position: absolute;
+            top: calc(50% - 20px);
+            height: 40px;
+            background: var(--color-amber-500);
+            border-radius: var(--border-radius-md);
+            opacity: 0.3;
+        }
+        
+        /* ============================================
+           ERROR CARDS (6 SAI LẦM)
+           ============================================ */
+        .error-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-6);
+        }
+        
+        .error-card {
+            background: var(--color-white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-md);
+            border-top: 4px solid var(--color-red-500);
+            transition: transform var(--transition-fast);
+        }
+        
+        .error-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .error-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--color-red-500);
+            color: var(--color-white);
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: var(--text-lg);
+            margin-bottom: var(--space-4);
+        }
+        
+        /* ============================================
+           ACCORDION / DETAILS
+           ============================================ */
+        details {
+            background: var(--color-white);
+            border-radius: var(--border-radius-md);
+            margin-bottom: var(--space-4);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+        
+        summary {
+            padding: var(--space-4) var(--space-6);
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--color-navy-800);
+            background: var(--color-slate-100);
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background var(--transition-fast);
+        }
+        
+        summary:hover {
+            background: var(--color-slate-200);
+        }
+        
+        summary::-webkit-details-marker {
+            display: none;
+        }
+        
+        summary::after {
+            content: '+';
+            font-size: var(--text-xl);
+            color: var(--color-amber-500);
+            transition: transform var(--transition-fast);
+        }
+        
+        details[open] summary::after {
+            transform: rotate(45deg);
+        }
+        
+        details[open] summary {
+            background: var(--color-amber-100);
+        }
+        
+        .details-content {
+            padding: var(--space-6);
+            border-top: 1px solid var(--color-slate-200);
+        }
+        
+        /* ============================================
+           TIP BOX
+           ============================================ */
+        .tip-box {
+            background: var(--color-amber-100);
+            border-left: 4px solid var(--color-amber-500);
+            padding: var(--space-4) var(--space-6);
+            margin: var(--space-6) 0;
+            border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
+        }
+        
+        .tip-box-title {
+            font-weight: 600;
+            color: var(--color-amber-600);
+            margin-bottom: var(--space-2);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+        
+        .tip-box-content {
+            color: var(--color-navy-800);
+            font-size: var(--text-sm);
+        }
+        
+        /* ============================================
+           FORM EXAMPLE STYLES
+           ============================================ */
+        .form-example {
+            background: var(--color-white);
+            border: 2px solid var(--color-slate-300);
+            border-radius: var(--border-radius-md);
+            padding: var(--space-6);
+            margin: var(--space-6) 0;
+        }
+        
+        .form-header {
+            border-bottom: 2px solid var(--color-navy-800);
+            padding-bottom: var(--space-4);
+            margin-bottom: var(--space-4);
+        }
+        
+        .form-title {
+            font-size: var(--text-lg);
+            font-weight: 700;
+            color: var(--color-navy-800);
+            margin-bottom: var(--space-2);
+        }
+        
+        .form-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-3);
+            font-size: var(--text-sm);
+        }
+        
+        .form-field {
+            display: flex;
+            gap: var(--space-2);
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--color-slate-600);
+            min-width: 120px;
+        }
+        
+        .form-value {
+            color: var(--color-navy-800);
+        }
+        
+        .form-signature {
+            margin-top: var(--space-8);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-6);
+        }
+        
+        .signature-block {
+            text-align: center;
+        }
+        
+        .signature-line {
+            border-top: 1px solid var(--color-navy-800);
+            margin-top: var(--space-8);
+            padding-top: var(--space-2);
+            font-size: var(--text-sm);
+            font-weight: 600;
+        }
+        
+        /* ============================================
+           ANIMATIONS (Scroll Reveal)
+           ============================================ */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* ============================================
+           BACK TO TOP
+           ============================================ */
+        .back-to-top {
+            position: fixed;
+            bottom: var(--space-6);
+            left: var(--space-6);
+            z-index: 1000;
+            background: var(--color-navy-800);
+            color: var(--color-white);
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            transition: all var(--transition-fast);
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            background: var(--color-amber-500);
+            color: var(--color-navy-900);
+            transform: translateY(-4px);
+        }
+        
+        /* ============================================
+           FOOTER
+           ============================================ */
+        .footer {
+            background: var(--color-navy-900);
+            color: var(--color-slate-400);
+            padding: var(--space-12) 0 var(--space-8);
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .footer-text {
+            font-size: var(--text-sm);
+            line-height: 1.8;
+        }
+        
+        .footer-date {
+            margin-top: var(--space-4);
+            font-size: var(--text-xs);
+            color: var(--color-slate-500);
+        }
+        
+        /* ============================================
+           PRINT STYLES
+           ============================================ */
+        @media print {
+            .nav-container,
+            .back-to-top,
+            .nav-toggle {
+                display: none !important;
+            }
+            
+            body {
+                background: var(--color-white);
+                font-size: 11pt;
+            }
+            
+            .section {
+                page-break-inside: avoid;
+                padding: var(--space-6) 0;
+            }
+            
+            .card,
+            details,
+            .form-example {
+                box-shadow: none;
+                border: 1px solid var(--color-slate-300);
+            }
+            
+            .hero {
+                background: var(--color-navy-900) !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            th {
+                background: var(--color-navy-800) !important;
+                color: var(--color-white) !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .reveal {
+                opacity: 1;
+                transform: none;
+            }
+            
+            a {
+                text-decoration: none;
+                color: var(--color-navy-900);
+            }
+        }
+        
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
+        @media (max-width: 768px) {
+            .hero {
+                padding: var(--space-10) 0;
+            }
+            
+            .hero-meta {
+                flex-direction: column;
+                gap: var(--space-2);
+            }
+            
+            .hero-meta span::before {
+                display: none;
+            }
+            
+            .nav-inner {
+                padding: var(--space-2) 0;
+            }
+            
+            .nav-link {
+                padding: var(--space-2) var(--space-3);
+                font-size: var(--text-xs);
+            }
+            
+            .section {
+                padding: var(--space-8) 0;
+            }
+            
+            h2 {
+                font-size: var(--text-2xl);
+            }
+            
+            .error-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-signature {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 0 var(--space-4);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HERO SECTION -->
+    <header class="hero" id="hero">
+        <div class="container hero-content">
+            <span class="hero-badge">ISO 9001:2015 Implementation</span>
+            <h1>Giai đoạn 6 — Xây dựng Hệ thống Quản lý Chất lượng (QMS)</h1>
+            <p class="hero-subtitle">Theo tiêu chuẩn ISO 9001:2015 cho Nhà máy Ép phun (Đúc nhựa)</p>
+            <div class="hero-meta">
+                <span>ISO 9001:2015</span>
+                <span>PDCA Cycle</span>
+                <span>Lộ trình 6 tháng</span>
+                <span>Kèm ví dụ thực tế</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- STICKY NAVIGATION -->
+    <nav class="nav-container">
+        <div class="nav-inner">
+            <ul class="nav-list">
+                <li class="nav-item"><a href="#hero" class="nav-link active">Trang chủ</a></li>
+                <li class="nav-item"><a href="#overview" class="nav-link">Tổng quan</a></li>
+                <li class="nav-item"><a href="#structure" class="nav-link">10 Điều khoản</a></li>
+                <li class="nav-item"><a href="#pyramid" class="nav-link">Kim tự tháp</a></li>
+                <li class="nav-item"><a href="#procedures" class="nav-link">13 Quy trình</a></li>
+                <li class="nav-item"><a href="#operation" class="nav-link">Operation §8</a></li>
+                <li class="nav-item"><a href="#people" class="nav-link">Con người</a></li>
+                <li class="nav-item"><a href="#timeline" class="nav-link">Lộ trình</a></li>
+                <li class="nav-item"><a href="#mistakes" class="nav-link">6 Sai lầm</a></li>
+                <li class="nav-item"><a href="#examples" class="nav-link">Ví dụ</a></li>
+                <li class="nav-item"><a href="#tools" class="nav-link">Công cụ</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main>
+        <!-- KHỐI 1: TỔNG QUAN & PDCA -->
+        <section id="overview" class="section reveal">
+            <div class="container">
+                <h2>Khối 1 — Tổng quan & Mô hình PDCA</h2>
+                
+                <div class="card">
+                    <h3 class="card-title">
+                        <span class="icon">📋</span>
+                        QMS là gì? Vì sao cần?
+                    </h3>
+                    <p><strong>Hệ thống Quản lý Chất lượng (QMS - Quality Management System)</strong> là một hệ thống được hệ thống hóa để quản lý chất lượng, bao gồm:</p>
+                    <ul style="margin-left: var(--space-6); margin-bottom: var(--space-4);">
+                        <li><strong>Chính sách và mục tiêu chất lượng</strong> — định hướng từ lãnh đạo</li>
+                        <li><strong>Quy trình và hướng dẫn</strong> — mô tả cách thực hiện công việc</li>
+                        <li><strong>Hồ sơ và bằng chứng</strong> — chứng minh việc thực hiện</li>
+                        <li><strong>Giám sát và đo lường</strong> — đánh giá hiệu quả</li>
+                        <li><strong>Cải tiến liên tục</strong> — không ngừng nâng cao</li>
+                    </ul>
+                    <p><strong>Mục đích của QMS theo ISO 9001:2015:</strong></p>
+                    <ul style="margin-left: var(--space-6);">
+                        <li>Đảm bảo sản phẩm/dịch vụ đáp ứng yêu cầu khách hàng</li>
+                        <li>Tăng cường sự thỏa mãn khách hàng</li>
+                        <li>Cung cấp bằng chứng về khả năng cung cấp sản phẩm ổn định</li>
+                        <li>Thúc đẩy cải tiến liên tục thông qua chu trình PDCA</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">
+                        <span class="icon">🔄</span>
+                        Chu trình PDCA — Trái tim của ISO 9001
+                    </h3>
+                    <p>PDCA (Plan–Do–Check–Act) là phương pháp lặp đi lặp lại để kiểm soát và cải tiến liên tục quá trình, sản phẩm và dịch vụ.</p>
+                    
+                    <div class="pdca-container">
+                        <svg class="pdca-svg" viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Define arrowhead marker -->
+                            <defs>
+                                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                    <polygon points="0 0, 10 3.5, 0 7" fill="#f59e0b"/>
+                                </marker>
+                            </defs>
+                            
+                            <!-- Center circle -->
+                            <circle cx="250" cy="200" r="60" fill="none" stroke="#334155" stroke-width="2" stroke-dasharray="5,5"/>
+                            <text x="250" y="195" text-anchor="middle" fill="#334155" font-size="14" font-weight="700">QMS</text>
+                            <text x="250" y="215" text-anchor="middle" fill="#64748b" font-size="11">ISO 9001</text>
+                            
+                            <!-- PLAN quadrant (top-left) -->
+                            <path d="M 250 140 A 110 110 0 0 1 140 250" fill="none" stroke="#2563eb" stroke-width="60" stroke-linecap="round" opacity="0.15"/>
+                            <text x="170" y="180" class="pdca-text" fill="#2563eb">PLAN</text>
+                            <text x="170" y="200" font-size="10" text-anchor="middle" fill="#64748b">§4,5,6,7</text>
+                            <text x="170" y="215" font-size="9" text-anchor="middle" fill="#64748b">Hoạch định</text>
+                            
+                            <!-- DO quadrant (top-right) -->
+                            <path d="M 360 250 A 110 110 0 0 1 250 140" fill="none" stroke="#16a34a" stroke-width="60" stroke-linecap="round" opacity="0.15"/>
+                            <text x="330" y="180" class="pdca-text" fill="#16a34a">DO</text>
+                            <text x="330" y="200" font-size="10" text-anchor="middle" fill="#64748b">§8</text>
+                            <text x="330" y="215" font-size="9" text-anchor="middle" fill="#64748b">Thực hiện</text>
+                            
+                            <!-- CHECK quadrant (bottom-right) -->
+                            <path d="M 250 260 A 110 110 0 0 1 360 150" fill="none" stroke="#f59e0b" stroke-width="60" stroke-linecap="round" opacity="0.15"/>
+                            <text x="330" y="230" class="pdca-text" fill="#d97706">CHECK</text>
+                            <text x="330" y="250" font-size="10" text-anchor="middle" fill="#64748b">§9</text>
+                            <text x="330" y="265" font-size="9" text-anchor="middle" fill="#64748b">Đánh giá</text>
+                            
+                            <!-- ACT quadrant (bottom-left) -->
+                            <path d="M 140 150 A 110 110 0 0 1 250 260" fill="none" stroke="#dc2626" stroke-width="60" stroke-linecap="round" opacity="0.15"/>
+                            <text x="170" y="230" class="pdca-text" fill="#dc2626">ACT</text>
+                            <text x="170" y="250" font-size="10" text-anchor="middle" fill="#64748b">§10</text>
+                            <text x="170" y="265" font-size="9" text-anchor="middle" fill="#64748b">Cải tiến</text>
+                            
+                            <!-- Rotation arrows -->
+                            <path d="M 250 70 L 250 50 M 245 55 L 250 50 L 255 55" stroke="#f59e0b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                            <path d="M 430 200 L 450 200 M 445 195 L 450 200 L 445 205" stroke="#f59e0b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                            <path d="M 250 330 L 250 350 M 245 345 L 250 350 L 255 345" stroke="#f59e0b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                            <path d="M 70 200 L 50 200 M 55 195 L 50 200 L 55 205" stroke="#f59e0b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                        </svg>
+                    </div>
+                    
+                    <div class="tip-box">
+                        <div class="tip-box-title">📌 MẸO THỰC HÀNH</div>
+                        <div class="tip-box-content">
+                            PDCA không phải là chu trình một lần — nó lặp đi lặp lại ở mọi cấp độ: từ toàn bộ QMS, đến từng quy trình, đến từng công việc cụ thể. Mỗi lần lặp là một cơ hội cải tiến.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KHỐI 2: CẤU TRÚC ISO 9001:2015 -->
+        <section id="structure" class="section reveal">
+            <div class="container">
+                <h2>Khối 2 — Cấu trúc ISO 9001:2015 (10 Điều khoản)</h2>
+                
+                <div class="card">
+                    <p>ISO 9001:2015 có 10 điều khoản (§4–§10), trong đó §1–§3 là phần giới thiệu. Các điều khoản yêu cầu được nhóm theo mô hình PDCA:</p>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>PDCA</th>
+                                <th>Điều khoản</th>
+                                <th>Tên điều khoản</th>
+                                <th>Nội dung cần làm trong nhà máy ép phun</th>
+                                <th>Ghi chú</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="background: rgba(37, 99, 235, 0.05);">
+                                <td rowspan="4" style="text-align: center; vertical-align: middle; font-weight: 700; color: #2563eb;">PLAN<br>Hoạch định</td>
+                                <td><strong>§4</strong></td>
+                                <td>Bối cảnh tổ chức</td>
+                                <td>Xác định vấn đề nội bộ (năng lực máy, nhân sự) và bên ngoài (thị trường, đối thủ); xác định bên quan tâm (khách, cơ quan quản lý)</td>
+                                <td>Làm 1 lần, cập nhật khi có thay đổi lớn</td>
+                            </tr>
+                            <tr style="background: rgba(37, 99, 235, 0.05);">
+                                <td><strong>§5</strong></td>
+                                <td>Lãnh đạo</td>
+                                <td>Cam kết của BGĐ, ban hành chính sách chất lượng, phân công trách nhiệm – quyền hạn</td>
+                                <td>Lãnh đạo phải "xuống xưởng" xem xét chất lượng</td>
+                            </tr>
+                            <tr style="background: rgba(37, 99, 235, 0.05);">
+                                <td><strong>§6</strong></td>
+                                <td>Hoạch định</td>
+                                <td>Thiết lập mục tiêu chất lượng (KPIs), lập kế hoạch đạt mục tiêu, quản lý rủi ro & cơ hội</td>
+                                <td>Mục tiêu phải SMART, đo được</td>
+                            </tr>
+                            <tr style="background: rgba(37, 99, 235, 0.05);">
+                                <td><strong>§7</strong></td>
+                                <td>Hỗ trợ</td>
+                                <td>Cung cấp nguồn lực (người, máy, đo lường), đào tạo, kiểm soát tài liệu & hồ sơ</td>
+                                <td>§7.5 Kiểm soát tài liệu là điểm chết khi audit</td>
+                            </tr>
+                            <tr style="background: rgba(22, 163, 74, 0.1); border-left: 4px solid #16a34a;">
+                                <td style="text-align: center; vertical-align: middle; font-weight: 700; color: #16a34a;">DO<br>Thực hiện</td>
+                                <td><strong>§8</strong></td>
+                                <td style="font-weight: 700;">Hoạt động (Operation)</td>
+                                <td style="font-weight: 700;">Kiểm soát sản xuất: từ đơn hàng → mua nguyên liệu → ép phun → kiểm tra → xuất kho</td>
+                                <td><span class="badge badge-warning">TRỌNG TÂM</span> Chiếm 60% thời gian audit</td>
+                            </tr>
+                            <tr style="background: rgba(245, 158, 11, 0.05);">
+                                <td style="text-align: center; vertical-align: middle; font-weight: 700; color: #d97706;">CHECK<br>Đánh giá</td>
+                                <td><strong>§9</strong></td>
+                                <td>Đánh giá hiệu quả</td>
+                                <td>Theo dõi & đo lường KPIs, đánh giá nội bộ, họp xem xét lãnh đạo</td>
+                                <td>Đánh giá nội bộ ít nhất 1 lần/năm (thực tế nên 2 lần)</td>
+                            </tr>
+                            <tr style="background: rgba(220, 38, 38, 0.05);">
+                                <td style="text-align: center; vertical-align: middle; font-weight: 700; color: #dc2626;">ACT<br>Cải tiến</td>
+                                <td><strong>§10</strong></td>
+                                <td>Cải tiến</td>
+                                <td>Xử lý không phù hợp, hành động khắc phục, cải tiến liên tục</td>
+                                <td>Không phù hợp phải có hành động khắc phục tận gốc</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-box-title">📌 LƯU Ý QUAN TRỌNG</div>
+                    <div class="tip-box-content">
+                        <strong>ISO 9001:2015 chỉ bắt buộc tối thiểu:</strong> Chính sách chất lượng, Mục tiêu chất lượng, Sổ tay chất lượng (không còn bắt buộc nhưng nên có), 6 quy trình bắt buộc (kiểm soát tài liệu, hồ sơ, nội bộ, sản phẩm không phù hợp, hành động khắc phục, phòng ngừa), và các hồ sơ theo yêu cầu. <strong>Phần còn lại do tổ chức tự quyết định</strong> — đừng phình to bộ tài liệu một cách không cần thiết!
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KHỐI 3: KIM TỰ THÁP TÀI LIỆU -->
+        <section id="pyramid" class="section reveal">
+            <div class="container">
+                <h2>Khối 3 — Kim tự tháp Tài liệu 4 Tầng</h2>
+                
+                <div class="card">
+                    <h3 class="card-title">
+                        <span class="icon">📐</span>
+                        Cấu trúc phân tầng tài liệu QMS
+                    </h3>
+                    <p>Hệ thống tài liệu QMS được tổ chức theo 4 tầng từ tổng quan đến chi tiết, giúp dễ kiểm soát và tra cứu:</p>
+                </div>
+
+                <div class="pyramid-container">
+                    <svg class="pyramid-svg" viewBox="0 0 400 350" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Level 4 (bottom) -->
+                        <polygon points="50,320 350,320 300,240 100,240" fill="#64748b" class="pyramid-level"/>
+                        <text x="200" y="275" class="pyramid-text">TẦNG 4: Forms & Records</text>
+                        <text x="200" y="295" class="pyramid-text" font-size="10" opacity="0.9">Biểu mẫu + Hồ sơ (BẰNG CHỨNG)</text>
+                        
+                        <!-- Level 3 -->
+                        <polygon points="100,240 300,240 250,170 150,170" fill="#334155" class="pyramid-level"/>
+                        <text x="200" y="205" class="pyramid-text">TẦNG 3: Work Instructions</text>
+                        <text x="200" y="220" class="pyramid-text" font-size="10" opacity="0.9">Hướng dẫn công việc (LÀM NHƯ THẾ NÀO)</text>
+                        
+                        <!-- Level 2 -->
+                        <polygon points="150,170 250,170 220,110 180,110" fill="#1e293b" class="pyramid-level"/>
+                        <text x="200" y="145" class="pyramid-text">TẦNG 2: Procedures</text>
+                        <text x="200" y="160" class="pyramid-text" font-size="10" opacity="0.9">Quy trình (AI LÀM GÌ)</text>
+                        
+                        <!-- Level 1 (top) -->
+                        <polygon points="180,110 220,110 200,70" fill="#0f172a" class="pyramid-level"/>
+                        <text x="200" y="95" class="pyramid-text">TẦNG 1: Quality Manual</text>
+                        <text x="200" y="60" class="pyramid-text" font-size="10" opacity="0.9">Sổ tay Chất lượng (VÌ SAO TỒN TẠI)</text>
+                    </svg>
+                </div>
+
+                <div class="card">
+                    <h4>Chi tiết 4 tầng:</h4>
+                    <div style="display: grid; gap: var(--space-4);">
+                        <div style="padding: var(--space-4); background: #fef3c7; border-left: 4px solid #f59e0b; border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;">
+                            <strong>Tầng 1 — Sổ tay Chất lượng (Quality Manual):</strong> Mô tả phạm vi QMS, chính sách chất lượng, cơ cấu tổ chức, tương tác các quá trình. <em>Trả lời: "Vì sao chúng ta tồn tại và hệ thống này hoạt động ra sao?"</em>
+                        </div>
+                        <div style="padding: var(--space-4); background: #e0f2fe; border-left: 4px solid #0284c7; border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;">
+                            <strong>Tầng 2 — Quy trình (Procedures):</strong> Mô tả ai làm gì, khi nào, ở đâu cho từng hoạt động chính. <em>Trả lời: "Ai làm gì?"</em> Ví dụ: QP-DOC-001 Kiểm soát tài liệu, QP-PRO-003 Kiểm soát quá trình sản xuất.
+                        </div>
+                        <div style="padding: var(--space-4); background: #dcfce7; border-left: 4px solid #16a34a; border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;">
+                            <strong>Tầng 3 — Hướng dẫn công việc (WI):</strong> Hướng dẫn chi tiết từng bước thực hiện một công việc cụ thể. <em>Trả lời: "Làm như thế nào?"</em> Ví dụ: WI-OP-001 Vận hành máy ép phun IM-03, WI-QC-002 Kiểm tra sản phẩm đầu ca.
+                        </div>
+                        <div style="padding: var(--space-4); background: #f1f5f9; border-left: 4px solid #64748b; border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;">
+                            <strong>Tầng 4 — Biểu mẫu & Hồ sơ (Forms & Records):</strong> Biểu mẫu là mẫu trống; Hồ sơ là biểu mẫu đã điền. <em>Trả lời: "Bằng chứng đâu?"</em> Ví dụ: F-OP-001 Phiếu theo dõi thông số ép phun (đã điền = hồ sơ).
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tip-box" style="border-left-color: #16a34a; background: #dcfce7;">
+                    <div class="tip-box-title" style="color: #16a34a;">✅ NGUYÊN TẮC VÀNG</div>
+                    <div class="tip-box-content" style="font-size: var(--text-lg); font-weight: 700; text-align: center; padding: var(--space-4);">
+                        "Doc it, do it, prove it"<br>
+                        <span style="font-size: var(--text-base); font-weight: 500;">Viết gì làm nấy — Làm gì có hồ sơ</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KHỐI 4: 13 QUY TRÌNH TỐI THIỂU -->
+        <section id="procedures" class="section reveal">
+            <div class="container">
+                <h2>Khối 4 — Danh mục 13 Quy trình Tối thiểu</h2>
+                
+                <div class="card">
+                    <p>Đối với nhà máy ép phun vừa và nhỏ, 13 quy trình sau là đủ để đáp ứng ISO 9001:2015. Xưởng nhỏ có thể gộp một số quy trình lại, nhưng phải đảm bảo覆盖 hết yêu cầu.</p>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">STT</th>
+                                <th>Quy trình (Việt + English)</th>
+                                <th style="width: 120px;">Điều khoản</th>
+                                <th>Mục đích ngắn gọn</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td><strong>Kiểm soát tài liệu</strong> (Document Control)</td>
+                                <td>§7.5.3</td>
+                                <td>Đảm bảo chỉ bản mới nhất được dùng ngoài xưởng; thu hồi bản cũ</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><strong>Kiểm soát hồ sơ</strong> (Record Control)</td>
+                                <td>§7.5.3</td>
+                                <td>Lưu trữ, thời hạn lưu, bảo vệ và truy xuất hồ sơ chất lượng</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td><strong>Kiểm soát quá trình sản xuất</strong> (Production Control)</td>
+                                <td>§8.5.1</td>
+                                <td>Kiểm soát thông số ép phun, điều kiện vận hành, môi trường sản xuất</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td><strong>Kiểm soát thiết bị đo lường</strong> (Monitoring & Measurement)</td>
+                                <td>§7.1.5</td>
+                                <td>Hiệu chuẩn CMM, thước, cân, đồng hồ áp đúng hạn; dán tem</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td><strong>Bảo trì khuôn & máy móc</strong> (Maintenance)</td>
+                                <td>§7.1.3 / §8.5.1</td>
+                                <td>Bảo dưỡng định kỳ, sổ nhật ký khuôn, xử lý sự cố máy</td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td><strong>Kiểm soát sản phẩm không phù hợp</strong> (Nonconforming Product)</td>
+                                <td>§8.7</td>
+                                <td>Tách phế, phòng lẫn vào thành phẩm; quyết định xử lý (scrap/rework/use-as-is)</td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td><strong>Hành động khắc phục</strong> (Corrective Action)</td>
+                                <td>§10.2</td>
+                                <td>Xử lý tận gốc khiếu nại/phế lặp lại; 5 Whys, 8D</td>
+                            </tr>
+                            <tr>
+                                <td>8</td>
+                                <td><strong>Đánh giá nội bộ</strong> (Internal Audit)</td>
+                                <td>§9.2</td>
+                                <td>Tự soi trước khi audit ngoài; phát hiện điểm yếu để sửa</td>
+                            </tr>
+                            <tr>
+                                <td>9</td>
+                                <td><strong>Quản lý nhà cung cấp</strong> (Supplier Management)</td>
+                                <td>§8.4</td>
+                                <td>Đánh giá hạt nhựa, phụ gia, dịch vụ ngoài (mạ, in, lắp ráp)</td>
+                            </tr>
+                            <tr>
+                                <td>10</td>
+                                <td><strong>Kiểm soát hợp đồng</strong> (Contract Review)</td>
+                                <td>§8.2</td>
+                                <td>Tiếp nhận đúng yêu cầu khách hàng trước khi nhận đơn</td>
+                            </tr>
+                            <tr>
+                                <td>11</td>
+                                <td><strong>Đào tạo & năng lực</strong> (Training & Competence)</td>
+                                <td>§7.2</td>
+                                <td>Ma trận năng lực, chứng nhận vận hành, đào tạo lại định kỳ</td>
+                            </tr>
+                            <tr>
+                                <td>12</td>
+                                <td><strong>Quản lý rủi ro & cơ hội</strong> (Risk & Opportunity)</td>
+                                <td>§6.1</td>
+                                <td>SWOT, rủi ro quy trình, kế hoạch giảm thiểu</td>
+                            </tr>
+                            <tr>
+                                <td>13</td>
+                                <td><strong>Truy xuất nguồn gốc</strong> (Traceability)</td>
+                                <td>§8.5.2</td>
+                                <td>Theo lô nguyên liệu → lô thành phẩm; mục tiêu < 30 phút khi có khiếu nại</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-box-title">📌 GHI CHÚ</div>
+                    <div class="tip-box-content">
+                        <strong>Xưởng nhỏ (&lt;50 nhân sự)</strong> có thể gộp: (1+2) thành "Kiểm soát tài liệu & hồ sơ", (4+5) thành "Quản lý thiết bị & bảo trì", (9+10) thành "Quản lý đơn hàng & nhà cung cấp". <strong>Mục tiêu: gọn nhưng đủ</strong> — không cắt xén yêu cầu ISO.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KHỐI 5: TRỌNG TÂM §8 OPERATION -->
+        <section id="operation" class="section reveal">
+            <div class="container">
+                <h2>Khối 5 — Trọng tâm §8 Operation (Đặc thù Ép phun)</h2>
+                
+                <div class="card" style="border-left-color: #dc2626;">
+                    <p style="font-size: var(--text-lg); margin-bottom: 0;">
+                        <strong>⚠️ Đây là khối QUAN TRỌNG NHẤT</strong> — chiếm 60% thời gian audit thực tế. Auditor sẽ đi xuống xưởng, xem cách bạn kiểm soát quá trình ép phun, kiểm tra sản phẩm, xử lý phế phẩm, và truy xuất nguồn gốc.
+                    </p>
+                </div>
+
+                <!-- 5a: KIỂM SOÁT QUÁ TRÌNH -->
+                <div class="card">
+                    <h3 class="card-title">
+                        <span class="icon">⚙️</span>
+                        5a. Kiểm soát Quá trình — Phiếu theo dõi thông số ép phun
+                    </h3>
+                    <p>Mỗi ca sản xuất phải ghi lại thông số thực tế của máy ép phun để đối chiếu với khoảng cho phép trong quy trình. Đây là bằng chứng quan trọng nhất khi audit.</p>
+                    
+                    <div class="form-example">
+                        <div class="form-header">
+                            <div class="form-title">PHIẾU THEO DÕI THÔNG SỐ ÉP PHUN</div>
+                            <div style="font-size: var(--text-sm); color: var(--color-slate-600);">Mã tài liệu: F-OP-001 · Lần ban hành: 01 · Ngày: 15/08/2026</div>
+                        </div>
+                        <div class="form-meta">
+                            <div class="form-field">
+                                <span class="form-label">Mã máy:</span>
+                                <span class="form-value"><strong>IM-03</strong></span>
+                            </div>
+                            <div class="form-field">
+                                <span class="form-label">Sản phẩm:</span>
+                                <span class="form-value"><strong>Vỏ linh kiện điện tử KL-102</strong></span>
+                            </div>
+                            <div class="form-field">
+                                <span class="form-label">Số job:</span>
+                                <span class="form-value"><strong>JOB-2026-0917</strong></span>
+                            </div>
+                            <div class="form-field">
+                                <span class="form-label">Ca sản xuất:</span>
+                                <span class="form-value"><strong>Ca 1 (06:00–14:00)</strong></span>
+                            </div>
+                            <div class="form-field">
+                                <span class="form-label">Người vận hành:</span>
+                                <span class="form-value"><strong>Nguyễn Văn A</strong></span>
+                            </div>
+                            <div class="form-field">
+                                <span class="form-label">Ngày:</span>
+                                <span class="form-value"><strong>17/09/2026</strong></span>
+                            </div>
+                        </div>
+                        
+                        <div class="table-container" style="margin-top: var(--space-4);">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Thông số</th>
+                                        <th>Khoảng cho phép</th>
+                                        <th>Giá trị thực tế</th>
+                                        <th>Kết quả</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Nhiệt độ vùng 1 (nòng)</td>
+                                        <td>220–235°C</td>
+                                        <td><strong>228°C</strong></td>
+                                        <td><span class="badge badge-success">ĐẠT</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Nhiệt độ vùng 2</td>
+                                        <td>225–240°C</td>
+                                        <td><strong>232°C</strong></td>
+                                        <td><span class="badge badge-success">ĐẠT</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Nhiệt độ vùng 3</td>
+                                        <td>230–245°C</td>
+                                        <td><strong>236°C</strong></td>
+                                        <td><span class="badge badge-success">ĐẠT</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Nhiệt độ đầu phun</td>
+                                        <td>235–250°C</td>
+                                        <td><strong>241°C</strong></td>
+                                        <td><span class="badge badge-success">ĐẠT</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Nhiệt khuôn cố định</td>
+                                        <td>40–60°C</td>
+                                        <td><strong>52°C</strong></td>
+                                        <td><span class="badge badge-success">ĐẠT</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Nhiệt khuôn di động</td>
+                                        <td>40–60°C</td>
+                                        <td><strong>50°C</strong></td>
+                                        <td><span class="badge badge-success">ĐẠT</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Áp suất phun</td>
+                                        <td>80–100 MPa</td>
+                                        <td><strong>92 MPa</strong></td>
+                                        <td><span class="badge badge-success">ĐẠT</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Áp suất giữ</td>
+                                        <td>55–70 MPa</td>
+                                        <td><strong>62 MPa</strong></td>
+                                        <td><span class="badge badge-success">ĐẠT</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tốc độ phun</td>
+                                        <td>45–60 mm/s</td>
+                                        <td><strong>52 mm/s</strong></td>
+                                        <td><span class="badge badge-success">ĐẠT</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Thời gian giữ</td>
+                                        <td>4–6 s</td>
+                                        <td><strong>5.0 s</strong></td>
+                                        <td><span class="badge badge-success">ĐẠT</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Thời gian làm nguội</td>
+                                        <td>12–15 s</td>
+                                        <td><strong>13.5 s</strong></td>
+                                        <td><span class="badge badge-success">ĐẠT</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Chu kỳ tổng</td>
+                                        <td>28–32 s</td>
+                                        <td><strong>30 s</strong></td>
+                                        <td><span class="badge badge-success">ĐẠT</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Lực kẹp</td>
+                                        <td>120–150 tấn</td>
+                                        <td><strong>135 tấn</strong></td>
+                                        <td><span class="badge badge-success">ĐẠT</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Độ ẩm hạt trước khi ép</td>
+                                        <td>≤0.15%</td>
+                                        <td><strong>0.10%</strong></td>
+                                        <td><span class="badge badge-success">ĐẠT</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div style="margin-top: var(--space-6); padding: var(--space-4); background: #dcfce7; border-radius: var(--border-radius-md);">
+                            <strong>Kết luận:</strong> <span class="badge badge-success">ĐẠT</span> — Tất cả thông số nằm trong khoảng cho phép
+                        </div>
+                        
+                        <div class="form-signature">
+                            <div class="signature-block">
+                                <div style="margin-bottom: var(--space-2); font-size: var(--text-sm);">Người vận hành</div>
+                                <div style="height: 40px; border: 1px dashed var(--color-slate-400); margin-bottom: var(--space-2);"></div>
+                                <div class="signature-line">Nguyễn Văn A</div>
+                            </div>
+                            <div class="signature-block">
+                                <div style="margin-bottom: var(--space-2); font-size: var(--text-sm);">Tổ trưởng sản xuất</div>
+                                <div style="height: 40px; border: 1px dashed var(--color-slate-400); margin-bottom: var(--space-2);"></div>
+                                <div class="signature-line">Trần Văn B</div>
+                            </div>
+                            <div class="signature-block">
+                                <div style="margin-bottom: var(--space-2); font-size: var(--text-sm);">QC xác nhận</div>
+                                <div style="height: 40px; border: 1px dashed var(--color-slate-400); margin-bottom: var(--space-2);"></div>
+                                <div class="signature-line">Lê Thị C</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tip-box">
+                        <div class="tip-box-title">📌 MẸO THỰC HÀNH</div>
+                        <div class="tip-box-content">
+                            <strong>Tần suất ghi:</strong> Đầu ca (sau khi chạy thử 5 shot), giữa ca (mỗi 2 giờ), cuối ca. <strong>Khi có điều chỉnh thông số:</strong> ghi lại ngay lập tức kèm lý do. Auditor thường kiểm tra tính nhất quán giữa các lần ghi — nếu tất cả giống hệt nhau, đó là dấu hiệu "ghi cho có".
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5b: PFMEA -->
+                <div class="card">
+                    <h3 class="card-title">
+                        <span class="icon">⚠️</span>
+                        5b. PFMEA — Phân tích rủi ro quy trình
+                    </h3>
+                    <p><strong>PFMEA</strong> (Process Failure Mode and Effects Analysis) là phương pháp phân tích rủi ro từng công đoạn trong quy trình. <strong>RPN = Severity × Occurrence × Detection</strong> — điểm càng cao càng ưu tiên xử lý.</p>
+                    <ul style="margin-left: var(--space-6); margin-bottom: var(--space-4);">
+                        <li><strong>S (Severity — Độ nghiêm trọng):</strong> 1–10, 10 = nguy hiểm nhất</li>
+                        <li><strong>O (Occurrence — Tần suất xảy ra):</strong> 1–10, 10 = xảy ra thường xuyên</li>
+                        <li><strong>D (Detection — Khả năng phát hiện):</strong> 1–10, 10 = không thể phát hiện trước khi đến khách</li>
+                    </ul>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Công đoạn</th>
+                                    <th>Cách hỏng</th>
+                                    <th>Ảnh hưởng</th>
+                                    <th>Nguyên nhân</th>
+                                    <th>Kiểm soát hiện tại</th>
+                                    <th>S</th>
+                                    <th>O</th>
+                                    <th>D</th>
+                                    <th>RPN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="table-highlight">
+                                    <td><strong>Sấy hạt PA66</strong></td>
+                                    <td>Sấy thiếu thời gian/nhiệt độ → hạt còn ẩm</td>
+                                    <td>Sản phẩm bong bóng khí, giòn gãy</td>
+                                    <td>Quên hẹn giờ, cảm biến ẩm sai</td>
+                                    <td>Bảng hẹn giờ sấy + kiểm tra độ ẩm từng mẻ</td>
+                                    <td style="text-align: center;">8</td>
+                                    <td style="text-align: center;">6</td>
+                                    <td style="text-align: center;">4</td>
+                                    <td style="text-align: center; font-weight: 700; color: #dc2626;">192</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Ép phun — Áp suất giữ</strong></td>
+                                    <td>Áp suất giữ thấp</td>
+                                    <td>Co rút, cong vênh, lõm sản phẩm</td>
+                                    <td>Van áp lực trôi, cài đặt sai</td>
+                                    <td>Giám sát thông số realtime + kiểm tra đầu ca</td>
+                                    <td style="text-align: center;">7</td>
+                                    <td style="text-align: center;">5</td>
+                                    <td style="text-align: center;">3</td>
+                                    <td style="text-align: center; font-weight: 700;">105</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Ép phun — Lẫn tạp chất</strong></td>
+                                    <td>Hạt bị lẫn tạp/phế liệu bẩn</td>
+                                    <td>Điểm đen trên bề mặt, lỗi thẩm mỹ</td>
+                                    <td>Khâu nạp liệu không kiểm soát, phễu bẩn</td>
+                                    <td>Phễu hút ẩm có màng lọc, 5S khu nạp liệu</td>
+                                    <td style="text-align: center;">6</td>
+                                    <td style="text-align: center;">4</td>
+                                    <td style="text-align: center;">2</td>
+                                    <td style="text-align: center;">48</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="tip-box">
+                        <div class="tip-box-title">📌 MẸO THỰC HÀNH</div>
+                        <div class="tip-box-content">
+                            <strong>RPN > 100</strong> → ưu tiên lập hành động giảm thiểu ngay. <strong>RPN 50–100</strong> → theo dõi, lên kế hoạch cải tiến. <strong>RPN &lt; 50</strong> → chấp nhận, giám sát định kỳ. PFMEA phải được <strong>cập nhật khi có khiếu nại hoặc phế phẩm lặp lại</strong>.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5c: CONTROL PLAN -->
+                <div class="card">
+                    <h3 class="card-title">
+                        <span class="icon">📊</span>
+                        5c. Control Plan — Kế hoạch kiểm soát
+                    </h3>
+                    <p>Control Plan là bản kế hoạch kiểm soát chi tiết: đặc tính nào → kiểm tra bằng gì → tần suất ra sao → ai kiểm → làm gì khi vượt ngưỡng. Thường đi kèm với PFMEA.</p>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Đặc tính</th>
+                                    <th>Phương pháp / Thiết bị</th>
+                                    <th>Tần suất</th>
+                                    <th>Người kiểm</th>
+                                    <th>Phản ứng khi vượt ngưỡng</th>
+                                    <th>Loại CP</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Kích thước lỗ Ø3.2±0.05</strong></td>
+                                    <td>CMM / Dưỡng kiểm</td>
+                                    <td>1 mẫu / 4 giờ</td>
+                                    <td>QC</td>
+                                    <td>Cô lập lô, báo QA, điều chỉnh quy trình</td>
+                                    <td><span class="badge badge-info">Sản phẩm</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Khối lượng 45.2±0.3 g</strong></td>
+                                    <td>Cân điện tử 0.01 g</td>
+                                    <td>Mỗi lot đầu/cuối</td>
+                                    <td>Vận hành + QC</td>
+                                    <td>Hiệu chỉnh thông số ép, kiểm lại 30 phút</td>
+                                    <td><span class="badge badge-info">Sản phẩm</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Nhiệt độ nòng</strong></td>
+                                    <td>Hiển thị máy</td>
+                                    <td>Liên tục + ghi mỗi ca</td>
+                                    <td>Vận hành</td>
+                                    <td>Dừng máy nếu ngoài khoảng, báo kỹ thuật</td>
+                                    <td><span class="badge badge-warning">Quy trình</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Độ ẩm hạt</strong></td>
+                                    <td>Máy đo độ ẩm (moisture analyzer)</td>
+                                    <td>Mỗi mẻ sấy</td>
+                                    <td>Vận hành</td>
+                                    <td>Sấy thêm 1 giờ, đo lại</td>
+                                    <td><span class="badge badge-warning">Quy trình</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Bề mặt (visual)</strong></td>
+                                    <td>Mắt thường + đèn 1000 lux</td>
+                                    <td>100% sản phẩm</td>
+                                    <td>Vận hành + QC</td>
+                                    <td>Tách riêng, dán thẻ "KHÔNG PHÙ HỢP"</td>
+                                    <td><span class="badge badge-info">Sản phẩm</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 5d: TRUY XUẤT NGUỒN GỐC -->
+                <div class="card">
+                    <h3 class="card-title">
+                        <span class="icon">🔗</span>
+                        5d. Truy xuất nguồn gốc (Traceability)
+                    </h3>
+                    <p>Khả năng truy ngược từ sản phẩm cuối cùng về lô nguyên liệu đầu vào trong thời gian ngắn (&lt; 30 phút khi có khiếu nại).</p>
+                    
+                    <div class="flow-container">
+                        <svg class="flow-svg" viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <marker id="arrowhead-flow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                    <polygon points="0 0, 10 3.5, 0 7" fill="#f59e0b"/>
+                                </marker>
+                            </defs>
+                            
+                            <!-- Box 1: Raw Material -->
+                            <rect x="20" y="60" width="180" height="80" class="flow-box"/>
+                            <text x="110" y="90" class="flow-text" font-weight="700">NGUYÊN LIỆU</text>
+                            <text x="110" y="115" class="flow-text" font-size="11">PO-2026-0812</text>
+                            <text x="110" y="130" class="flow-text" font-size="11">Lot: NH-PA66-88431</text>
+                            
+                            <!-- Arrow 1 -->
+                            <line x1="200" y1="100" x2="240" y2="100" class="flow-arrow" marker-end="url(#arrowhead-flow)"/>
+                            
+                            <!-- Box 2: Production -->
+                            <rect x="240" y="60" width="220" height="80" class="flow-box"/>
+                            <text x="350" y="85" class="flow-text" font-weight="700">SẢN XUẤT</text>
+                            <text x="350" y="105" class="flow-text" font-size="11">JOB-2026-0917</text>
+                            <text x="350" y="120" class="flow-text" font-size="11">Máy IM-03 · Ca 1</text>
+                            <text x="350" y="135" class="flow-text" font-size="11">NV: Nguyễn Văn A</text>
+                            
+                            <!-- Arrow 2 -->
+                            <line x1="460" y1="100" x2="500" y2="100" class="flow-arrow" marker-end="url(#arrowhead-flow)"/>
+                            
+                            <!-- Box 3: Finished Goods -->
+                            <rect x="500" y="60" width="180" height="80" class="flow-box"/>
+                            <text x="590" y="90" class="flow-text" font-weight="700">THÀNH PHẨM</text>
+                            <text x="590" y="115" class="flow-text" font-size="11">Batch: FG-2026-0917-003</text>
+                            <text x="590" y="130" class="flow-text" font-size="11">Ngày: 17/09/2026</text>
+                        </svg>
+                    </div>
+                    
+                    <div class="card" style="background: var(--color-slate-100); border-left-color: var(--color-slate-500);">
+                        <strong>Chuỗi thực tế:</strong><br>
+                        <code style="display: block; margin-top: var(--space-3); padding: var(--space-3); background: var(--color-white); border-radius: var(--border-radius-md);">
+                            PO-2026-0812 / Lot NH-PA66-88431 → JOB-2026-0917 (máy IM-03, ca 1, NV A) → Batch FG-2026-0917-003
+                        </code>
+                    </div>
+                    
+                    <div class="tip-box">
+                        <div class="tip-box-title">📌 MỤC TIÊU</div>
+                        <div class="tip-box-content">
+                            <strong>Truy vết &lt; 30 phút</strong> khi có khiếu nại từ khách hàng. Để đạt được: (1) Mã lot nguyên liệu dán trên bao bì và ghi vào phiếu sản xuất, (2) Phiếu theo dõi máy có số job và ca sản xuất, (3) Kho thành phẩm ghi batch number trên thùng/carton.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5e: KHUÔN CỦA KHÁCH -->
+                <div class="card">
+                    <h3 class="card-title">
+                        <span class="icon">🔧</span>
+                        5e. Khuôn của Khách hàng (Customer-owned Tooling)
+                    </h3>
+                    <p>Khuôn là tài sản của khách — không được tự ý sửa đổi, di chuyển, hoặc cho bên thứ 3 sử dụng khi chưa có phép bằng văn bản.</p>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Mã khuôn</th>
+                                    <th>Khách hàng</th>
+                                    <th>Số cav</th>
+                                    <th>Vật liệu</th>
+                                    <th>Ngày giao</th>
+                                    <th>Shot tích lũy</th>
+                                    <th>Bảo dưỡng lần cuối</th>
+                                    <th>Tình trạng</th>
+                                    <th>Phụ trách</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>MDL-088</strong></td>
+                                    <td>Công ty XYZ</td>
+                                    <td style="text-align: center;">4</td>
+                                    <td>P20</td>
+                                    <td>10/05/2026</td>
+                                    <td style="text-align: center;">152,000</td>
+                                    <td>01/09/2026</td>
+                                    <td>Tốt — báo hao mòn lõi #3 (dự kiến thay sau 200,000 shots)</td>
+                                    <td>Phạm Văn B</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="tip-box">
+                        <div class="tip-box-title">📌 MẸO THỰC HÀNH</div>
+                        <div class="tip-box-content">
+                            <strong>Không được sửa khuôn khi chưa xin phép khách!</strong> Mọi yêu cầu sửa đổi phải có email/ văn bản phê duyệt từ khách. <strong>Sổ nhật ký khuôn</strong> phải ghi đầy đủ: ngày nhận, số shot mỗi ca, bảo dưỡng, sửa chữa, và tình trạng khi trả.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5f: BẢO QUẢN NGUYÊN LIỆU -->
+                <div class="card">
+                    <h3 class="card-title">
+                        <span class="icon">📦</span>
+                        5f. Bảo quản Nguyên liệu — Sấy hạt nhựa
+                    </h3>
+                    <p>Nhựa kỹ thuật (PA, PC, POM, PBT...) hút ẩm từ không khí. Nếu không sấy đúng, sản phẩm sẽ bị bong bóng khí, giòn, hoặc bề mặt xấu.</p>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Vật liệu</th>
+                                    <th>Nhiệt độ sấy</th>
+                                    <th>Thời gian tối thiểu</th>
+                                    <th>Độ ẩm sau sấy (max)</th>
+                                    <th>Ghi chú</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="table-highlight">
+                                    <td><strong>PA66 (Nylon 66)</strong></td>
+                                    <td>80±5°C</td>
+                                    <td>≥4 giờ</td>
+                                    <td>≤0.15%</td>
+                                    <td>Hút ẩm rất mạnh — bảo quản trong túi chống ẩm sau khi mở</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>PC (Polycarbonate)</strong></td>
+                                    <td>120±5°C</td>
+                                    <td>≥3 giờ</td>
+                                    <td>≤0.02%</td>
+                                    <td>Nhiệt độ cao nhất — cẩn thận quá nhiệt gây vàng</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>POM (Acetal)</strong></td>
+                                    <td>90±5°C</td>
+                                    <td>≥2 giờ</td>
+                                    <td>≤0.10%</td>
+                                    <td>Không quá 100°C — phân hủy sinh formaldehyde</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>ABS</strong></td>
+                                    <td>80±5°C</td>
+                                    <td>≥2 giờ</td>
+                                    <td>≤0.05%</td>
+                                    <td>Ít hút ẩm hơn PA/PC — nhưng vẫn phải sấy</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>PP / PE</strong></td>
+                                    <td>Không bắt buộc</td>
+                                    <td>—</td>
+                                    <td>—</td>
+                                    <td>Nhựa không hút ẩm — chỉ sấy nếu bề mặt yêu cầu cao</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="tip-box">
+                        <div class="tip-box-title">📌 FIFO — NHẬP TRƯỚC XUẤT TRƯỚC</div>
+                        <div class="tip-box-content">
+                            <strong>Nguyên tắc FIFO</strong> (First In First Out) bắt buộc với nguyên liệu: bao hạt cũ nhất phải được dùng trước. Dán tem ngày nhận lên mỗi bao/bình. Kho nguyên liệu phải có kệ riêng, không để trực tiếp xuống sàn (dùng pallet), và kiểm soát độ ẩm phòng &lt; 50% RH.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KHỐI 6: CON NGƯỜI & LÃNH ĐẠO -->
+        <section id="people" class="section reveal">
+            <div class="container">
+                <h2>Khối 6 — Con người & Lãnh đạo (§5 §7)</h2>
+                
+                <div class="card">
+                    <h3 class="card-title">
+                        <span class="icon">👥</span>
+                        3 Yếu tố then chốt
+                    </h3>
+                    <div style="display: grid; gap: var(--space-4);">
+                        <div style="padding: var(--space-4); background: #e0f2fe; border-radius: var(--border-radius-md);">
+                            <strong>1. Ma trận năng lực (Competence Matrix):</strong> Xác định năng lực cần cho từng vị trí, đào tạo/ chứng nhận, và đánh giá định kỳ. Không có ma trận = không chứng minh được "người làm việc có năng lực".
+                        </div>
+                        <div style="padding: var(--space-4); background: #fef3c7; border-radius: var(--border-radius-md);">
+                            <strong>2. Nhận thức (Awareness):</strong> Mỗi nhân viên phải biết: (a) chính sách chất lượng, (b) mục tiêu liên quan đến vị trí của họ, (c) hậu quả nếu không làm đúng. Đào tạo cảm ứng (induction) là bắt buộc.
+                        </div>
+                        <div style="padding: var(--space-4); background: #dcfce7; border-radius: var(--border-radius-md);">
+                            <strong>3. Lãnh đạo tham gia:</strong> BGĐ không thể "ký rồi cất". Phải tham gia: giao ban chất lượng hàng tháng, duyệt mục tiêu năm, chủ trì họp xem xét lãnh đạo, và "đi bộ quanh xưởng" (gemba walk) để xem chất lượng thực tế.
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: var(--space-8);">Ví dụ: Ma trận năng lực</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Vị trí</th>
+                                <th>Yêu cầu năng lực</th>
+                                <th>Đào tạo / Chứng nhận</th>
+                                <th>Đánh giá</th>
+                                <th>Kết quả</th>
+                                <th>Hạn đánh giá lại</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Vận hành máy ép phun</strong></td>
+                                <td>Vận hành đúng WI, biết thông số cơ bản, xử lý sự cố đơn giản</td>
+                                <td>Đào tạo nội bộ 16h + thi tay nghề</td>
+                                <td>Lý thuyết 85/100; Thực hành ĐẠT</td>
+                                <td><span class="badge badge-success">Đạt — 17/09/2026</span></td>
+                                <td>12 tháng</td>
+                            </tr>
+                            <tr>
+                                <td><strong>QC (Kiểm tra chất lượng)</strong></td>
+                                <td>Đọc bản vẽ, dùng thước/CMM cơ bản, phân biệt lỗi</td>
+                                <td>Khóa đo lường 3 ngày (nội bộ)</td>
+                                <td>Kiểm tra 5/5 mẫu đúng</td>
+                                <td><span class="badge badge-success">Đạt — 20/09/2026</span></td>
+                                <td>12 tháng</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Thợ khuôn</strong></td>
+                                <td>Lắp/tháo khuôn, bảo dưỡng cơ bản, nhận biết hao mòn</td>
+                                <td>Kèm cặp 3 tháng + sát hạch</td>
+                                <td>Thực hành đổi khuôn &lt;60 phút</td>
+                                <td><span class="badge badge-success">Đạt — 01/10/2026</span></td>
+                                <td>6 tháng</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kỹ thuật viên máy</strong></td>
+                                <td>Cài đặt thông số, xử lý lỗi máy, bảo trì cấp 1</td>
+                                <td>Đào tạo từ OEM + chứng chỉ</td>
+                                <td>Xử lý 5 tình huống giả định</td>
+                                <td><span class="badge badge-success">Đạt — 15/09/2026</span></td>
+                                <td>12 tháng</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-box-title">📌 MẸO THỰC HÀNH</div>
+                    <div class="tip-box-content">
+                        <strong>Hồ sơ đào tạo</strong> phải có: (1) Kế hoạch đào tạo năm, (2) Danh sách tham dự, (3) Tài liệu đào tạo (slide/WI), (4) Bài kiểm tra / biên bản sát hạch, (5) Chứng chỉ / giấy chứng nhận. <strong>Không có hồ sơ = không có bằng chứng</strong> — auditor sẽ đánh lỗi §7.2.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KHỐI 7: LỘ TRÌNH 6 THÁNG -->
+        <section id="timeline" class="section reveal">
+            <div class="container">
+                <h2>Khối 7 — Lộ trình Triển khai 6 Tháng</h2>
+                
+                <div class="card">
+                    <p>Lộ trình dưới đây giả định nhà máy chưa có QMS nào. Nếu đã có hệ thống cũ, thời gian có thể rút ngắn 30–50%.</p>
+                </div>
+
+                <div class="timeline-container">
+                    <div class="timeline">
+                        <div class="timeline-axis"></div>
+                        
+                        <!-- Milestone bars -->
+                        <div class="milestone-bar" style="left: 0%; width: 33%;"></div>
+                        <div class="milestone-bar" style="left: 33%; width: 33%;"></div>
+                        <div class="milestone-bar" style="left: 66%; width: 34%;"></div>
+                        
+                        <!-- Milestones -->
+                        <div class="timeline-milestone" style="left: 8%;">
+                            <div class="milestone-marker"></div>
+                            <div class="milestone-label">T1: Phân tích &<br>Thành lập ban QMS</div>
+                        </div>
+                        
+                        <div class="timeline-milestone" style="left: 25%;">
+                            <div class="milestone-marker"></div>
+                            <div class="milestone-label">T1–T2: Viết<br>tài liệu</div>
+                        </div>
+                        
+                        <div class="timeline-milestone" style="left: 42%;">
+                            <div class="milestone-marker"></div>
+                            <div class="milestone-label">T2–T3: Vận hành<br>thử + Đào tạo</div>
+                        </div>
+                        
+                        <div class="timeline-milestone" style="left: 58%;">
+                            <div class="milestone-marker"></div>
+                            <div class="milestone-label">T4: Đánh giá<br>nội bộ #1</div>
+                        </div>
+                        
+                        <div class="timeline-milestone" style="left: 75%;">
+                            <div class="milestone-marker"></div>
+                            <div class="milestone-label">T4–T5:<br>Khắc phục</div>
+                        </div>
+                        
+                        <div class="timeline-milestone" style="left: 92%;">
+                            <div class="milestone-marker"></div>
+                            <div class="milestone-label">T5–T6: Audit<br>chứng nhận</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h4>Chi tiết từng giai đoạn:</h4>
+                    <ul style="margin-left: var(--space-6); margin-top: var(--space-4);">
+                        <li><strong>Tháng 1 (T1):</strong> Phân tích khoảng cách (gap analysis), thành lập ban QMS, đào tạo nhận thức ISO 9001 cho toàn bộ nhân sự, xác định bối cảnh tổ chức (§4) và bên quan tâm.</li>
+                        <li><strong>Tháng 1–2 (T1–T2):</strong> Viết tài liệu: Sổ tay chất lượng, 13 quy trình tối thiểu, WI cho các công đoạn then chốt (vận hành máy, kiểm tra QC, bảo trì). <em>Lưu ý: đừng viết quá chi tiết — chỉ viết những gì cần kiểm soát.</em></li>
+                        <li><strong>Tháng 2–3 (T2–T3):</strong> Ban hành tài liệu, đào tạo triển khai, vận hành thử toàn bộ hệ thống. Thu thập hồ sơ (phiếu theo dõi, biên bản, báo cáo). <em>Đây là giai đoạn "đau" nhất — nhân sự sẽ phàn nàn "thêm việc".</em></li>
+                        <li><strong>Tháng 4 (T4):</strong> Đánh giá nội bộ lần 1. <strong>Lưu ý: trượt là bình thường!</strong> Mục đích là tìm ra điểm hỏng trước khi audit chính thức. Lập danh sách không phù hợp (NC) và kế hoạch khắc phục.</li>
+                        <li><strong>Tháng 4–5 (T4–T5):</strong> Thực hiện hành động khắc phục cho tất cả NC từ nội bộ #1. Cập nhật tài liệu nếu cần. Chạy hệ thống thêm 30 ngày để chứng minh tính ổn định.</li>
+                        <li><strong>Tháng 5 (T5):</strong> Đánh giá nội bộ lần 2 (nếu cần). Họp xem xét lãnh đạo (Management Review) — BGĐ xem xét toàn bộ QMS: KPIs, NC, khiếu nại, nguồn lực, cơ hội cải tiến.</li>
+                        <li><strong>Tháng 5–6 (T5–T6):</strong> Audit chứng nhận Giai đoạn 1 (đánh giá tài liệu) và Giai đoạn 2 (đánh giá thực tế). Nếu đạt, được cấp chứng chỉ ISO 9001:2015 (hiệu lực 3 năm, giám sát hàng năm).</li>
+                    </ul>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-box-title">📌 LƯU Ý QUAN TRỌNG</div>
+                    <div class="tip-box-content">
+                        <strong>Thời gian vận hành thử tối thiểu:</strong> Hầu hết tổ chức chứng nhận yêu cầu <strong>60–90 ngày</strong> vận hành QMS trước khi audit chính thức. Lý do: cần đủ hồ sơ để chứng minh hệ thống "sống", không phải "trên giấy". <strong>Đừng đốt cháy giai đoạn</strong> — audit trượt sẽ tốn kém hơn (phí audit lại, mất uy tín).
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KHỐI 8: 6 SAI LẦM KINH ĐIỂN -->
+        <section id="mistakes" class="section reveal">
+            <div class="container">
+                <h2>Khối 8 — 6 Sai lầm Kinh điển</h2>
+                
+                <div class="error-grid">
+                    <div class="error-card">
+                        <div class="error-number">1</div>
+                        <h4>Viết tài liệu rồi cất kệ</h4>
+                        <p>Viết 500 trang quy trình, in ra bỏ tủ khóa. Ngoài xưởng vẫn làm theo thói quen cũ. <strong>Hậu quả:</strong> Auditor hỏi "Quy trình ở đâu?" → chỉ tủ → "Mở ra xem" → còn nguyên tem "Chưa sử dụng" → <strong>TRƯỢT</strong>.</p>
+                    </div>
+                    
+                    <div class="error-card">
+                        <div class="error-number">2</div>
+                        <h4>Phình tài liệu quá mức</h4>
+                        <p>Mỗi công việc nhỏ cũng viết quy trình 10 trang. <strong>Hậu quả:</strong> Không ai đọc, không ai nhớ, không ai làm theo. Bảo trì tài liệu trở thành gánh nặng. <strong>ISO 9001:2015 khuyến khích "tài liệu hóa phù hợp"</strong> — không phải càng nhiều càng tốt.</p>
+                    </div>
+                    
+                    <div class="error-card">
+                        <div class="error-number">3</div>
+                        <h4>Kiểm soát tài liệu lỏng lẻo</h4>
+                        <p>Ngoài xưởng vẫn thấy bản WI in từ 2022, trong khi hệ thống đã ban hành bản 2026. <strong>Hậu quả:</strong> Auditor nhặt bản cũ lên, so với bản mới → phát hiện 3 điểm khác biệt → <strong>NC §7.5.3</strong>. <strong>Giải pháp:</strong> Thu hồi toàn bộ bản cũ khi ban hành mới, dán tem "BẢN MỚI NHẤT" lên bản hiện hành.</p>
+                    </div>
+                    
+                    <div class="error-card">
+                        <div class="error-number">4</div>
+                        <h4>Quên hiệu chuẩn thiết bị đo</h4>
+                        <p>Thước cặp, panme, CMM quá hạn hiệu chuẩn 6 tháng mà không ai biết. <strong>Hậu quả:</strong> Auditor hỏi "Tem hiệu chuẩn đâu?" → không có → "Sản phẩm kiểm bằng cái gì?" → <strong>NC §7.1.5 nghiêm trọng</strong>. <strong>Giải pháp:</strong> Lịch hiệu chuẩn năm, tem màu trên mỗi thiết bị, cảnh báo 30 ngày trước hạn.</p>
+                    </div>
+                    
+                    <div class="error-card">
+                        <div class="error-number">5</div>
+                        <h4>Không làm PFMEA/Control Plan kịp</h4>
+                        <p>Dây chuyền chạy 6 tháng, khách yêu cầu PFMEA → mới ngồi viết ngược. <strong>Hậu quả:</strong> PFMEA "nhìn là biết fake" — RPN toàn số thấp, không có hành động nào. Auditor hỏi "Tại sao RPN 192 mà không có hành động?" → không trả lời được → <strong>NC §6.1</strong>.</p>
+                    </div>
+                    
+                    <div class="error-card">
+                        <div class="error-number">6</div>
+                        <h4>Bỏ qua đào tạo & ký xác nhận</h4>
+                        <p>Nhân viên mới vào, cho đứng máy chạy luôn. Auditor hỏi "Em có được đào tạo WI này không?" → "Dạ không" → "Có ký xác nhận đọc hiểu quy trình không?" → "Dạ chưa" → <strong>NC §7.2 + §7.3</strong>. <strong>Giải pháp:</strong> Checklist cảm ứng bắt buộc trước khi giao việc.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KHỐI 9: PHỤ LỤC VÍ DỤ ĐẦY ĐỦ -->
+        <section id="examples" class="section reveal">
+            <div class="container">
+                <h2>Khối 9 — Phụ lục Ví dụ Đầy đủ</h2>
+                <p>Các ví dụ dưới đây được trình bày dưới dạng "tài liệu thật" — có thể in ra và sử dụng ngay (sau khi điều chỉnh theo thực tế nhà máy).</p>
+
+                <!-- Example A -->
+                <details>
+                    <summary>
+                        <strong>Ví dụ A — WI-OP-001: Vận hành máy ép phun (trích)</strong>
+                    </summary>
+                    <div class="details-content">
+                        <div class="form-example">
+                            <div class="form-header">
+                                <div class="form-title">HƯỚNG DẪN CÔNG VIỆC</div>
+                                <div style="font-size: var(--text-sm); color: var(--color-slate-600);">Mã: WI-OP-001 · Lần: 02 · Ngày: 20/08/2026 · Trang 1/3</div>
+                            </div>
+                            
+                            <h4>1. Mục đích</h4>
+                            <p>Hướng dẫn vận hành an toàn và đúng thông số cho máy ép phun IM-03, đảm bảo chất lượng sản phẩm và an toàn người vận hành.</p>
+                            
+                            <h4>2. Phạm vi</h4>
+                            <p>Áp dụng cho tất cả nhân viên vận hành máy ép phun IM-03 tại xưởng Đúc nhựa.</p>
+                            
+                            <h4>3. Tài liệu liên quan</h4>
+                            <ul style="margin-left: var(--space-6);">
+                                <li>WI-QC-002: Kiểm tra sản phẩm đầu ca</li>
+                                <li>QP-PRO-003: Kiểm soát quá trình sản xuất</li>
+                                <li>F-OP-001: Phiếu theo dõi thông số ép phun</li>
+                                <li>F-Maint-003: Nhật ký bảo trì máy</li>
+                            </ul>
+                            
+                            <h4>4. An toàn</h4>
+                            <ul style="margin-left: var(--space-6);">
+                                <li><strong>PPE bắt buộc:</strong> Giày bảo hộ, kính an toàn, không đeo găng tay khi vận hành vùng kẹp</li>
+                                <li><strong>Khóa liên động:</strong> Không được vô hiệu hóa cửa an toàn</li>
+                                <li><strong>Emergency Stop:</strong> Biết vị trí 4 nút E-Stop trước khi vận hành</li>
+                                <li><strong>Nhiệt độ cao:</strong> Cảnh báo vùng nòng phun (200–250°C), không chạm tay không</li>
+                            </ul>
+                            
+                            <h4>5. Các bước thực hiện</h4>
+                            <ol style="margin-left: var(--space-6);">
+                                <li><strong>Nhận lệnh sản xuất:</strong> Từ tổ trưởng, kiểm tra mã job, sản phẩm, số lượng yêu cầu.</li>
+                                <li><strong>Kiểm tra WI & biểu mẫu:</strong> Đảm bảo có WI-OP-001 bản mới nhất và F-OP-001 trống.</li>
+                                <li><strong>Kiểm tra khuôn & máy:</strong>
+                                    <ul>
+                                        <li>Khuôn lắp đúng, bulông siết chặt</li>
+                                        <li>Vùng kẹp sạch, không dị vật</li>
+                                        <li>Phễu nguyên liệu đúng loại, đủ lượng</li>
+                                        <li>Hệ thống thủy lực: dầu đủ, không rò rỉ</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Cài đặt thông số:</strong> Theo Phiếu cài đặt máy (Job Sheet) cho sản phẩm KL-102:
+                                    <ul>
+                                        <li>Nhiệt độ 4 vùng: 228 / 232 / 236 / 241°C</li>
+                                        <li>Áp suất phun: 92 MPa</li>
+                                        <li>Áp suất giữ: 62 MPa</li>
+                                        <li>Thời gian chu kỳ: 30s</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Chạy thử 5 shot:</strong>
+                                    <ul>
+                                        <li>Shot 1–3: xem máy chạy ổn định không</li>
+                                        <li>Shot 4–5: giao QC kiểm tra đầu ca (theo WI-QC-002)</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Sản xuất & ghi phiếu:</strong>
+                                    <ul>
+                                        <li>Ghi thông số thực tế vào F-OP-001 mỗi 2 giờ</li>
+                                        <li>Kiểm tra visual 10% sản phẩm mỗi giờ</li>
+                                        <li>Ghi số lượng đạt/phế vào nhật ký ca</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Bàn giao cuối ca:</strong>
+                                    <ul>
+                                        <li>Vệ sinh máy, khu vực xung quanh</li>
+                                        <li>Bàn giao số lượng, tình trạng cho ca sau</li>
+                                        <li>Ký tên vào phiếu theo dõi</li>
+                                    </ul>
+                                </li>
+                            </ol>
+                            
+                            <h4>6. Xử lý bất thường</h4>
+                            <ul style="margin-left: var(--space-6);">
+                                <li><strong>Sản phẩm lỗi liên tiếp (3 shot):</strong> Dừng máy, báo tổ trưởng, không tự điều chỉnh thông số</li>
+                                <li><strong>Máy báo lỗi (alarm):</strong> Ghi mã lỗi, báo kỹ thuật, không reset liên tục</li>
+                                <li><strong>Sản phẩm không phù hợp:</strong> Dán thẻ đỏ "KHÔNG PHÙ HỢP", để vào khu vực phế riêng</li>
+                            </ul>
+                            
+                            <div class="form-signature">
+                                <div class="signature-block">
+                                    <div style="margin-bottom: var(--space-2); font-size: var(--text-sm);">Soạn thảo</div>
+                                    <div class="signature-line">Kỹ thuật trưởng</div>
+                                </div>
+                                <div class="signature-block">
+                                    <div style="margin-bottom: var(--space-2); font-size: var(--text-sm);">Kiểm tra</div>
+                                    <div class="signature-line">QA Manager</div>
+                                </div>
+                                <div class="signature-block">
+                                    <div style="margin-bottom: var(--space-2); font-size: var(--text-sm);">Phê duyệt</div>
+                                    <div class="signature-line">Nhà máy trưởng</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Example B -->
+                <details>
+                    <summary>
+                        <strong>Ví dụ B — Phiếu theo dõi thông số (đã điền đầy đủ)</strong>
+                    </summary>
+                    <div class="details-content">
+                        <p><em>Xem lại khối 5a — đã trình bày đầy đủ ở trên.</em></p>
+                    </div>
+                </details>
+
+                <!-- Example C -->
+                <details>
+                    <summary>
+                        <strong>Ví dụ C — PFMEA 3 dòng (đầy đủ cột)</strong>
+                    </summary>
+                    <div class="details-content">
+                        <p><em>Xem lại khối 5b — đã trình bày đầy đủ ở trên.</em></p>
+                    </div>
+                </details>
+
+                <!-- Example D -->
+                <details>
+                    <summary>
+                        <strong>Ví dụ D — Control Plan (đầy đủ)</strong>
+                    </summary>
+                    <div class="details-content">
+                        <p><em>Xem lại khối 5c — đã trình bày đầy đủ ở trên.</em></p>
+                    </div>
+                </details>
+
+                <!-- Example E -->
+                <details>
+                    <summary>
+                        <strong>Ví dụ E — NCR-2026-001: Sản phẩm không phù hợp</strong>
+                    </summary>
+                    <div class="details-content">
+                        <div class="form-example">
+                            <div class="form-header">
+                                <div class="form-title">BIÊN BẢN SẢN PHẨM KHÔNG PHÙ HỢP</div>
+                                <div style="font-size: var(--text-sm); color: var(--color-slate-600);">Mã: F-QA-005 · Số: NCR-2026-001 · Ngày: 17/09/2026</div>
+                            </div>
+                            
+                            <div class="form-meta">
+                                <div class="form-field">
+                                    <span class="form-label">Sản phẩm:</span>
+                                    <span class="form-value"><strong>Vỏ linh kiện KL-102</strong></span>
+                                </div>
+                                <div class="form-field">
+                                    <span class="form-label">Số job:</span>
+                                    <span class="form-value"><strong>JOB-2026-0917</strong></span>
+                                </div>
+                                <div class="form-field">
+                                    <span class="form-label">Máy:</span>
+                                    <span class="form-value"><strong>IM-03</strong></span>
+                                </div>
+                                <div class="form-field">
+                                    <span class="form-label">Ca:</span>
+                                    <span class="form-value"><strong>Ca 1 (06:00–14:00)</strong></span>
+                                </div>
+                                <div class="form-field">
+                                    <span class="form-label">Phát hiện bởi:</span>
+                                    <span class="form-value"><strong>QC Lê Thị C</strong></span>
+                                </div>
+                                <div class="form-field">
+                                    <span class="form-label">Ngày phát hiện:</span>
+                                    <span class="form-value"><strong>17/09/2026 10:30</strong></span>
+                                </div>
+                            </div>
+                            
+                            <h4 style="margin-top: var(--space-6);">Mô tả không phù hợp:</h4>
+                            <p><strong>Lỗi:</strong> Bong bóng khí bề mặt (air trap)<br>
+                            <strong>Số lượng phát hiện:</strong> 320 sản phẩm<br>
+                            <strong>Vị trí:</strong> Vùng gần cổng phun, mặt trên sản phẩm<br>
+                            <strong>Tỷ lệ:</strong> ~8% trong lô 4,000 sp</p>
+                            
+                            <h4>Điều tra nguyên nhân:</h4>
+                            <ul style="margin-left: var(--space-6);">
+                                <li>Kiểm tra thông số máy: tất cả trong khoảng cho phép</li>
+                                <li>Kiểm tra độ ẩm hạt PA66: <strong>0.25%</strong> (cao hơn giới hạn 0.15%)</li>
+                                <li>Hỏi vận hành: "Quên hẹn giờ sấy — chỉ sấy 2 giờ thay vì 4 giờ"</li>
+                                <li>Kiểm tra bảng hẹn giờ: không có checklist xác nhận thời gian sấy</li>
+                            </ul>
+                            
+                            <h4>Hành động xử lý tức thời:</h4>
+                            <ul style="margin-left: var(--space-6);">
+                                <li>Cô lập toàn bộ 320 sp lỗi</li>
+                                <li>Rà soát lại 1,200 sp cùng lô → tách thêm 45 sp nghi ngờ</li>
+                                <li>Dừng máy, sấy lại hạt 4 giờ ở 80°C</li>
+                                <li>Chạy thử 10 shot, QC kiểm tra đạt → tiếp tục sản xuất</li>
+                            </ul>
+                            
+                            <h4>Quyết định xử lý:</h4>
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Sử dụng lại (Rework)</th>
+                                            <th>Loại bỏ (Scrap)</th>
+                                            <th>Chấp nhận có điều kiện (Use-as-is)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="text-align: center;">0</td>
+                                            <td style="text-align: center; font-weight: 700; color: #dc2626;">365</td>
+                                            <td style="text-align: center;">0</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <h4>Phê duyệt:</h4>
+                            <div class="form-signature">
+                                <div class="signature-block">
+                                    <div style="margin-bottom: var(--space-2); font-size: var(--text-sm);">QC phát hiện</div>
+                                    <div class="signature-line">Lê Thị C</div>
+                                </div>
+                                <div class="signature-block">
+                                    <div style="margin-bottom: var(--space-2); font-size: var(--text-sm);">Trưởng bộ phận SX</div>
+                                    <div class="signature-line">Nguyễn Văn D</div>
+                                </div>
+                                <div class="signature-block">
+                                    <div style="margin-bottom: var(--space-2); font-size: var(--text-sm);">Trưởng QA</div>
+                                    <div class="signature-line">Trần Thị E</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Example F -->
+                <details>
+                    <summary>
+                        <strong>Ví dụ F — 8D đơn giản (5 bước) cho NCR-2026-001</strong>
+                    </summary>
+                    <div class="details-content">
+                        <div class="form-example">
+                            <div class="form-header">
+                                <div class="form-title">BÁO CÁO 8D (RÚT GỌN 5 BƯỚC)</div>
+                                <div style="font-size: var(--text-sm); color: var(--color-slate-600);">Mã: F-QA-008 · Số: 8D-2026-003 · Ngày: 18/09/2026</div>
+                            </div>
+                            
+                            <h4>D1 — Lập nhóm:</h4>
+                            <ul style="margin-left: var(--space-6);">
+                                <li>Trưởng nhóm: Trần Thị E (QA Manager)</li>
+                                <li>Thành viên: Nguyễn Văn D (SX), Lê Thị C (QC), Phạm Văn F (Kỹ thuật)</li>
+                            </ul>
+                            
+                            <h4>D2 — Mô tả vấn đề:</h4>
+                            <p><strong>Vấn đề:</strong> 365 sản phẩm vỏ linh kiện KL-102 bị lỗi bong bóng khí, phải loại bỏ.<br>
+                            <strong>Thời gian:</strong> 17/09/2026, ca 1<br>
+                            <strong>Địa điểm:</strong> Máy IM-03<br>
+                            <strong>Ảnh hưởng:</strong> Thiệt hại 2.8 triệu VNĐ, trễ giao hàng 4 giờ</p>
+                            
+                            <h4>D3 — Phân tích gốc rễ (5 Whys):</h4>
+                            <ol style="margin-left: var(--space-6);">
+                                <li><strong>Why 1:</strong> Tại sao sản phẩm bị bong bóng? → <em>Hạt nhựa còn ẩm (0.25% > 0.15%)</em></li>
+                                <li><strong>Why 2:</strong> Tại sao hạt còn ẩm? → <em>Sấy chỉ 2 giờ thay vì 4 giờ</em></li>
+                                <li><strong>Why 3:</strong> Tại sao sấy thiếu giờ? → <em>Vận hành quên hẹn giờ</em></li>
+                                <li><strong>Why 4:</strong> Tại sao quên mà không ai phát hiện? → <em>Không có checklist kiểm tra đầu ca</em></li>
+                                <li><strong>Why 5:</strong> Tại sao không có checklist? → <em>WI-KT-004 (kiểm tra sấy) chưa được ban hành</em></li>
+                            </ol>
+                            <p><strong>Gốc rễ:</strong> Thiếu WI và checklist kiểm tra độ ẩm trước khi ép</p>
+                            
+                            <h4>D4 — Hành động khắc phục:</h4>
+                            <ul style="margin-left: var(--space-6);">
+                                <li><strong>Hành động tức thời (đã làm):</strong> Cô lập phế, sấy lại hạt, chạy thử đạt</li>
+                                <li><strong>Hành động dài hạn:</strong>
+                                    <ul>
+                                        <li>Ban hành WI-KT-004 "Kiểm tra độ ẩm hạt trước khi ép"</li>
+                                        <li>Thêm checklist đầu ca cho vận hành (F-OP-005)</li>
+                                        <li>Đào tạo lại toàn bộ vận hành ca 1, 2, 3</li>
+                                        <li>Lắp chuông cảnh báo khi thời gian sấy chưa đủ</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            
+                            <h4>D5 — Kiểm chứng & Bài học:</h4>
+                            <ul style="margin-left: var(--space-6);">
+                                <li><strong>Theo dõi 2 tuần:</strong> Không tái phát lỗi bong bóng khí</li>
+                                <li><strong>Chỉ số:</strong> Tỷ lệ phế do ẩm giảm từ 8% → 0.3%</li>
+                                <li><strong>Bài học:</strong> Checklist đầu ca là bắt buộc với công đoạn quan trọng</li>
+                                <li><strong>Chuẩn hóa:</strong> Cập nhật PFMEA (dòng Sấy hạt) với kiểm soát mới</li>
+                            </ul>
+                            
+                            <div class="form-signature">
+                                <div class="signature-block">
+                                    <div style="margin-bottom: var(--space-2); font-size: var(--text-sm);">Trưởng nhóm 8D</div>
+                                    <div class="signature-line">Trần Thị E</div>
+                                </div>
+                                <div class="signature-block">
+                                    <div style="margin-bottom: var(--space-2); font-size: var(--text-sm);">Ngày đóng 8D</div>
+                                    <div class="signature-line">02/10/2026</div>
+                                </div>
+                                <div class="signature-block">
+                                    <div style="margin-bottom: var(--space-2); font-size: var(--text-sm);">Phê duyệt</div>
+                                    <div class="signature-line">Nhà máy trưởng</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Example G -->
+                <details>
+                    <summary>
+                        <strong>Ví dụ G — Ma trận năng lực (đầy đủ)</strong>
+                    </summary>
+                    <div class="details-content">
+                        <p><em>Xem lại Khối 6 — đã trình bày đầy đủ ở trên.</em></p>
+                    </div>
+                </details>
+
+                <!-- Example H -->
+                <details>
+                    <summary>
+                        <strong>Ví dụ H — Lịch hiệu chuẩn thiết bị đo</strong>
+                    </summary>
+                    <div class="details-content">
+                        <div class="form-example">
+                            <div class="form-header">
+                                <div class="form-title">LỊCH HIỆU CHUẨN THIẾT BỊ ĐO LƯỜNG</div>
+                                <div style="font-size: var(--text-sm); color: var(--color-slate-600);">Mã: F-QA-010 · Năm: 2026</div>
+                            </div>
+                            
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Thiết bị</th>
+                                            <th>Mã số</th>
+                                            <th>Chu kỳ</th>
+                                            <th>Hạn sử dụng</th>
+                                            <th>Lần hiệu chuẩn cuối</th>
+                                            <th>Kết quả</th>
+                                            <th>Ghi chú</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>CMM 3 trục</strong></td>
+                                            <td>C-01</td>
+                                            <td>12 tháng</td>
+                                            <td>15/03/2027</td>
+                                            <td>15/03/2026</td>
+                                            <td><span class="badge badge-success">Đạt</span></td>
+                                            <td>Chứng chỉ số: CAL-2026-0315</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Cân điện tử 0.01g</strong></td>
+                                            <td>W-03</td>
+                                            <td>6 tháng</td>
+                                            <td>01/12/2026</td>
+                                            <td>01/06/2026</td>
+                                            <td><span class="badge badge-success">Đạt</span></td>
+                                            <td>Quả cân chuẩn đi kèm</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Panme 25–50mm</strong></td>
+                                            <td>P-07</td>
+                                            <td>12 tháng</td>
+                                            <td>22/02/2027</td>
+                                            <td>22/02/2026</td>
+                                            <td><span class="badge badge-success">Đạt</span></td>
+                                            <td>—</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Đồng hồ so 0.01mm</strong></td>
+                                            <td>D-02</td>
+                                            <td>12 tháng</td>
+                                            <td>30/06/2027</td>
+                                            <td>30/06/2026</td>
+                                            <td><span class="badge badge-success">Đạt</span></td>
+                                            <td>—</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Thước cặp 150mm</strong></td>
+                                            <td>V-12</td>
+                                            <td>12 tháng</td>
+                                            <td>10/01/2027</td>
+                                            <td>10/01/2026</td>
+                                            <td><span class="badge badge-success">Đạt</span></td>
+                                            <td>—</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Máy đo độ ẩm</strong></td>
+                                            <td>MA-01</td>
+                                            <td>12 tháng</td>
+                                            <td>05/08/2027</td>
+                                            <td>05/08/2026</td>
+                                            <td><span class="badge badge-success">Đạt</span></td>
+                                            <td>Mẫu chuẩn PA66</td>
+                                        </tr>
+                                        <tr style="background: rgba(239, 68, 68, 0.1);">
+                                            <td><strong>Áp kế thủy lực</strong></td>
+                                            <td>PG-05</td>
+                                            <td>12 tháng</td>
+                                            <td style="color: #dc2626; font-weight: 700;">15/09/2026</td>
+                                            <td>15/09/2025</td>
+                                            <td><span class="badge badge-danger">QUÁ HẠN</span></td>
+                                            <td>Đã gửi đi hiệu chuẩn lại</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="tip-box" style="border-left-color: #dc2626; background: #fef2f2;">
+                                <div class="tip-box-title" style="color: #dc2626;">⚠️ LƯU Ý QUAN TRỌNG</div>
+                                <div class="tip-box-content">
+                                    <strong>Thiết bị quá hạn phải dán thẻ "KHÔNG SỬ DỤNG"</strong> và cất vào khu vực riêng. Không được dùng để kiểm tra sản phẩm. Auditor sẽ kiểm tra tem hiệu chuẩn trên từng thiết bị ngoài xưởng — nếu thấy tem hết hạn mà vẫn dùng → <strong>NC nghiêm trọng §7.1.5</strong>.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Example I -->
+                <details>
+                    <summary>
+                        <strong>Ví dụ I — Sổ nhật ký khuôn MDL-088</strong>
+                    </summary>
+                    <div class="details-content">
+                        <div class="form-example">
+                            <div class="form-header">
+                                <div class="form-title">SỔ NHẬT KÝ KHUÔN</div>
+                                <div style="font-size: var(--text-sm); color: var(--color-slate-600);">Mã: F-Maint-003 · Khuôn: MDL-088</div>
+                            </div>
+                            
+                            <div class="form-meta" style="margin-bottom: var(--space-4);">
+                                <div class="form-field">
+                                    <span class="form-label">Khách hàng:</span>
+                                    <span class="form-value"><strong>Công ty XYZ</strong></span>
+                                </div>
+                                <div class="form-field">
+                                    <span class="form-label">Số cav:</span>
+                                    <span class="form-value"><strong>4</strong></span>
+                                </div>
+                                <div class="form-field">
+                                    <span class="form-label">Vật liệu:</span>
+                                    <span class="form-value"><strong>P20</strong></span>
+                                </div>
+                                <div class="form-field">
+                                    <span class="form-label">Ngày nhận:</span>
+                                    <span class="form-value"><strong>10/05/2026</strong></span>
+                                </div>
+                            </div>
+                            
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Ngày</th>
+                                            <th>Số shot</th>
+                                            <th>Nội dung</th>
+                                            <th>Người thực hiện</th>
+                                            <th>Ký tên</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>10/05/2026</td>
+                                            <td>0</td>
+                                            <td>Nhận khuôn từ khách XYZ. Tình trạng: Tốt, đầy đủ phụ tùng. Bàn giao bởi ông Tanaka (XYZ).</td>
+                                            <td>Phạm Văn B</td>
+                                            <td>✓</td>
+                                        </tr>
+                                        <tr>
+                                            <td>15/05/2026</td>
+                                            <td>5,000</td>
+                                            <td>Chạy thử nghiệm (trial run). Sản phẩm đạt yêu cầu. Thông số: T° 228/232/236/241°C, P 92 MPa.</td>
+                                            <td>Nguyễn Văn A</td>
+                                            <td>✓</td>
+                                        </tr>
+                                        <tr>
+                                            <td>20/06/2026</td>
+                                            <td>50,000</td>
+                                            <td>Bảo dưỡng định kỳ lần 1: Vệ sinh lòng khuôn, tra dầu bôi trơn, kiểm tra chốt dẫn hướng. Kết quả: Tốt.</td>
+                                            <td>Phạm Văn B</td>
+                                            <td>✓</td>
+                                        </tr>
+                                        <tr>
+                                            <td>01/08/2026</td>
+                                            <td>100,000</td>
+                                            <td>Bảo dưỡng định kỳ lần 2: Vệ sinh, tra dầu, kiểm tra kích thước sản phẩm. Phát hiện: Vết mòn nhẹ ở vùng cổng phun.</td>
+                                            <td>Phạm Văn B</td>
+                                            <td>✓</td>
+                                        </tr>
+                                        <tr class="table-highlight">
+                                            <td>01/09/2026</td>
+                                            <td>152,000</td>
+                                            <td>Bảo dưỡng định kỳ lần 3 + Sửa chữa: <strong>Phát hiện hao mòn lõi #3</strong>. Đo lại kích thước: lỗ Ø3.2 +0.03mm (vẫn trong dung sai). Dự kiến thay lõi sau 200,000 shots. Đã báo khách XYZ.</td>
+                                            <td>Phạm Văn B</td>
+                                            <td>✓</td>
+                                        </tr>
+                                        <tr>
+                                            <td>15/09/2026</td>
+                                            <td>168,000</td>
+                                            <td>Sản xuất bình thường. Theo dõi sát lõi #3.</td>
+                                            <td>Nguyễn Văn A</td>
+                                            <td>✓</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="tip-box">
+                                <div class="tip-box-title">📌 MẸO THỰC HÀNH</div>
+                                <div class="tip-box-content">
+                                    <strong>Sổ nhật ký khuôn</strong> có thể là sổ giấy hoặc file Excel. Quan trọng: phải ghi <strong>số shot tích lũy</strong> mỗi ca (đọc từ đồng hồ máy), và <strong>mọi bảo trì/sửa chữa</strong> phải có chữ ký người thực hiện. Khách hàng có thể yêu cầu xem sổ này khi audit.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+        </section>
+
+        <!-- KHỐI 10: CÔNG CỤ HỖ TRỢ -->
+        <section id="tools" class="section reveal">
+            <div class="container">
+                <h2>Khối 10 — Công cụ Hỗ trợ</h2>
+                
+                <div class="card">
+                    <h3 class="card-title">
+                        <span class="icon">🛠️</span>
+                        Phần mềm & Công cụ đề xuất
+                    </h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-6);">
+                        <div>
+                            <h4>Phần mềm QMS / ERP</h4>
+                            <ul style="margin-left: var(--space-6);">
+                                <li><strong>Odoo QMS:</strong> Mã nguồn mở, module quality miễn phí, tích hợp ERP</li>
+                                <li><strong>SAP Business One:</strong> Giải pháp cho SME, có module QC</li>
+                                <li><strong>Synapp QMS:</strong> Giải pháp Việt Nam, hỗ trợ ISO 9001</li>
+                                <li><strong>QualityKiosk:</strong> Cloud-based, giá theo user</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>Google Sheets + Drive (cho xưởng nhỏ)</h4>
+                            <ul style="margin-left: var(--space-6);">
+                                <li><strong>Ưu điểm:</strong> Miễn phí, dễ dùng, truy cập mọi nơi</li>
+                                <li><strong>Nhược điểm:</strong> Không có workflow approval, dễ sửa sai</li>
+                                <li><strong>Áp dụng:</strong> &lt;50 nhân sự, ngân sách hạn chế</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h4>Các bảng tính thiết thực nên có:</h4>
+                    <ul style="margin-left: var(--space-6);">
+                        <li><strong>F-OP-001:</strong> Phiếu theo dõi thông số máy ép phun</li>
+                        <li><strong>F-Maint-003:</strong> Nhật ký khuôn (mold log)</li>
+                        <li><strong>F-HR-005:</strong> Ma trận đào tạo & năng lực</li>
+                        <li><strong>F-QA-010:</strong> Lịch hiệu chuẩn thiết bị đo</li>
+                        <li><strong>F-QA-012:</strong> Checklist đánh giá nội bộ</li>
+                        <li><strong>F-QA-005:</strong> Biên bản sản phẩm không phù hợp (NCR)</li>
+                        <li><strong>F-QA-008:</strong> Báo cáo hành động khắc phục (8D/5Why)</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h4>Checklist Audit theo điều khoản ISO 9001</h4>
+                    <p>Download checklist chi tiết 100+ câu hỏi audit tại: <a href="#" style="color: var(--color-amber-600);">[Link nội bộ]</a> hoặc tự xây dựng dựa trên:</p>
+                    <ul style="margin-left: var(--space-6);">
+                        <li>ISO 9001:2015 Requirements Checklist (từ IAF/VDQS)</li>
+                        <li>Checklist ngành nhựa ép phun (từ kinh nghiệm audit thực tế)</li>
+                        <li>Các điểm thường bị NC: §7.1.5 (hiệu chuẩn), §7.5.3 (tài liệu), §8.5.1 (kiểm soát sản xuất), §10.2 (hành động khắc phục)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-text">
+                <p><strong>Tài liệu trình bày — Giai đoạn 6, Lộ trình xây dựng nhà máy ép phun theo ISO 9001:2015</strong></p>
+                <p>Các số liệu trong ví dụ chỉ mang tính minh họa, cần điều chỉnh theo thực tế nhà máy.</p>
+                <p>Mọi thắc mắc về triển khai QMS, liên hệ bộ phận QA/QC hoặc tư vấn ISO bên thứ 3.</p>
+            </div>
+            <div class="footer-date">
+                Cập nhật lần cuối: 01/10/2026 · Phiên bản 1.0
+            </div>
+        </div>
+    </footer>
+
+    <!-- BACK TO TOP BUTTON -->
+    <button class="back-to-top" id="backToTop" aria-label="Lên đầu trang">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 15l-6-6-6 6"/>
+        </svg>
+    </button>
+
+    <!-- MOBILE NAV TOGGLE -->
+    <button class="nav-toggle" id="navToggle" aria-label="Menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+    </button>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        (function() {
+            'use strict';
+            
+            // Scroll Reveal Animation
+            const reveals = document.querySelectorAll('.reveal');
+            
+            function revealOnScroll() {
+                const windowHeight = window.innerHeight;
+                const elementVisible = 100;
+                
+                reveals.forEach((reveal) => {
+                    const elementTop = reveal.getBoundingClientRect().top;
+                    if (elementTop < windowHeight - elementVisible) {
+                        reveal.classList.add('active');
+                    }
+                });
+            }
+            
+            window.addEventListener('scroll', revealOnScroll);
+            revealOnScroll(); // Trigger on load
+            
+            // Sticky Navigation Active State (Scrollspy)
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section[id], header[id]');
+            
+            function updateNavActive() {
+                const scrollPos = window.scrollY + 100;
+                
+                sections.forEach((section) => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.offsetHeight;
+                    const sectionId = section.getAttribute('id');
+                    
+                    if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                        navLinks.forEach((link) => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === '#' + sectionId) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }
+            
+            window.addEventListener('scroll', updateNavActive);
+            updateNavActive(); // Trigger on load
+            
+            // Back to Top Button
+            const backToTopBtn = document.getElementById('backToTop');
+            
+            function toggleBackToTop() {
+                if (window.scrollY > 500) {
+                    backToTopBtn.classList.add('visible');
+                } else {
+                    backToTopBtn.classList.remove('visible');
+                }
+            }
+            
+            window.addEventListener('scroll', toggleBackToTop);
+            
+            backToTopBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            
+            // Smooth scroll for nav links
+            navLinks.forEach((link) => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    
+                    if (targetSection) {
+                        const navHeight = document.querySelector('.nav-container').offsetHeight;
+                        const targetPosition = targetSection.offsetTop - navHeight;
+                        
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Mobile nav toggle (optional - for very small screens)
+            const navToggle = document.getElementById('navToggle');
+            const navList = document.querySelector('.nav-list');
+            
+            if (navToggle && navList) {
+                navToggle.addEventListener('click', () => {
+                    navList.classList.toggle('mobile-open');
+                });
+            }
+            
+            // Console log for verification
+            console.log('QMS ISO 9001 Guide loaded successfully.');
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đào Tạo An Toàn Lao Động & Sát Hạch | Nhà máy ép phun</title>
+    <style>
+        :root {
+            --navy-dark: #0a1628;
+            --navy-primary: #122442;
+            --navy-light: #1a365d;
+            --amber-primary: #d97706;
+            --amber-light: #fbbf24;
+            --amber-pale: #fef3c7;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --success: #16a34a;
+            --error: #dc2626;
+            --border-radius: 8px;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --transition: all 0.2s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scroll-margin-top: 80px; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            background: var(--bg-light);
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        .nav {
+            position: sticky;
+            top: 0;
+            background: var(--navy-dark);
+            padding: 12px 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+        }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { color: #fff; font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+        .nav-logo a { color: var(--amber-light); text-decoration: none; font-size: 0.85rem; padding: 3px 8px; border: 1px solid var(--amber-light); border-radius: 4px; }
+        .nav-links { display: flex; gap: 18px; list-style: none; }
+        .nav-links a { color: var(--gray-200); text-decoration: none; font-size: 0.9rem; transition: var(--transition); }
+        .nav-links a:hover { color: var(--amber-light); }
+
+        .hero {
+            background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-primary) 100%);
+            color: var(--white);
+            padding: 50px 0;
+            text-align: center;
+        }
+        .hero h1 { font-size: 2.2rem; margin-bottom: 12px; font-weight: 700; }
+        .hero p { font-size: 1.05rem; opacity: 0.9; max-width: 850px; margin: 0 auto; }
+
+        section { padding: 45px 0; background: var(--white); border-bottom: 1px solid var(--gray-200); }
+        section:nth-child(even) { background: var(--bg-light); }
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--navy-primary);
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 3px solid var(--amber-primary);
+            display: inline-block;
+        }
+
+        /* 9 Modules Grid */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .module-card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            border-left: 4px solid var(--navy-primary);
+        }
+        .module-card.amber { border-left-color: var(--amber-primary); }
+        .module-card.green { border-left-color: var(--success); }
+        .module-card.red { border-left-color: var(--error); }
+        .module-num { font-size: 0.8rem; font-weight: 700; color: var(--amber-primary); text-transform: uppercase; margin-bottom: 4px; }
+        .module-card h3 { font-size: 1.15rem; color: var(--navy-primary); margin-bottom: 8px; }
+        .module-card ul { padding-left: 20px; font-size: 0.88rem; color: var(--gray-700); }
+        .module-card li { margin-bottom: 5px; }
+
+        /* Quiz Box */
+        .quiz-box {
+            background: var(--white);
+            border: 2px solid var(--navy-primary);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: var(--shadow-md);
+        }
+        .quiz-item {
+            background: var(--gray-100);
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 15px;
+            border: 1px solid var(--gray-200);
+        }
+        .quiz-q { font-weight: 600; color: var(--navy-primary); margin-bottom: 10px; font-size: 0.95rem; }
+        .quiz-opts { display: flex; flex-direction: column; gap: 8px; font-size: 0.9rem; }
+        .quiz-opt {
+            padding: 8px 12px;
+            background: #fff;
+            border: 1px solid var(--gray-300);
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .quiz-opt:hover { background: var(--amber-pale); }
+        .quiz-feedback { margin-top: 10px; padding: 10px; border-radius: 4px; font-size: 0.85rem; display: none; }
+
+        /* Certificate */
+        .certificate-box {
+            background: #fff;
+            border: 8px double var(--navy-primary);
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            margin: 30px auto;
+            max-width: 750px;
+            box-shadow: var(--shadow-lg);
+            display: none;
+        }
+        .cert-title { font-size: 1.8rem; font-weight: 800; color: var(--navy-primary); text-transform: uppercase; margin-bottom: 10px; }
+        .cert-name { font-size: 2rem; font-weight: 800; color: var(--amber-primary); margin: 15px 0; border-bottom: 2px solid #cbd5e1; display: inline-block; padding: 0 30px; }
+
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-primary { background: var(--amber-primary); color: var(--navy-dark); }
+        .btn-secondary { background: var(--navy-primary); color: #fff; }
+
+        .footer { background: var(--navy-dark); color: var(--gray-300); text-align: center; padding: 25px 0; font-size: 0.85rem; }
+        .footer a { color: var(--amber-light); text-decoration: none; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.6rem; }
+            .nav-links { display: none; }
+            .certificate-box { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="container nav-container">
+            <div class="nav-logo">
+                <span>Đào Tạo An Toàn</span>
+                <a href="index.html">← Trang chủ ISO</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#chuong-trinh">9 Mô-đun</a></li>
+                <li><a href="#sat-hach">Sát hạch 24 câu</a></li>
+                <li><a href="#chung-chi">Chứng chỉ online</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="container">
+            <h1>Cẩm Nang Đào Tạo An Toàn & Sát Hạch Sát Thực Tế</h1>
+            <p>9 Mô-đun an toàn đặc thù ngành ép phun nhựa & Bài kiểm tra sát hạch 24 câu đạt chuẩn ISO 9001:2015 (§7.2 Năng lực) và ISO 45001</p>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- 9 MÔ ĐUN -->
+        <section id="chuong-trinh">
+            <h2 class="section-title">1. Chương Trình 9 Mô-đun An Toàn Lao Động Ép Phun</h2>
+            <div class="modules-grid">
+                <div class="module-card">
+                    <div class="module-num">Mô-đun 01</div>
+                    <h3>Nội Quy Xưởng & Kỷ Luật An Toàn</h3>
+                    <ul>
+                        <li>Không chạy nhảy, đùa giỡn trong xưởng máy.</li>
+                        <li>Đeo thẻ ra vào đúng quy định, không đưa người lạ vào khu vực 20 máy.</li>
+                        <li>Nắm rõ sơ đồ thoát hiểm, vị trí chuông báo cháy và tủ thuốc sơ cứu.</li>
+                    </ul>
+                </div>
+                <div class="module-card amber">
+                    <div class="module-num">Mô-đun 02</div>
+                    <h3>Trang Bị Bảo Hộ (PPE) Tiêu Chuẩn</h3>
+                    <ul>
+                        <li>Giày bảo hộ mũi thép chống dập ngón khi rơi đồ gá/bu lông.</li>
+                        <li>Nút tai / chụp tai chống ồn tại khu máy băm phế (&gt; 85 dBA).</li>
+                        <li>Kính bảo hộ chống giọt bắn nhựa nóng và găng tay da chịu nhiệt.</li>
+                    </ul>
+                </div>
+                <div class="module-card red">
+                    <div class="module-num">Mô-đun 03</div>
+                    <h3>An Toàn Cửa Máy Ép & Cơ Cấu Kẹp</h3>
+                    <ul>
+                        <li>Khóa liên động 3 cấp: Cơ khí, Điện tử, Thủy lực.</li>
+                        <li>Nghiêm cấm chui đầu hoặc thò cả người vào lòng khuôn khi máy đang ở chế độ Tự động (Auto).</li>
+                        <li>Chỉ dùng kẹp gắp nhôm/đồng để gỡ sản phẩm dính lòng khuôn.</li>
+                    </ul>
+                </div>
+                <div class="module-card">
+                    <div class="module-num">Mô-đun 04</div>
+                    <h3>An Toàn Nòng Nhiệt & Purging Nhựa</h3>
+                    <ul>
+                        <li>Nhiệt độ nòng gia nhiệt 180°C - 300°C: Nguy cơ bỏng cấp độ 3.</li>
+                        <li>Khi purging (bắn keo súc nòng), phải hạ tấm chắn bảo vệ mắt và mặt.</li>
+                        <li>Không đứng đối diện đầu vòi phun (Nozzle) khi tăng nhiệt độ.</li>
+                    </ul>
+                </div>
+                <div class="module-card red">
+                    <div class="module-num">Mô-đun 05</div>
+                    <h3>Quy Trình Khóa Nguồn LOTO</h3>
+                    <ul>
+                        <li>Lockout - Tagout trước khi bảo dưỡng hoặc sửa chữa trong lòng máy.</li>
+                        <li>Ngắt aptomat tổng, xả van áp suất dầu thủy lực về 0 bar.</li>
+                        <li>Móc ổ khóa cá nhân + thẻ ghi tên, số điện thoại, lý do sửa chữa.</li>
+                    </ul>
+                </div>
+                <div class="module-card amber">
+                    <div class="module-num">Mô-đun 06</div>
+                    <h3>An Toàn Nâng Hạ & Đổi Khuôn (SMED)</h3>
+                    <ul>
+                        <li>Khuôn ép nặng từ 500kg đến 5 tấn: Kiểm định pa-lăng cẩu định kỳ.</li>
+                        <li>Vặn chặt bu lông móc cẩu (eyebolt) ngập hết ren trước khi nâng.</li>
+                        <li>Cấm tuyệt đối đứng hoặc đi lại dưới tầm nâng của khuôn mẫu.</li>
+                    </ul>
+                </div>
+                <div class="module-card green">
+                    <div class="module-num">Mô-đun 07</div>
+                    <h3>PCCC & Ứng Phó Sự Cố Khẩn Cấp</h3>
+                    <ul>
+                        <li>Nhận diện bình chữa cháy bột ABC (điện, nhựa) và bình CO2.</li>
+                        <li>Quy tắc PASS: Kéo chốt - Hướng loa - Bóp cò - Quét gốc lửa.</li>
+                        <li>Vị trí nút dừng khẩn cấp (Emergency Stop) trên từng máy ép.</li>
+                    </ul>
+                </div>
+                <div class="module-card">
+                    <div class="module-num">Mô-đun 08</div>
+                    <h3>Hóa Chất Tẩy Rửa & Bôi Trơn Khuôn</h3>
+                    <ul>
+                        <li>Bình xịt chống dính, bình xịt tẩy rỉ, dầu chống gỉ mặt khuôn.</li>
+                        <li>Trang bị khẩu trang lọc hơi hữu cơ khi xịt hóa chất diện rộng.</li>
+                        <li>Đọc kỹ bảng an toàn hóa chất (MSDS) dán tại kho hóa chất.</li>
+                    </ul>
+                </div>
+                <div class="module-card green">
+                    <div class="module-num">Mô-đun 09</div>
+                    <h3>Quản Lý Chất Thải Nguy Hại (CTNH)</h3>
+                    <ul>
+                        <li>Thu gom giẻ lau dính dầu, phớt thủy lực rách vào thùng nắp kín màu cam.</li>
+                        <li>Dầu thủy lực thải phải chứa vào phi sắt có khay hứng chống tràn.</li>
+                        <li>Không đổ dầu nhớt hoặc hóa chất xuống cống thoát nước mưa.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SÁT HẠCH 24 CÂU -->
+        <section id="sat-hach">
+            <h2 class="section-title">2. Bài Thi Sát Hạch An Toàn Trực Tuyến (24 Câu Hỏi)</h2>
+            <p>Học viên cần đạt từ <strong>20/24 câu (≥ 80%)</strong> trở lên để được hệ thống cấp Chứng nhận An toàn Vận hành Nhà máy Ép Phun:</p>
+
+            <div class="quiz-box">
+                <div style="display:flex;gap:15px;flex-wrap:wrap;margin-bottom:20px;">
+                    <div>
+                        <label style="font-weight:600;font-size:0.85rem;">Họ Và Tên Học Viên:</label><br>
+                        <input type="text" id="traineeName" placeholder="VD: Nguyễn Văn An" style="padding:6px 12px;border:1px solid #cbd5e1;border-radius:4px;width:240px;">
+                    </div>
+                    <div>
+                        <label style="font-weight:600;font-size:0.85rem;">Mã Số Nhân Viên:</label><br>
+                        <input type="text" id="traineeId" placeholder="VD: EP-105" style="padding:6px 12px;border:1px solid #cbd5e1;border-radius:4px;width:160px;">
+                    </div>
+                    <div>
+                        <label style="font-weight:600;font-size:0.85rem;">Bộ Phận / Ca:</label><br>
+                        <select id="traineeDept" style="padding:6px 12px;border:1px solid #cbd5e1;border-radius:4px;">
+                            <option value="Vận hành máy (Ca 1)">Vận hành máy (Ca 1)</option>
+                            <option value="Vận hành máy (Ca 2)">Vận hành máy (Ca 2)</option>
+                            <option value="Vận hành máy (Ca 3)">Vận hành máy (Ca 3)</option>
+                            <option value="Tổ Thay Khuôn / Setup">Tổ Thay Khuôn / Setup</option>
+                            <option value="Tổ Bảo Trì Cơ Điện">Tổ Bảo Trì Cơ Điện</option>
+                            <option value="Phòng Quản Lý Chất Lượng QA/QC">Phòng Quản Lý Chất Lượng QA/QC</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="quizItemsList"></div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="submitExam()">Nộp Bài & Chấm Điểm</button>
+                    <button class="btn btn-secondary" onclick="resetExam()">Làm lại bài thi</button>
+                </div>
+            </div>
+
+            <!-- CHỨNG NHẬN ONLINE -->
+            <div class="certificate-box" id="certBox">
+                <div style="font-size:0.9rem;font-weight:700;color:#64748b;letter-spacing:2px;">CÔNG TY CP NHỰA ÉP PHUN CHẤT LƯỢNG CAO</div>
+                <div class="cert-title">CHỨNG CHỈ ĐÀO TẠO AN TOÀN LAO ĐỘNG</div>
+                <p>Chứng nhận anh/chị:</p>
+                <div class="cert-name" id="certStudentName">NGUYỄN VĂN AN</div>
+                <p style="font-size:1.05rem;">Mã nhân viên: <strong id="certStudentId">EP-105</strong> | Bộ phận: <strong id="certStudentDept">Vận hành máy</strong></p>
+                <p style="margin:15px 0;">Đã hoàn thành xuất sắc khóa đào tạo và sát hạch đạt chuẩn 9 mô-đun an toàn nhà máy ép phun theo tiêu chuẩn <strong>ISO 45001 & ISO 9001:2015</strong> với kết quả: <strong id="certScore" style="color:var(--success);font-size:1.2rem;">22/24 Điểm</strong>.</p>
+                <div style="display:flex;justify-content:space-around;margin-top:30px;font-size:0.9rem;">
+                    <div>
+                        <p>Ngày cấp: <span id="certDate">01/10/2026</span></p>
+                        <p>Hiệu lực: 12 tháng</p>
+                    </div>
+                    <div>
+                        <p><strong>GIÁM ĐỐC NHÀ MÁY / TRƯỞNG BAN HSE</strong></p>
+                        <p style="color:#64748b;margin-top:40px;">(Đã ký điện tử & lưu hồ sơ đào tạo)</p>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="window.print()" style="margin-top:25px;">🖨 In Chứng Chỉ Này</button>
+            </div>
+        </section>
+
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Hệ thống Đào tạo & Quản lý Năng lực Nhân sự ISO 9001 (§7.2) · Nhà máy Ép Phun 20 Máy</p>
+            <p style="margin-top: 5px;"><a href="index.html">← Quay lại Cổng tra cứu tài liệu</a></p>
+        </div>
+    </footer>
+
+    <script>
+        const questions = [
+            { q: "1. Khoảng cách an toàn tối thiểu và thiết bị bắt buộc khi gỡ sản phẩm nhựa bị kẹt trong lòng khuôn là gì?", opts: ["Dùng tay không thò vào nhanh khi khuôn vừa mở", "Dừng máy hoặc chuyển chế độ Manual, dùng kẹp gắp nhôm/đồng", "Nhờ người khác bấm nút đóng khuôn từ từ", "Lấy thanh sắt dài chọc mạnh vào lòng khuôn"], c: 1 },
+            { q: "2. Cửa an toàn máy ép phun được bảo vệ bởi cơ chế khóa liên động nào?", opts: ["Chỉ một công tắc cơ học", "Khóa liên động 3 cấp: Cơ khí, Điện tử và Thủy lực", "Chỉ một cảm biến hồng ngoại", "Không có khóa liên động nào"], c: 1 },
+            { q: "3. Khi purging (bắn keo vệ sinh nòng gia nhiệt ở 250°C), điều gì bắt buộc phải thực hiện?", opts: ["Nhìn sát vào đầu vòi phun để xem màu nhựa", "Đóng tấm chắn bảo vệ, mang kính bảo hộ và găng tay da chịu nhiệt", "Tăng tốc độ phun lên mức tối đa", "Không cần trang bị bảo hộ nếu thao tác nhanh"], c: 1 },
+            { q: "4. Quy trình LOTO (Lockout / Tagout) áp dụng trong trường hợp nào?", opts: ["Khi kết thúc ca làm việc hàng ngày", "Khi lau bụi trên mặt bàn điều khiển", "Trước khi vào gầm máy, vệ sinh hoặc bảo dưỡng sửa chữa cơ điện", "Khi đang chạy máy ở chế độ tự động"], c: 2 },
+            { q: "5. Khi dùng pa-lăng cẩu bộ khuôn 2 tấn lên máy ép, hành động nào sau đây là vi phạm nghiêm trọng an toàn?", opts: ["Kiểm tra eyebolt vặn sâu hết ren", "Đứng hoặc đi lại ngay dưới tầm nâng của khuôn", "Cẩu chậm và dùng dây dẫn hướng", "Kiểm tra tải trọng định mức của pa-lăng"], c: 1 },
+            { q: "6. Hạt nhựa rơi vãi trên sàn xưởng ép phun tiềm ẩn nguy cơ gì?", opts: ["Gây trượt ngã nguy hiểm như trượt bi", "Gây ô nhiễm tiếng ồn", "Không có nguy cơ gì", "Làm hỏng bánh xe nâng"], c: 0 },
+            { q: "7. Tại khu vực máy băm nghiền cuống keo phế liệu, PPE bắt buộc là gì?", opts: ["Mặt nạ phòng độc quân sự", "Chụp tai chống ồn hoặc nút tai giảm ồn đạt chuẩn", "Găng tay cao su y tế", "Ủng đi mưa"], c: 1 },
+            { q: "8. Khi phát hiện ống dầu thủy lực cao áp bị rò rỉ tia dầu mịn, bạn phải làm gì?", opts: ["Dùng tay bịt lại chỗ rò rỉ", "Dừng máy khẩn cấp ngay lập tức và báo bảo trì, không dùng tay trần rà tia dầu", "Lấy băng dính quấn quanh ống", "Kệ nó chạy hết ca rồi tính"], c: 1 },
+            { q: "9. Giẻ lau dính dầu thủy lực và hóa chất bảo dưỡng khuôn được phân loại là rác gì?", opts: ["Rác thải sinh hoạt thông thường", "Chất thải nguy hại (CTNH), phải bỏ thùng riêng có nắp đậy", "Rác tái chế bán phế liệu", "Rác hữu cơ dễ phân hủy"], c: 1 },
+            { q: "10. Nguyên tắc PASS trong sử dụng bình chữa cháy xách tay gồm những bước nào?", opts: ["Phun - Áp sát - Sơ tán - Sẵn sàng", "Kéo chốt (Pull) - Nhắm gốc lửa (Aim) - Bóp cò (Squeeze) - Quét ngang (Sweep)", "Phòng ngừa - Báo động - Chữa cháy - Cứu hộ", "Pha bọt - Áp lực - Sục khí - Xịt"], c: 1 },
+            { q: "11. Trước khi bấm nút chạy tự động (Auto), người vận hành phải đảm bảo điều gì?", opts: ["Khuôn không có dị vật và không có người đứng trong khu vực kẹp khuôn", "Nòng nhiệt chưa gia nhiệt", "Mở sẵn cửa an toàn", "Tắt hệ thống làm mát"], c: 0 },
+            { q: "12. Tiêu chuẩn ISO 9001:2015 điều khoản nào yêu cầu đảm bảo năng lực và nhận thức an toàn của nhân sự?", opts: ["Điều khoản 4.1", "Điều khoản 7.2 (Năng lực) & 7.3 (Nhận thức)", "Điều khoản 9.2", "Điều khoản 10.1"], c: 1 },
+            { q: "13. Giày bảo hộ mũi thép có tác dụng chính là gì trong xưởng ép phun?", opts: ["Để đi lại êm chân hơn", "Bảo vệ ngón chân không bị dập nát khi rơi rớt bu lông, tấm gá kẹp nặng", "Chống tĩnh điện phòng sạch", "Để dễ leo trèo lên máy"], c: 1 },
+            { q: "14. Khi nhựa POM hoặc PVC bị lưu quá lâu trong nòng nung sinh ra khí khét độc hại, xử lý thế nào?", opts: ["Đứng hít để kiểm tra xem loại nhựa gì", "Hạ nhiệt độ, bật quạt thông gió, bắn keo bằng nhựa PE/PP sạch và rời khỏi vùng khói", "Đóng kín cửa xưởng", "Tăng nhiệt độ lên 350 độ C"], c: 1 },
+            { q: "15. Nút dừng khẩn cấp (Emergency Stop) trên máy ép phun có tác dụng gì?", opts: ["Tắt nguồn điện toàn nhà máy", "Ngắt ngay lập tức mọi chuyển động cơ khí và áp suất thủy lực của máy", "Tự động mở khuôn ra hết cỡ", "Bật còi báo cháy"], c: 1 },
+            { q: "16. Chiều cao xếp chồng pallet thành phẩm nhựa tối đa an toàn trong kho là bao nhiêu?", opts: ["Xếp cao chạm trần nhà", "Thường không quá 2-3 tầng (dưới 2.5m) và phải giằng dây chống đổ", "Muốn xếp bao nhiêu tùy ý", "Chỉ được để 1 tầng"], c: 1 },
+            { q: "17. Khi phát hiện dây điện trở nhiệt nòng ép bị tróc vỏ hở lõi đồng, xử lý thế nào?", opts: ["Lấy băng keo dán giấy dán lại", "Ngắt cầu dao điện máy, báo kỹ thuật điện thay thế dây chịu nhiệt chuyên dụng", "Dùng găng tay ướt cầm vào kiểm tra", "Tiếp tục chạy nếu máy vẫn đủ nhiệt"], c: 1 },
+            { q: "18. Ai là người được phép mở khóa LOTO khi công việc sửa chữa hoàn thành?", opts: ["Bất kỳ ai nhìn thấy khóa", "Chính người đã gắn khóa cá nhân đó sau khi đã kiểm tra an toàn toàn diện", "Công nhân ca sau tự bẻ khóa", "Bảo vệ nhà máy"], c: 1 },
+            { q: "19. Bình khí nén và bình tích áp thủy lực (Accumulator) có yêu cầu an toàn đặc thù gì?", opts: ["Không cần kiểm định", "Phải được kiểm định định kỳ bởi cơ quan nhà nước có thẩm quyền", "Tự ý hàn thêm tai gá vào bình", "Dùng búa gõ vào thân bình"], c: 1 },
+            { q: "20. Nước làm mát khuôn (Chiller/Cooling tower) xả tràn ra sàn gây nguy cơ gì?", opts: ["Làm mát sàn xưởng", "Trơn trượt ngã và tăng nguy cơ rò rỉ dẫn điện", "Không ảnh hưởng gì", "Tốt cho việc vệ sinh sàn"], c: 1 },
+            { q: "21. Khi đổ bao hạt nhựa 25kg lên phễu sấy cao trên 2m, quy tắc an toàn là gì?", opts: ["Đứng kiễng chân với tay ném bao nhựa", "Sử dụng thang leo có tay vịn vững chắc hoặc dùng máy hút liệu tự động", "Nhảy lên thùng máy đứng", "Nhờ 2 người cùng ném lên"], c: 1 },
+            { q: "22. Hành vi nào sau đây bị nghiêm cấm tuyệt đối trong toàn bộ xưởng sản xuất?", opts: ["Uống nước tại góc quy định", "Hút thuốc lá, mang bật lửa vào khu vực hạt nhựa và máy ép", "Đeo kính bảo hộ", "Ghi chép sổ sách"], c: 1 },
+            { q: "23. Tủ thuốc sơ cứu cấp cứu tại xưởng ép phun tối thiểu phải có vật dụng gì?", opts: ["Chỉ cần dầu gió", "Băng gạc tiệt trùng, cồn sát khuẩn, gạc mỡ trị bỏng, kéo y tế, nẹp cố định", "Thuốc kháng sinh đặc trị", "Kẹo ngọt"], c: 1 },
+            { q: "24. Định kỳ đào tạo lại an toàn lao động cho công nhân vận hành máy ép phun là bao lâu?", opts: ["5 năm một lần", "Tối thiểu 1 năm một lần (nhóm 3) và đào tạo đột xuất khi có quy trình mới", "Không bao giờ cần đào tạo lại", "Khi nào có tai nạn mới đào tạo"], c: 1 }
+        ];
+
+        function renderExam() {
+            const container = document.getElementById('quizItemsList');
+            container.innerHTML = questions.map((item, idx) => `
+                <div class="quiz-item">
+                    <div class="quiz-q">${item.q}</div>
+                    <div class="quiz-opts">
+                        ${item.opts.map((opt, oIdx) => `
+                            <label class="quiz-opt" id="q_${idx}_o_${oIdx}">
+                                <input type="radio" name="ans_${idx}" value="${oIdx}">
+                                ${opt}
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function submitExam() {
+            const name = document.getElementById('traineeName').value.trim();
+            const id = document.getElementById('traineeId').value.trim();
+            const dept = document.getElementById('traineeDept').value;
+
+            if (!name || !id) {
+                alert('Vui lòng điền Họ tên và Mã số nhân viên trước khi nộp bài!');
+                return;
+            }
+
+            let score = 0;
+            questions.forEach((q, idx) => {
+                const selected = document.querySelector(`input[name="ans_${idx}"]:checked`);
+                if (selected && parseInt(selected.value) === q.c) {
+                    score++;
+                    document.getElementById(`q_${idx}_o_${q.c}`).style.background = '#dcfce7';
+                } else {
+                    if (selected) {
+                        document.getElementById(`q_${idx}_o_${selected.value}`).style.background = '#fee2e2';
+                    }
+                    document.getElementById(`q_${idx}_o_${q.c}`).style.border = '2px solid #16a34a';
+                }
+            });
+
+            const pct = Math.round((score / questions.length) * 100);
+            if (score >= 20) {
+                alert(`Chúc mừng! Bạn đã đạt ${score}/${questions.length} câu (${pct}%). ĐẠT CHỨNG CHỈ AN TOÀN!`);
+                document.getElementById('certBox').style.display = 'block';
+                document.getElementById('certStudentName').textContent = name.toUpperCase();
+                document.getElementById('certStudentId').textContent = id;
+                document.getElementById('certStudentDept').textContent = dept;
+                document.getElementById('certScore').textContent = `${score}/${questions.length} Câu (${pct}%)`;
+                document.getElementById('certDate').textContent = new Date().toLocaleDateString('vi-VN');
+                document.getElementById('certBox').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                alert(`Rất tiếc! Bạn chỉ đạt ${score}/${questions.length} câu (${pct}%). Yêu cầu tối thiểu đạt 20/24 (80%). Vui lòng ôn lại 9 mô-đun và thi lại!`);
+                document.getElementById('certBox').style.display = 'none';
+            }
+        }
+
+        function resetExam() {
+            document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+            document.querySelectorAll('.quiz-opt').forEach(opt => {
+                opt.style.background = '#fff';
+                opt.style.border = '1px solid #cbd5e1';
+            });
+            document.getElementById('certBox').style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', renderExam);
+    </script>
+</body>
+</html>

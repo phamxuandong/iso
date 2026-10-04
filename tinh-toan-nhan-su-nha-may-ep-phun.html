@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính toán Quy mô Nhân sự — Nhà máy Ép phun 20 máy</title>
+    <style>
+        :root {
+            --navy-900: #0a1628;
+            --navy-800: #122442;
+            --navy-700: #1a365d;
+            --navy-600: #2c4a7c;
+            --navy-500: #3d649e;
+            --amber-500: #d97706;
+            --amber-600: #b45309;
+            --amber-400: #fbbf24;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-500: #6b7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+            --white: #ffffff;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, system-ui, sans-serif;
+            background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-800) 100%);
+            color: var(--gray-700);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+            border-left: 6px solid var(--amber-500);
+        }
+
+        .hero h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--navy-900);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.025em;
+        }
+
+        .hero p {
+            color: var(--gray-500);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .status-bar {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--gray-100);
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            color: var(--gray-700);
+        }
+
+        .status-bar .check {
+            color: var(--amber-500);
+            font-weight: 600;
+        }
+
+        .status-bar .timestamp {
+            color: var(--gray-500);
+            font-size: 0.75rem;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .control-panel h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--navy-900);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .control-group label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--navy-700);
+        }
+
+        .control-group input[type="number"],
+        .control-group select {
+            padding: 0.625rem 0.875rem;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-sm);
+            font-size: 0.9375rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: var(--white);
+        }
+
+        .control-group input[type="number"]:focus,
+        .control-group select:focus {
+            outline: none;
+            border-color: var(--amber-500);
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.1);
+        }
+
+        .toggle-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 0.625rem 1rem;
+            border: 2px solid var(--gray-200);
+            background: var(--white);
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .toggle-btn.active {
+            border-color: var(--amber-500);
+            background: var(--amber-500);
+            color: var(--white);
+        }
+
+        .segmented-control {
+            display: flex;
+            gap: 0.25rem;
+            background: var(--gray-100);
+            padding: 0.25rem;
+            border-radius: var(--radius-sm);
+        }
+
+        .segmented-btn {
+            flex: 1;
+            padding: 0.5rem 0.75rem;
+            border: none;
+            background: transparent;
+            border-radius: calc(var(--radius-sm) - 2px);
+            font-size: 0.8125rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--gray-700);
+        }
+
+        .segmented-btn.active {
+            background: var(--amber-500);
+            color: var(--white);
+        }
+
+        .reset-btn {
+            grid-column: 1 / -1;
+            padding: 0.75rem 1.5rem;
+            background: var(--navy-700);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 1rem;
+        }
+
+        .reset-btn:hover {
+            background: var(--navy-600);
+        }
+
+        /* Summary Cards */
+        .summary-section {
+            margin-bottom: 2rem;
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-card {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            box-shadow: var(--shadow-md);
+            border-top: 4px solid var(--amber-500);
+        }
+
+        .summary-card h3 {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--navy-900);
+            line-height: 1.2;
+        }
+
+        .summary-card .subtext {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            margin-top: 0.25rem;
+        }
+
+        .chart-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .chart-container {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .legend-container {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .legend-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--navy-700);
+            margin-bottom: 1rem;
+        }
+
+        .legend-list {
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.8125rem;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        .legend-label {
+            color: var(--gray-700);
+        }
+
+        .legend-value {
+            margin-left: auto;
+            font-weight: 600;
+            color: var(--navy-900);
+        }
+
+        /* Department Cards */
+        .departments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .dept-card {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+        }
+
+        .dept-header {
+            background: var(--navy-800);
+            color: var(--white);
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .dept-title {
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .dept-total {
+            background: var(--amber-500);
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.8125rem;
+            font-weight: 600;
+        }
+
+        .dept-body {
+            padding: 0;
+        }
+
+        .position-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .position-table th,
+        .position-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .position-table th {
+            background: var(--gray-100);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .position-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .position-table tr:hover {
+            background: var(--gray-100);
+        }
+
+        .pos-name {
+            font-weight: 500;
+            color: var(--navy-900);
+            font-size: 0.875rem;
+        }
+
+        .pos-desc {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            margin-top: 0.25rem;
+        }
+
+        .pos-formula {
+            font-size: 0.6875rem;
+            color: var(--amber-600);
+            font-family: 'Consolas', 'Monaco', monospace;
+            background: var(--amber-50);
+            padding: 0.125rem 0.375rem;
+            border-radius: 2px;
+            display: inline-block;
+            margin-top: 0.25rem;
+        }
+
+        .pos-quantity {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--navy-900);
+            text-align: right;
+        }
+
+        .pos-actions {
+            display: flex;
+            gap: 0.25rem;
+            justify-content: flex-end;
+        }
+
+        .action-btn {
+            padding: 0.25rem 0.5rem;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .action-btn.edit {
+            background: var(--navy-100);
+            color: var(--navy-700);
+        }
+
+        .action-btn.delete {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .action-btn:hover {
+            opacity: 0.8;
+        }
+
+        .add-position-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--gray-100);
+            border: 2px dashed var(--gray-300);
+            color: var(--gray-500);
+            font-size: 0.8125rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .add-position-btn:hover {
+            background: var(--amber-50);
+            border-color: var(--amber-400);
+            color: var(--amber-600);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--navy-900);
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .modal-form label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--navy-700);
+        }
+
+        .modal-form input,
+        .modal-form textarea,
+        .modal-form select {
+            padding: 0.625rem 0.875rem;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-sm);
+            font-size: 0.9375rem;
+        }
+
+        .modal-form textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+
+        .modal-btn {
+            padding: 0.625rem 1.25rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-btn.cancel {
+            background: var(--gray-200);
+            color: var(--gray-700);
+            border: none;
+        }
+
+        .modal-btn.save {
+            background: var(--amber-500);
+            color: var(--white);
+            border: none;
+        }
+
+        .modal-btn.save:hover {
+            background: var(--amber-600);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+
+            .control-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .departments-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-row {
+                grid-template-columns: 1fr;
+            }
+
+            .position-table {
+                font-size: 0.8125rem;
+            }
+
+            .position-table th,
+            .position-table td {
+                padding: 0.5rem 0.75rem;
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: var(--white);
+                padding: 0;
+            }
+
+            .control-panel,
+            .add-position-btn,
+            .action-btn,
+            .reset-btn,
+            .modal-overlay {
+                display: none !important;
+            }
+
+            .hero {
+                box-shadow: none;
+                border: 1px solid var(--gray-300);
+            }
+
+            .dept-card {
+                box-shadow: none;
+                border: 1px solid var(--gray-300);
+                page-break-inside: avoid;
+            }
+
+            .summary-card {
+                box-shadow: none;
+                border: 1px solid var(--gray-300);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <header class="hero">
+            <h1>Tính toán Quy mô Nhân sự — Nhà máy Ép phun 20 máy</h1>
+            <p>Công cụ tương tác · Tự lưu dữ liệu trình duyệt · Bao gồm lắp ráp & kho vận</p>
+            <div class="status-bar">
+                <span class="check">✓</span>
+                <span>Đã lưu tự động vào trình duyệt</span>
+                <span class="timestamp" id="lastSaved">--:--:--</span>
+            </div>
+        </header>
+
+        <!-- Control Panel -->
+        <section class="control-panel">
+            <h2>⚙️ Thông số Đầu vào</h2>
+            <div class="control-grid">
+                <div class="control-group">
+                    <label for="numMachines">Số máy ép phun</label>
+                    <input type="number" id="numMachines" min="1" max="100" value="20">
+                </div>
+
+                <div class="control-group">
+                    <label>Số ca vận hành</label>
+                    <div class="toggle-group" id="shiftToggle">
+                        <button class="toggle-btn" data-value="2">2 ca</button>
+                        <button class="toggle-btn active" data-value="3">3 ca</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label for="workersPerMachine">Công nhân / Máy</label>
+                    <select id="workersPerMachine">
+                        <option value="1">1:1 (1 công nhân / 1 máy)</option>
+                        <option value="2">1:2 (1 công nhân / 2 máy)</option>
+                        <option value="3">1:3 (1 công nhân / 3 máy)</option>
+                        <option value="4">1:4 (1 công nhân / 4 máy)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="factorK">Hệ số dự phòng K</label>
+                    <input type="number" id="factorK" min="1.0" max="2.0" step="0.05" value="1.15">
+                </div>
+
+                <div class="control-group">
+                    <label>Độ phức tạp sản phẩm</label>
+                    <div class="segmented-control" id="complexityControl">
+                        <button class="segmented-btn active" data-value="low">Thấp</button>
+                        <button class="segmented-btn" data-value="medium">Trung bình</button>
+                        <button class="segmented-btn" data-value="high">Cao</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label for="assemblySize">Quy mô Lắp ráp (người)</label>
+                    <input type="number" id="assemblySize" min="1" max="100" value="10">
+                </div>
+
+                <div class="control-group">
+                    <label for="forkliftDrivers">Số lái xe nâng</label>
+                    <input type="number" id="forkliftDrivers" min="0" max="20" value="2">
+                </div>
+
+                <button class="reset-btn" id="resetBtn">↺ Khôi phục mặc định</button>
+            </div>
+        </section>
+
+        <!-- Summary Section -->
+        <section class="summary-section">
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <h3>Tổng Nhân sự</h3>
+                    <div class="value" id="totalStaff">133</div>
+                    <div class="subtext">người (đã bao gồm hệ số K)</div>
+                </div>
+                <div class="summary-card">
+                    <h3>Số Phòng ban</h3>
+                    <div class="value" id="totalDepts">10</div>
+                    <div class="subtext">bộ phận chức năng</div>
+                </div>
+                <div class="summary-card">
+                    <h3>Sản xuất Trực tiếp</h3>
+                    <div class="value" id="directStaff">91</div>
+                    <div class="subtext">khối Sản xuất + Lắp ráp</div>
+                </div>
+                <div class="summary-card">
+                    <h3>Khối Gián tiếp</h3>
+                    <div class="value" id="indirectStaff">42</div>
+                    <div class="subtext">phòng ban hỗ trợ</div>
+                </div>
+            </div>
+
+            <div class="chart-row">
+                <div class="chart-container">
+                    <svg id="donutChart" width="200" height="200" viewBox="0 0 200 200">
+                        <!-- Donut chart will be rendered here -->
+                    </svg>
+                </div>
+                <div class="legend-container">
+                    <div class="legend-title">Phân bổ theo Phòng ban</div>
+                    <div class="legend-list" id="deptLegend">
+                        <!-- Legend items will be rendered here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Departments Grid -->
+        <section class="departments-grid" id="departmentsGrid">
+            <!-- Department cards will be rendered here -->
+        </section>
+    </div>
+
+    <!-- Modal for Add/Edit Position -->
+    <div class="modal-overlay" id="positionModal">
+        <div class="modal">
+            <h3 id="modalTitle">Thêm Vị trí Mới</h3>
+            <form class="modal-form" id="positionForm">
+                <input type="hidden" id="modalDeptId">
+                <input type="hidden" id="modalPosId">
+                <input type="hidden" id="modalMode" value="add">
+
+                <label for="posName">Tên vị trí</label>
+                <input type="text" id="posName" required>
+
+                <label for="posDesc">Mô tả công việc</label>
+                <textarea id="posDesc" required></textarea>
+
+                <label for="posType">Loại tính toán</label>
+                <select id="posType">
+                    <option value="fixed">Số cố định</option>
+                    <option value="perShift">Theo ca (× số ca)</option>
+                    <option value="complexity">Theo độ phức tạp</option>
+                </select>
+
+                <label for="posValue">Số lượng / Giá trị</label>
+                <input type="number" id="posValue" min="0" step="1" required>
+
+                <label for="posPerShift">Số người/ca (nếu theo ca)</label>
+                <input type="number" id="posPerShift" min="0" step="0.5" value="1">
+
+                <div class="modal-actions">
+                    <button type="button" class="modal-btn cancel" id="modalCancel">Hủy</button>
+                    <button type="submit" class="modal-btn save">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Default data structure
+        const DEFAULT_DATA = {
+            numMachines: 20,
+            numShifts: 3,
+            workersPerMachine: 1,
+            factorK: 1.15,
+            complexity: 'low',
+            assemblySize: 10,
+            forkliftDrivers: 2,
+            departments: [
+                {
+                    id: 'production',
+                    name: '🏭 SẢN XUẤT',
+                    type: 'direct',
+                    positions: [
+                        { id: 'machine-operator', name: 'Vận hành máy ép phun', desc: 'Nạp liệu, vận hành theo WI, quan sát lỗi sp, ghi phiếu thông số mỗi ca, phân loại, dừng máy khi bất thường', type: 'machine', value: 0, perShift: 0 },
+                        { id: 'material-handler', name: 'Nhân viên nạp/phụ liệu', desc: 'Chuẩn bị hạt theo kế hoạch, nạp phễu, kiểm tra sạch, FIFO', type: 'perShift', value: 0, perShift: 1 },
+                        { id: 'finishing', name: 'Nhân viên hoàn thiện–đóng gói', desc: 'Cắt đậu rót, bắn tạp, soạn hàng, đóng gói theo SOP', type: 'fixed', value: 3, perShift: 0 },
+                        { id: 'production-leader', name: 'Tổ trưởng sản xuất', desc: 'Điều phối ca, giám sát tuân thủ WI, báo cáo sản lượng', type: 'perShift', value: 0, perShift: 1 },
+                        { id: 'production-supervisor', name: 'Quản đốc phân xưởng', desc: 'Chịu trách nhiệm sản lượng/chất lượng/an toàn cả ca', type: 'perShift', value: 0, perShift: 1 }
+                    ]
+                },
+                {
+                    id: 'assembly',
+                    name: '🔩 LẮP RÁP',
+                    type: 'direct',
+                    positions: [
+                        { id: 'assembly-worker', name: 'Công nhân lắp ráp', desc: 'Lắp ráp linh kiện theo SOP, kiểm tra mối lắp, hoàn thành từng cụm', type: 'assembly', value: 0, perShift: 0 },
+                        { id: 'assembly-leader', name: 'Tổ trưởng lắp ráp', desc: 'Phân việc, kiểm tra chất lượng mối lắp định kỳ, báo cáo sản lượng', type: 'fixed', value: 1, perShift: 0 }
+                    ]
+                },
+                {
+                    id: 'mold',
+                    name: '🔧 KHUÔN (Mold)',
+                    type: 'indirect',
+                    positions: [
+                        { id: 'mold-tech', name: 'Thợ khuôn (lắp/đổi khuôn)', desc: 'Lắp/tháo khuôn theo lịch, dưỡng định kỳ, ghi sổ nhật ký khuôn', type: 'fixed', value: 5, perShift: 0 },
+                        { id: 'mold-repair', name: 'Thợ sửa khuôn chuyên sâu', desc: 'Đánh bóng, hàn, fitting, khắc phục lỗi khuôn', type: 'fixed', value: 2, perShift: 0 },
+                        { id: 'mold-engineer', name: 'Kỹ sư khuôn', desc: 'Quản lý vòng đời khuôn, lịch bảo trì, tài sản khuôn khách hàng', type: 'fixed', value: 1, perShift: 0 }
+                    ]
+                },
+                {
+                    id: 'maintenance',
+                    name: '⚙️ BẢO TRÌ',
+                    type: 'indirect',
+                    positions: [
+                        { id: 'maintenance-tech', name: 'KTV điện–cơ', desc: 'Bảo dưỡng máy ép, chiller, khí nén, robot; giảm downtime', type: 'fixed', value: 4, perShift: 0 },
+                        { id: 'maintenance-engineer', name: 'Kỹ sư bảo trì (TPM)', desc: 'Lập lịch bảo trì phòng ngừa, phân tích downtime, phụ tùng', type: 'fixed', value: 1, perShift: 0 }
+                    ]
+                },
+                {
+                    id: 'process',
+                    name: '🧑🔧 KỸ THUẬT QUY TRÌNH',
+                    type: 'indirect',
+                    positions: [
+                        { id: 'process-engineer', name: 'Kỹ sư quy trình ép phun', desc: 'Set up thông số, tối ưu chu kỳ/phế, lập WI/Control Plan, thử khuôn mới', type: 'complexity', value: { low: 3, medium: 4, high: 5 }, perShift: 0 },
+                        { id: 'process-tech', name: 'KTV quy trình/ca (Setter)', desc: 'Can thiệp thông số trong khoảng cho phép, xử lý lỗi ca, hỗ trợ đổi khuôn', type: 'perShift', value: 0, perShift: 1 }
+                    ]
+                },
+                {
+                    id: 'quality',
+                    name: '✅ CHẤT LƯỢNG (QA/QC)',
+                    type: 'indirect',
+                    positions: [
+                        { id: 'qa-manager', name: 'Trưởng phòng QA/QC', desc: 'Quản lý toàn bộ hệ thống chất lượng', type: 'fixed', value: 1, perShift: 0 },
+                        { id: 'iqc', name: 'QC nguyên liệu (IQC)', desc: 'Kiểm tra hạt nhựa, phụ gia, bao bì đầu vào', type: 'fixed', value: 1, perShift: 0 },
+                        { id: 'ipqc', name: 'QC công đoạn (IPQC)', desc: 'Kiểm tra đầu ca + định kỳ 1–2h, giám sát thông số & sp trên máy', type: 'ipqc', value: 0, perShift: 1 },
+                        { id: 'qc-assembly', name: 'QC lắp ráp', desc: 'Kiểm tra cụm lắp ráp, phát hiện lỗi lắp sớm', type: 'fixed', value: 1, perShift: 0 },
+                        { id: 'oqc', name: 'QC xuất hàng (OQC)', desc: 'Kiểm tra cuối lô theo AQL, dán nhãn, hồ sơ xuất kho', type: 'fixed', value: 1, perShift: 0 },
+                        { id: 'cmm', name: 'Chuyên viên đo lường (CMM)', desc: 'Đo kích thước, báo cáo đo, quản lý dụng cụ + hiệu chuẩn', type: 'complexity', value: { low: 1, medium: 2, high: 3 }, perShift: 0 },
+                        { id: 'qe', name: 'Kỹ sư chất lượng sản phẩm (QE)', desc: 'FAI/PPAP, xử lý khiếu nại (8D), theo dõi khách', type: 'complexity', value: { low: 1, medium: 2, high: 3 }, perShift: 0 },
+                        { id: 'qms', name: 'Chuyên viên QMS', desc: 'Quản lý tài liệu ISO 9001, đánh giá nội bộ, đào tạo chất lượng', type: 'fixed', value: 1, perShift: 0 }
+                    ]
+                },
+                {
+                    id: 'planning',
+                    name: '📋 KẾ HOẠCH & MUA HÀNG',
+                    type: 'indirect',
+                    positions: [
+                        { id: 'planner', name: 'Kế hoạch sản xuất (Planner)', desc: 'Lập lịch 20 máy, điều độ job, theo dõi tiến độ', type: 'fixed', value: 2, perShift: 0 },
+                        { id: 'purchasing', name: 'Mua hàng NVL', desc: 'Đặt hạt nhựa/phụ gia, FIFO, quản lý tồn kho, đánh giá nhà cung cấp', type: 'fixed', value: 2, perShift: 0 }
+                    ]
+                },
+                {
+                    id: 'warehouse',
+                    name: '📦 KHO & LOGISTICS',
+                    type: 'indirect',
+                    positions: [
+                        { id: 'warehouse-raw', name: 'Thủ kho nguyên liệu', desc: 'Quản lý kho hạt nhựa, phụ gia, bao bì', type: 'fixed', value: 1, perShift: 0 },
+                        { id: 'warehouse-fg', name: 'Thủ kho thành phẩm', desc: 'Quản lý kho thành phẩm, xuất hàng', type: 'fixed', value: 1, perShift: 0 },
+                        { id: 'shipping', name: 'Nhân viên giao nhận (Shipping/Receiving)', desc: 'Chứng từ xuất/nhập, cân, phối hợp xe, XNK', type: 'fixed', value: 1, perShift: 0 },
+                        { id: 'forklift', name: 'Lái xe nâng', desc: 'Vận chuyển hạt nhựa/nvl lên khu nạp liệu, xếp dỡ thành phẩm, an toàn xe nâng', type: 'forklift', value: 0, perShift: 0 }
+                    ]
+                },
+                {
+                    id: 'ehs',
+                    name: '🦺 AN TOÀN – MÔI TRƯỜNG (EHS)',
+                    type: 'indirect',
+                    positions: [
+                        { id: 'ehs-officer', name: 'Cán bộ An toàn – Môi trường', desc: 'Huấn luyện an toàn, PPE, PCCC, quản lý hóa chất/rác thải, hồ sơ pháp lý', type: 'fixed', value: 1, perShift: 0 }
+                    ]
+                },
+                {
+                    id: 'management',
+                    name: '👔 QUẢN LÝ',
+                    type: 'indirect',
+                    positions: [
+                        { id: 'factory-director', name: 'Giám đốc nhà máy', desc: 'Quản lý tổng thể nhà máy', type: 'fixed', value: 1, perShift: 0 },
+                        { id: 'production-manager', name: 'Trưởng phòng Sản xuất', desc: 'Quản lý khối sản xuất', type: 'fixed', value: 1, perShift: 0 },
+                        { id: 'tech-manager', name: 'Trưởng phòng Kỹ thuật', desc: 'Quản lý khối kỹ thuật', type: 'fixed', value: 1, perShift: 0 }
+                    ]
+                }
+            ]
+        };
+
+        // Storage key
+        const STORAGE_KEY = 'staffing-calc-v1';
+
+        // Current data
+        let currentData = null;
+
+        // Department colors for chart
+        const DEPT_COLORS = [
+            '#d97706', '#1a365d', '#3d649e', '#2c4a7c', '#b45309',
+            '#fbbf24', '#0a1628', '#6b7280', '#374151', '#111827'
+        ];
+
+        // Initialize
+        function init() {
+            loadData();
+            setupEventListeners();
+            render();
+        }
+
+        // Load data from localStorage or use default
+        function loadData() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                try {
+                    currentData = JSON.parse(stored);
+                } catch (e) {
+                    currentData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+                }
+            } else {
+                currentData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+            }
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(currentData));
+            updateLastSaved();
+        }
+
+        // Update last saved timestamp
+        function updateLastSaved() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            document.getElementById('lastSaved').textContent = timeStr;
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Number inputs
+            document.getElementById('numMachines').addEventListener('change', (e) => {
+                currentData.numMachines = parseInt(e.target.value) || 20;
+                saveData();
+                render();
+            });
+
+            document.getElementById('workersPerMachine').addEventListener('change', (e) => {
+                currentData.workersPerMachine = parseInt(e.target.value) || 1;
+                saveData();
+                render();
+            });
+
+            document.getElementById('factorK').addEventListener('change', (e) => {
+                currentData.factorK = parseFloat(e.target.value) || 1.15;
+                saveData();
+                render();
+            });
+
+            document.getElementById('assemblySize').addEventListener('change', (e) => {
+                currentData.assemblySize = parseInt(e.target.value) || 10;
+                saveData();
+                render();
+            });
+
+            document.getElementById('forkliftDrivers').addEventListener('change', (e) => {
+                currentData.forkliftDrivers = parseInt(e.target.value) || 2;
+                saveData();
+                render();
+            });
+
+            // Shift toggle
+            document.querySelectorAll('#shiftToggle .toggle-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('#shiftToggle .toggle-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentData.numShifts = parseInt(btn.dataset.value);
+                    saveData();
+                    render();
+                });
+            });
+
+            // Complexity control
+            document.querySelectorAll('#complexityControl .segmented-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('#complexityControl .segmented-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentData.complexity = btn.dataset.value;
+                    saveData();
+                    render();
+                });
+            });
+
+            // Reset button
+            document.getElementById('resetBtn').addEventListener('click', () => {
+                if (confirm('Bạn có chắc muốn khôi phục tất cả về giá trị mặc định? Dữ liệu tùy chỉnh sẽ bị mất.')) {
+                    localStorage.removeItem(STORAGE_KEY);
+                    currentData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+                    syncControls();
+                    render();
+                }
+            });
+
+            // Modal
+            document.getElementById('modalCancel').addEventListener('click', closeModal);
+            document.getElementById('positionModal').addEventListener('click', (e) => {
+                if (e.target.id === 'positionModal') closeModal();
+            });
+            document.getElementById('positionForm').addEventListener('submit', handlePositionSubmit);
+        }
+
+        // Sync controls with current data
+        function syncControls() {
+            document.getElementById('numMachines').value = currentData.numMachines;
+            document.getElementById('workersPerMachine').value = currentData.workersPerMachine;
+            document.getElementById('factorK').value = currentData.factorK;
+            document.getElementById('assemblySize').value = currentData.assemblySize;
+            document.getElementById('forkliftDrivers').value = currentData.forkliftDrivers;
+
+            document.querySelectorAll('#shiftToggle .toggle-btn').forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.value) === currentData.numShifts);
+            });
+
+            document.querySelectorAll('#complexityControl .segmented-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.value === currentData.complexity);
+            });
+        }
+
+        // Calculate position quantity
+        function calculatePositionQty(position, dept) {
+            const { numMachines, numShifts, workersPerMachine, factorK, assemblySize, forkliftDrivers, complexity } = currentData;
+
+            switch (position.type) {
+                case 'machine':
+                    // Machine operators: ceil(numMachines / workersPerMachine) × numShifts × K
+                    return Math.ceil(numMachines / workersPerMachine) * numShifts * factorK;
+
+                case 'perShift':
+                    // Per shift positions: perShift × numShifts
+                    return position.perShift * numShifts;
+
+                case 'assembly':
+                    // Assembly workers: assemblySize - 1 (remaining is team leader)
+                    return assemblySize - 1;
+
+                case 'forklift':
+                    // Forklift drivers: from input
+                    return forkliftDrivers;
+
+                case 'complexity':
+                    // Complexity-based positions
+                    return position.value[complexity] || 0;
+
+                case 'ipqc':
+                    // IPQC: 1/ca (low/medium) or 2/ca (high)
+                    const ipqcPerShift = complexity === 'high' ? 2 : 1;
+                    return ipqcPerShift * numShifts;
+
+                case 'fixed':
+                default:
+                    return position.value || 0;
+            }
+        }
+
+        // Get formula string for position
+        function getFormula(position) {
+            const { numMachines, numShifts, workersPerMachine, factorK, assemblySize, forkliftDrivers, complexity } = currentData;
+
+            switch (position.type) {
+                case 'machine':
+                    return `ceil(${numMachines}/${workersPerMachine}) × ${numShifts} ca × ${factorK} = ${Math.round(calculatePositionQty(position))}`;
+                case 'perShift':
+                    return `${position.perShift}/ca × ${numShifts} ca = ${calculatePositionQty(position)}`;
+                case 'assembly':
+                    return `${assemblySize} - 1 = ${calculatePositionQty(position)}`;
+                case 'forklift':
+                    return `= ${forkliftDrivers}`;
+                case 'complexity':
+                    return `Độ phức tạp: ${position.value[complexity]}`;
+                case 'ipqc':
+                    const ipqcPerShift = complexity === 'high' ? 2 : 1;
+                    return `${ipqcPerShift}/ca × ${numShifts} ca = ${calculatePositionQty(position)}`;
+                default:
+                    return `= ${position.value}`;
+            }
+        }
+
+        // Calculate department total
+        function calculateDeptTotal(dept) {
+            return dept.positions.reduce((sum, pos) => sum + calculatePositionQty(pos, dept), 0);
+        }
+
+        // Calculate totals
+        function calculateTotals() {
+            let total = 0;
+            let direct = 0;
+            let indirect = 0;
+            const deptTotals = [];
+
+            currentData.departments.forEach((dept, idx) => {
+                const deptTotal = Math.round(calculateDeptTotal(dept));
+                deptTotals.push({ name: dept.name, value: deptTotal, color: DEPT_COLORS[idx % DEPT_COLORS.length] });
+
+                total += deptTotal;
+                if (dept.type === 'direct') {
+                    direct += deptTotal;
+                } else {
+                    indirect += deptTotal;
+                }
+            });
+
+            return { total: Math.round(total), direct: Math.round(direct), indirect: Math.round(indirect), deptTotals };
+        }
+
+        // Render donut chart
+        function renderDonutChart(deptTotals) {
+            const svg = document.getElementById('donutChart');
+            const total = deptTotals.reduce((sum, d) => sum + d.value, 0);
+
+            let currentAngle = 0;
+            const cx = 100, cy = 100, r = 80, innerR = 50;
+
+            let paths = '';
+            deptTotals.forEach(dept => {
+                if (dept.value === 0) return;
+
+                const percentage = dept.value / total;
+                const angle = percentage * 360;
+                const startAngle = currentAngle;
+                const endAngle = currentAngle + angle;
+
+                // Convert to radians
+                const startRad = (startAngle - 90) * Math.PI / 180;
+                const endRad = (endAngle - 90) * Math.PI / 180;
+
+                const x1 = cx + r * Math.cos(startRad);
+                const y1 = cy + r * Math.sin(startRad);
+                const x2 = cx + r * Math.cos(endRad);
+                const y2 = cy + r * Math.sin(endRad);
+                const x3 = cx + innerR * Math.cos(endRad);
+                const y3 = cy + innerR * Math.sin(endRad);
+                const x4 = cx + innerR * Math.cos(startRad);
+                const y4 = cy + innerR * Math.sin(startRad);
+
+                const largeArc = angle > 180 ? 1 : 0;
+
+                const d = `M ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} L ${x3} ${y3} A ${innerR} ${innerR} 0 ${largeArc} 0 ${x4} ${y4} Z`;
+
+                paths += `<path d="${d}" fill="${dept.color}" stroke="#fff" stroke-width="2"/>`;
+
+                currentAngle = endAngle;
+            });
+
+            svg.innerHTML = paths;
+        }
+
+        // Render legend
+        function renderLegend(deptTotals) {
+            const container = document.getElementById('deptLegend');
+            container.innerHTML = deptTotals.map(dept => `
+                <div class="legend-item">
+                    <div class="legend-color" style="background: ${dept.color}"></div>
+                    <span class="legend-label">${dept.name}</span>
+                    <span class="legend-value">${dept.value}</span>
+                </div>
+            `).join('');
+        }
+
+        // Render department cards
+        function renderDepartments() {
+            const container = document.getElementById('departmentsGrid');
+            container.innerHTML = currentData.departments.map((dept, deptIdx) => {
+                const deptTotal = Math.round(calculateDeptTotal(dept));
+
+                return `
+                    <div class="dept-card">
+                        <div class="dept-header">
+                            <span class="dept-title">${dept.name}</span>
+                            <span class="dept-total">${deptTotal} người</span>
+                        </div>
+                        <div class="dept-body">
+                            <table class="position-table">
+                                <thead>
+                                    <tr>
+                                        <th>Vị trí</th>
+                                        <th style="text-align: right">SL</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${dept.positions.map(pos => {
+                                        const qty = Math.round(calculatePositionQty(pos, dept));
+                                        const formula = getFormula(pos);
+                                        return `
+                                            <tr>
+                                                <td>
+                                                    <div class="pos-name">${pos.name}</div>
+                                                    <div class="pos-desc">${pos.desc}</div>
+                                                    <div class="pos-formula">${formula}</div>
+                                                </td>
+                                                <td class="pos-quantity">${qty}</td>
+                                                <td>
+                                                    <div class="pos-actions">
+                                                        <button class="action-btn edit" onclick="editPosition('${dept.id}', '${pos.id}')">✏️</button>
+                                                        <button class="action-btn delete" onclick="deletePosition('${dept.id}', '${pos.id}')">🗑️</button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        `;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                            <button class="add-position-btn" onclick="addPosition('${dept.id}')">+ Thêm vị trí</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Render everything
+        function render() {
+            syncControls();
+
+            const { total, direct, indirect, deptTotals } = calculateTotals();
+
+            document.getElementById('totalStaff').textContent = total;
+            document.getElementById('totalDepts').textContent = currentData.departments.length;
+            document.getElementById('directStaff').textContent = direct;
+            document.getElementById('indirectStaff').textContent = indirect;
+
+            renderDonutChart(deptTotals);
+            renderLegend(deptTotals);
+            renderDepartments();
+        }
+
+        // Modal functions
+        function openModal(mode, deptId, posId = null) {
+            const modal = document.getElementById('positionModal');
+            const title = document.getElementById('modalTitle');
+            const form = document.getElementById('positionForm');
+
+            document.getElementById('modalMode').value = mode;
+            document.getElementById('modalDeptId').value = deptId;
+            document.getElementById('modalPosId').value = posId || '';
+
+            if (mode === 'add') {
+                title.textContent = 'Thêm Vị trí Mới';
+                form.reset();
+                document.getElementById('posType').value = 'fixed';
+                document.getElementById('posValue').value = 1;
+                document.getElementById('posPerShift').value = 1;
+            } else {
+                title.textContent = 'Chỉnh sửa Vị trí';
+                const dept = currentData.departments.find(d => d.id === deptId);
+                const pos = dept.positions.find(p => p.id === posId);
+
+                document.getElementById('posName').value = pos.name;
+                document.getElementById('posDesc').value = pos.desc;
+                document.getElementById('posType').value = pos.type;
+                document.getElementById('posValue').value = typeof pos.value === 'number' ? pos.value : 1;
+                document.getElementById('posPerShift').value = pos.perShift || 1;
+            }
+
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('positionModal').classList.remove('active');
+        }
+
+        function handlePositionSubmit(e) {
+            e.preventDefault();
+
+            const mode = document.getElementById('modalMode').value;
+            const deptId = document.getElementById('modalDeptId').value;
+            const posId = document.getElementById('modalPosId').value;
+
+            const posName = document.getElementById('posName').value;
+            const posDesc = document.getElementById('posDesc').value;
+            const posType = document.getElementById('posType').value;
+            const posValue = parseFloat(document.getElementById('posValue').value) || 0;
+            const posPerShift = parseFloat(document.getElementById('posPerShift').value) || 1;
+
+            const dept = currentData.departments.find(d => d.id === deptId);
+
+            if (mode === 'add') {
+                const newId = 'pos-' + Date.now();
+                dept.positions.push({
+                    id: newId,
+                    name: posName,
+                    desc: posDesc,
+                    type: posType,
+                    value: posType === 'complexity' ? { low: posValue, medium: posValue, high: posValue } : posValue,
+                    perShift: posPerShift
+                });
+            } else {
+                const pos = dept.positions.find(p => p.id === posId);
+                pos.name = posName;
+                pos.desc = posDesc;
+                pos.type = posType;
+                pos.value = posType === 'complexity' ? { low: posValue, medium: posValue, high: posValue } : posValue;
+                pos.perShift = posPerShift;
+            }
+
+            saveData();
+            closeModal();
+            render();
+        }
+
+        // Global functions for inline onclick handlers
+        window.addPosition = function(deptId) {
+            openModal('add', deptId);
+        };
+
+        window.editPosition = function(deptId, posId) {
+            openModal('edit', deptId, posId);
+        };
+
+        window.deletePosition = function(deptId, posId) {
+            if (confirm('Bạn có chắc muốn xóa vị trí này?')) {
+                const dept = currentData.departments.find(d => d.id === deptId);
+                dept.positions = dept.positions.filter(p => p.id !== posId);
+                saveData();
+                render();
+            }
+        };
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>

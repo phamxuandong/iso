@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Dashboard — Giám Sát 20 Máy Ép Phun Thời Gian Thực</title>
+    <style>
+        :root {
+            --navy-dark: #0a1628;
+            --navy-primary: #122442;
+            --navy-light: #1a365d;
+            --amber-primary: #d97706;
+            --amber-light: #fbbf24;
+            --amber-pale: #fef3c7;
+            --bg: #f8fafc;
+            --white: #ffffff;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-600: #475569;
+            --gray-800: #1e293b;
+            --success: #16a34a;
+            --warning: #f59e0b;
+            --error: #dc2626;
+            --border-radius: 8px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--gray-800);
+            line-height: 1.5;
+        }
+
+        /* Nav */
+        .nav {
+            background: var(--navy-dark);
+            color: #fff;
+            padding: 14px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+        }
+        .nav-logo { font-size: 1.15rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .nav-links { display: flex; gap: 16px; align-items: center; }
+        .nav-links a { color: var(--gray-300); text-decoration: none; font-size: 0.9rem; font-weight: 500; }
+        .nav-links a:hover, .nav-links a.active { color: var(--amber-light); }
+        .badge-live { background: #ef4444; color: #fff; font-size: 0.75rem; font-weight: 700; padding: 3px 8px; border-radius: 12px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+        /* KPI Strip */
+        .kpi-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .kpi-card {
+            background: #fff;
+            padding: 18px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+            border-left: 4px solid var(--navy-primary);
+        }
+        .kpi-card.green { border-left-color: var(--success); }
+        .kpi-card.amber { border-left-color: var(--amber-primary); }
+        .kpi-card.red { border-left-color: var(--error); }
+        .kpi-title { font-size: 0.8rem; text-transform: uppercase; color: var(--gray-600); font-weight: 700; margin-bottom: 6px; }
+        .kpi-value { font-size: 1.9rem; font-weight: 800; color: var(--navy-primary); }
+        .kpi-sub { font-size: 0.8rem; color: var(--gray-600); margin-top: 4px; }
+
+        /* Section Title */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .section-title { font-size: 1.25rem; font-weight: 700; color: var(--navy-primary); }
+
+        /* 20 Machines Grid */
+        .machines-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+        .machine-node {
+            background: #fff;
+            border-radius: var(--border-radius);
+            padding: 16px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            transition: transform 0.2s;
+            cursor: pointer;
+            position: relative;
+        }
+        .machine-node:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+        .machine-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .machine-id { font-size: 1.15rem; font-weight: 800; color: var(--navy-primary); }
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .dot-running { background: var(--success); box-shadow: 0 0 8px rgba(22, 163, 74, 0.6); }
+        .dot-maintenance { background: var(--warning); box-shadow: 0 0 8px rgba(245, 158, 11, 0.6); }
+        .dot-breakdown { background: var(--error); box-shadow: 0 0 8px rgba(220, 38, 38, 0.6); }
+
+        .machine-specs { font-size: 0.82rem; color: var(--gray-600); margin-bottom: 10px; }
+        .metric-row { display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 4px; }
+        .metric-val { font-weight: 700; color: var(--navy-primary); }
+
+        /* Ticket Table */
+        .tickets-box {
+            background: #fff;
+            border-radius: var(--border-radius);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 30px;
+        }
+        .table-responsive { overflow-x: auto; margin-top: 15px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        th, td { border: 1px solid var(--gray-200); padding: 12px 14px; text-align: left; }
+        th { background: var(--navy-primary); color: #fff; font-weight: 600; }
+        tr:nth-child(even) { background: var(--gray-100); }
+
+        .btn-action {
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: none;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .btn-close-ticket { background: var(--success); color: #fff; }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-content {
+            background: #fff;
+            border-radius: var(--border-radius);
+            max-width: 500px;
+            width: 100%;
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .footer { background: var(--navy-dark); color: var(--gray-300); text-align: center; padding: 25px 0; font-size: 0.85rem; }
+        .footer a { color: var(--amber-light); text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="nav-logo">
+            <span>🏭 Giám Sát Xưởng Ép Phun 20 Máy</span>
+            <span class="badge-live">LIVE</span>
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html" class="active">🖥️ Live Board</a>
+            <a href="mobile.html">📱 Giao Diện Ca</a>
+            <a href="qr_generator.html">🏷️ In 20 Mã QR</a>
+            <a href="../index.html">📚 Bộ Hồ Sơ ISO</a>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <!-- KPI STRIP -->
+        <div class="kpi-strip">
+            <div class="kpi-card green">
+                <div class="kpi-title">Máy Đang Chạy Bình Thường</div>
+                <div class="kpi-value" id="countRunning">18 / 20</div>
+                <div class="kpi-sub">Công suất hoạt động: 90%</div>
+            </div>
+            <div class="kpi-card amber">
+                <div class="kpi-title">OEE Bình Quân Xưởng</div>
+                <div class="kpi-value" id="avgOee">83.6%</div>
+                <div class="kpi-sub">Mục tiêu ISO: ≥ 80.0%</div>
+            </div>
+            <div class="kpi-card red">
+                <div class="kpi-title">Tỷ Lệ Phế Toàn Xưởng</div>
+                <div class="kpi-value" id="avgScrap">1.9%</div>
+                <div class="kpi-sub">Mục tiêu kiểm soát: &lt; 2.0%</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Ticket 8D Đang Mở (Cần Xử Lý)</div>
+                <div class="kpi-value" id="openTicketsCount">2</div>
+                <div class="kpi-sub">Khép vòng khắc phục phòng ngừa</div>
+            </div>
+        </div>
+
+        <!-- 20 MACHINES MATRIX -->
+        <div class="section-header">
+            <h2 class="section-title">Trạng Thái Thời Gian Thực 20 Máy Ép Phun (M01 → M20)</h2>
+            <div style="font-size:0.85rem;color:var(--gray-600);">
+                <span style="display:inline-flex;align-items:center;gap:6px;margin-right:12px;"><span class="status-dot dot-running"></span> Đang chạy (18)</span>
+                <span style="display:inline-flex;align-items:center;gap:6px;margin-right:12px;"><span class="status-dot dot-maintenance"></span> Đổi khuôn/PM (1)</span>
+                <span style="display:inline-flex;align-items:center;gap:6px;"><span class="status-dot dot-breakdown"></span> Sự cố dừng (1)</span>
+            </div>
+        </div>
+
+        <div class="machines-grid" id="machinesGridContainer"></div>
+
+        <!-- TICKETS KHÉP VÒNG -->
+        <div class="tickets-box">
+            <div class="section-header">
+                <h2 class="section-title">Bảng Theo Dõi Khắc Phục Sự Cố 5W2H / 8D (Closed-Loop CAPA)</h2>
+                <button onclick="refreshData()" style="padding:6px 14px;border:1px solid #cbd5e1;background:#fff;border-radius:4px;cursor:pointer;font-weight:600;">🔄 Làm mới</button>
+            </div>
+            <p style="font-size:0.85rem;color:var(--gray-600);margin-bottom:10px;">Mọi sự cố do công nhân/ca trưởng báo cáo từ điện thoại sẽ xuất hiện tại đây. Quản đốc kiểm tra, phân công và chỉ đóng ticket khi có ảnh đối chứng biện pháp phòng ngừa.</p>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Mã Ticket</th>
+                            <th>Máy Ép</th>
+                            <th>Dạng Sự Cố / Lỗi</th>
+                            <th>Mức Độ</th>
+                            <th>Người Báo</th>
+                            <th>Người Phụ Trách</th>
+                            <th>Hạn (Due Date)</th>
+                            <th>Trạng Thái</th>
+                            <th>Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ticketsBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODAL ĐÓNG TICKET -->
+    <div class="modal" id="ticketModal">
+        <div class="modal-content">
+            <h3 style="margin-bottom:12px;color:var(--navy-primary);" id="modalTicketTitle">Khép Vòng Ticket 8D</h3>
+            <div style="margin-bottom:12px;">
+                <label style="display:block;font-size:0.85rem;font-weight:600;margin-bottom:4px;">Biện Pháp Khắc Phục Gốc Rễ (CAPA / Poka-yoke):</label>
+                <textarea id="modalAction" rows="3" style="width:100%;padding:8px;border:1px solid #cbd5e1;border-radius:4px;" placeholder="VD: Mài phẳng lại mặt phân khuôn K-08 và căn chỉnh lại lực kẹp 145 bar..."></textarea>
+            </div>
+            <div style="margin-bottom:15px;">
+                <label style="display:block;font-size:0.85rem;font-weight:600;margin-bottom:4px;">Chuyển Trạng Thái:</label>
+                <select id="modalStatus" style="width:100%;padding:8px;border:1px solid #cbd5e1;border-radius:4px;">
+                    <option value="In Progress">Đang xử lý (In Progress)</option>
+                    <option value="Closed">Đã hoàn thành & Đóng ticket (Closed)</option>
+                </select>
+            </div>
+            <div style="display:flex;justify-content:flex-end;gap:10px;">
+                <button onclick="closeModal()" style="padding:8px 16px;border:1px solid #cbd5e1;background:#fff;border-radius:4px;cursor:pointer;">Hủy</button>
+                <button onclick="saveTicketModal()" style="padding:8px 16px;border:none;background:var(--success);color:#fff;border-radius:4px;cursor:pointer;font-weight:700;">Lưu & Khép Vòng</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Hệ thống Quản lý Vận hành Thông minh Gemba-OS · Nhà máy Ép Phun 20 Máy · ISO 9001:2015</p>
+            <p style="margin-top: 5px;"><a href="../index.html">← Quay lại Cổng tra cứu tài liệu</a></p>
+        </div>
+    </footer>
+
+    <script>
+        let currentTicketId = null;
+
+        // Default 20 Machines
+        const fallbackMachines = {};
+        const tonnages = [120, 120, 160, 160, 200, 200, 250, 250, 250, 300, 300, 350, 350, 400, 450, 500, 550, 650, 800, 1000];
+        for (let i = 1; i <= 20; i++) {
+            const code = 'M' + String(i).padStart(2, '0');
+            const status = i === 5 ? 'breakdown' : (i === 8 ? 'maintenance' : 'running');
+            fallbackMachines[code] = {
+                code: code,
+                name: `Máy ${code} (${tonnages[i-1]}T)`,
+                tonnage: tonnages[i-1],
+                status: status,
+                current_mold: 'K-' + (10 + (i % 15)),
+                operator: 'NV-' + (10 + i),
+                shift: 'Ca 1',
+                last_checklist: 'Hôm nay 06:15',
+                oee: i === 5 ? 68.5 : (80 + (i % 9)),
+                scrap_rate: i === 5 ? 3.4 : (1.2 + ((i % 10) / 10)).toFixed(1)
+            };
+        }
+
+        const fallbackTickets = [
+            { id: 'TKT-20261001-0815', machine_code: 'M05', issue_type: 'Bavia mép phân khuôn nắp can', severity: 'Nghiêm trọng', reported_by: 'Nguyễn Văn An (Ca 1)', assigned_to: 'Tổ Khuôn (Lê Văn Hùng)', due_date: '2026-10-03', status: 'Pending' },
+            { id: 'TKT-20261001-0930', machine_code: 'M08', issue_type: 'Nhiệt độ vùng 2 nòng nung chập chờn', severity: 'Vừa', reported_by: 'Trần Văn Mạnh (Ca 1)', assigned_to: 'Bảo Trì Cơ Điện', due_date: '2026-10-04', status: 'In Progress' }
+        ];
+
+        async function loadMachines() {
+            let data = fallbackMachines;
+            try {
+                const res = await fetch('api.php?action=get_machines');
+                const json = await res.json();
+                if (json.success && json.data) data = json.data;
+            } catch (e) {
+                console.log('Using local fallback machines');
+            }
+
+            const container = document.getElementById('machinesGridContainer');
+            const keys = Object.keys(data);
+
+            let runCount = 0;
+            let totalOee = 0;
+            let totalScrap = 0;
+
+            container.innerHTML = keys.map(k => {
+                const m = data[k];
+                if (m.status === 'running') runCount++;
+                totalOee += parseFloat(m.oee) || 0;
+                totalScrap += parseFloat(m.scrap_rate) || 0;
+
+                const dotClass = m.status === 'running' ? 'dot-running' : (m.status === 'maintenance' ? 'dot-maintenance' : 'dot-breakdown');
+                return `
+                    <div class="machine-node" onclick="openMachineCa('${m.code}')">
+                        <div class="machine-top">
+                            <span class="machine-id">${m.code}</span>
+                            <span class="status-dot ${dotClass}" title="${m.status}"></span>
+                        </div>
+                        <div class="machine-specs">${m.name}</div>
+                        <div class="metric-row">
+                            <span>Khuôn:</span>
+                            <span class="metric-val">${m.current_mold}</span>
+                        </div>
+                        <div class="metric-row">
+                            <span>OEE hiện tại:</span>
+                            <span class="metric-val" style="color:${m.oee>=80?'var(--success)':'var(--error)'};">${m.oee}%</span>
+                        </div>
+                        <div class="metric-row">
+                            <span>Phế phẩm:</span>
+                            <span class="metric-val" style="color:${m.scrap_rate<=2.0?'var(--success)':'var(--error)'};">${m.scrap_rate}%</span>
+                        </div>
+                        <div class="metric-row" style="margin-top:6px;font-size:0.75rem;color:var(--gray-600);">
+                            <span>Đứng máy: ${m.operator}</span>
+                            <span>${m.shift}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('countRunning').textContent = `${runCount} / ${keys.length}`;
+            document.getElementById('avgOee').textContent = (totalOee / keys.length).toFixed(1) + '%';
+            document.getElementById('avgScrap').textContent = (totalScrap / keys.length).toFixed(1) + '%';
+        }
+
+        async function loadTickets() {
+            let tickets = fallbackTickets;
+            try {
+                const res = await fetch('api.php?action=get_tickets');
+                const json = await res.json();
+                if (json.success && json.data && json.data.length > 0) tickets = json.data;
+            } catch (e) {
+                console.log('Using fallback tickets');
+            }
+
+            const tbody = document.getElementById('ticketsBody');
+            const openCount = tickets.filter(t => t.status !== 'Closed').length;
+            document.getElementById('openTicketsCount').textContent = openCount;
+
+            tbody.innerHTML = tickets.map(t => `
+                <tr>
+                    <td><strong>${t.id}</strong></td>
+                    <td><span style="font-weight:700;color:var(--navy-primary);">${t.machine_code}</span></td>
+                    <td>${t.issue_type}</td>
+                    <td><span style="padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:700;background:${t.severity==='Nghiêm trọng'?'#fee2e2':'#fef3c7'};color:${t.severity==='Nghiêm trọng'?'#dc2626':'#d97706'};">${t.severity}</span></td>
+                    <td>${t.reported_by}</td>
+                    <td><code>${t.assigned_to}</code></td>
+                    <td>${t.due_date}</td>
+                    <td>
+                        <span style="padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:700;background:${t.status==='Closed'?'#dcfce7':(t.status==='Pending'?'#fee2e2':'#fef3c7')};color:${t.status==='Closed'?'#166534':(t.status==='Pending'?'#dc2626':'#b45309')};">
+                            ${t.status}
+                        </span>
+                    </td>
+                    <td>
+                        ${t.status !== 'Closed' ? `<button class="btn-action btn-close-ticket" onclick="openCloseModal('${t.id}')">Khép Vòng</button>` : `<span style="color:var(--success);font-weight:700;font-size:0.8rem;">✓ Đã đóng</span>`}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openMachineCa(mCode) {
+            window.location.href = `mobile.html?m=${mCode}`;
+        }
+
+        function openCloseModal(tId) {
+            currentTicketId = tId;
+            document.getElementById('modalTicketTitle').textContent = `Khép Vòng Ticket: ${tId}`;
+            document.getElementById('ticketModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('ticketModal').style.display = 'none';
+        }
+
+        async function saveTicketModal() {
+            const action = document.getElementById('modalAction').value.trim();
+            const status = document.getElementById('modalStatus').value;
+
+            try {
+                await fetch('api.php?action=update_ticket', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ticket_id: currentTicketId, status: status, corrective_action: action })
+                });
+            } catch (e) {}
+
+            alert('Đã cập nhật trạng thái khép vòng ticket!');
+            closeModal();
+            refreshData();
+        }
+
+        function refreshData() {
+            loadMachines();
+            loadTickets();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            refreshData();
+            setInterval(refreshData, 15000); // 15s live refresh
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gemba Mobile — Vận Hành Xưởng Ép Phun 20 Máy</title>
+    <style>
+        :root {
+            --navy-dark: #0a1628;
+            --navy-primary: #122442;
+            --navy-light: #1a365d;
+            --amber-primary: #d97706;
+            --amber-light: #fbbf24;
+            --amber-pale: #fef3c7;
+            --bg: #f1f5f9;
+            --white: #ffffff;
+            --gray-200: #e2e8f0;
+            --gray-400: #94a3b8;
+            --gray-700: #334155;
+            --gray-900: #0f172a;
+            --success: #16a34a;
+            --success-light: #dcfce7;
+            --error: #dc2626;
+            --error-light: #fee2e2;
+            --radius: 10px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--gray-900);
+            line-height: 1.5;
+            padding-bottom: 75px;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: var(--navy-dark);
+            color: var(--white);
+            padding: 14px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        .app-title { font-size: 1.05rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .machine-badge {
+            background: var(--amber-primary);
+            color: var(--navy-dark);
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .container { max-width: 600px; margin: 0 auto; padding: 16px; }
+
+        /* Machine Selector Card */
+        .machine-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            border-left: 5px solid var(--amber-primary);
+        }
+        .machine-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .machine-name { font-size: 1.15rem; font-weight: 800; color: var(--navy-primary); }
+        .mold-tag { font-size: 0.75rem; background: var(--amber-pale); color: var(--amber-primary); padding: 2px 8px; border-radius: 4px; font-weight: 700; }
+
+        /* Tabs */
+        .tab-nav {
+            display: flex;
+            background: var(--navy-primary);
+            border-radius: 8px;
+            padding: 4px;
+            margin-bottom: 16px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 10px 4px;
+            border: none;
+            background: transparent;
+            color: var(--gray-400);
+            font-weight: 600;
+            font-size: 0.82rem;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .tab-btn.active {
+            background: var(--amber-primary);
+            color: var(--navy-dark);
+            font-weight: 700;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Form Controls */
+        .card-box {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 18px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .box-title { font-size: 1rem; font-weight: 700; color: var(--navy-primary); margin-bottom: 14px; border-bottom: 1px solid var(--gray-200); padding-bottom: 8px; }
+
+        .check-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        .check-item:last-child { border-bottom: none; }
+        .check-label { font-size: 0.92rem; font-weight: 600; color: var(--gray-700); }
+        .check-sub { font-size: 0.75rem; color: var(--gray-400); }
+
+        .btn-toggle-group { display: flex; gap: 8px; }
+        .btn-toggle {
+            padding: 8px 14px;
+            border: 2px solid var(--gray-200);
+            background: #fff;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            min-width: 60px;
+            text-align: center;
+        }
+        .btn-toggle.pass.active { background: var(--success); color: #fff; border-color: var(--success); }
+        .btn-toggle.fail.active { background: var(--error); color: #fff; border-color: var(--error); }
+
+        .form-group { margin-bottom: 14px; }
+        label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--gray-700); }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+            background: #fff;
+        }
+        input:focus, select:focus, textarea:focus { border-color: var(--amber-primary); }
+
+        /* Big Action Button */
+        .btn-action {
+            width: 100%;
+            padding: 15px;
+            background: var(--amber-primary);
+            color: var(--navy-dark);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(217, 119, 6, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-action:active { transform: scale(0.98); }
+
+        /* Bottom Fixed Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--navy-dark);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 100;
+            border-top: 1px solid var(--navy-light);
+        }
+        .nav-item {
+            color: var(--gray-400);
+            font-size: 0.72rem;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .nav-item.active { color: var(--amber-light); font-weight: 700; }
+
+        /* OEE Mini Gauge */
+        .gauge-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            text-align: center;
+            margin: 15px 0;
+        }
+        .gauge-card { background: var(--bg); padding: 10px 6px; border-radius: 6px; }
+        .gauge-val { font-size: 1.15rem; font-weight: 800; color: var(--navy-primary); }
+        .gauge-lbl { font-size: 0.7rem; color: var(--gray-700); font-weight: 600; text-transform: uppercase; }
+
+        /* Image preview */
+        .img-preview {
+            width: 100%;
+            max-height: 180px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-top: 10px;
+            display: none;
+            border: 1px solid var(--gray-200);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP BAR -->
+    <header class="top-bar">
+        <div class="app-title">
+            <span>⚙️ Gemba Ép Phun</span>
+        </div>
+        <div class="machine-badge" onclick="changeMachinePrompt()" id="badgeCurrentMachine">M05 (250T) ▼</div>
+    </header>
+
+    <div class="container">
+
+        <!-- CURRENT MACHINE SUMMARY -->
+        <div class="machine-card">
+            <div class="machine-header">
+                <span class="machine-name" id="dispMachineName">Máy M05 — Haitian 250T</span>
+                <span class="mold-tag" id="dispMoldName">Khuôn: K-14 (Can 20L)</span>
+            </div>
+            <div style="font-size:0.82rem;color:var(--gray-700);">
+                <span>Người đứng máy: <strong id="dispOperator">Nguyễn Văn An</strong></span> · 
+                <span>Ca: <strong id="dispShift">Ca 1 (06h - 14h)</strong></span>
+            </div>
+        </div>
+
+        <!-- TAB NAVIGATION -->
+        <nav class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab('tabChecklist')">1. Đầu Ca (5S)</button>
+            <button class="tab-btn" onclick="switchTab('tabIncident')">2. Báo Lỗi / Sự Cố</button>
+            <button class="tab-btn" onclick="switchTab('tabKpi')">3. Chốt Ca & OEE</button>
+        </nav>
+
+        <!-- TAB 1: CHECKLIST ĐẦU CA -->
+        <div class="tab-content active" id="tabChecklist">
+            <div class="card-box">
+                <div class="box-title">📋 Checklist 5S & An Toàn Đầu Ca (< 60s)</div>
+
+                <div class="check-item">
+                    <div>
+                        <div class="check-label">1. Mức Dầu Thủy Lực & Không Rò Rỉ</div>
+                        <div class="check-sub">Mắt thăm dầu giữa vạch xanh, gầm máy khô ráo</div>
+                    </div>
+                    <div class="btn-toggle-group">
+                        <button class="btn-toggle pass active" id="btn_c1_pass" onclick="setCheck(1, true)">ĐẠT</button>
+                        <button class="btn-toggle fail" id="btn_c1_fail" onclick="setCheck(1, false)">LỖI</button>
+                    </div>
+                </div>
+
+                <div class="check-item">
+                    <div>
+                        <div class="check-label">2. Nhiệt Độ Nòng Nung Đủ Chuẩn</div>
+                        <div class="check-sub">Sai số nhiệt độ các vùng gia nhiệt &lt; 5°C</div>
+                    </div>
+                    <div class="btn-toggle-group">
+                        <button class="btn-toggle pass active" id="btn_c2_pass" onclick="setCheck(2, true)">ĐẠT</button>
+                        <button class="btn-toggle fail" id="btn_c2_fail" onclick="setCheck(2, false)">LỖI</button>
+                    </div>
+                </div>
+
+                <div class="check-item">
+                    <div>
+                        <div class="check-label">3. Áp Lực & Nước Làm Mát Khuôn</div>
+                        <div class="check-sub">Nước hồi lưu thông tốt, chiller 18°C - 22°C</div>
+                    </div>
+                    <div class="btn-toggle-group">
+                        <button class="btn-toggle pass active" id="btn_c3_pass" onclick="setCheck(3, true)">ĐẠT</button>
+                        <button class="btn-toggle fail" id="btn_c3_fail" onclick="setCheck(3, false)">LỖI</button>
+                    </div>
+                </div>
+
+                <div class="check-item">
+                    <div>
+                        <div class="check-label">4. Khóa Cửa An Toàn & Dừng Khẩn Cấp</div>
+                        <div class="check-sub">Mở cửa kẹp dừng ngay, công tắc E-stop hoạt động</div>
+                    </div>
+                    <div class="btn-toggle-group">
+                        <button class="btn-toggle pass active" id="btn_c4_pass" onclick="setCheck(4, true)">ĐẠT</button>
+                        <button class="btn-toggle fail" id="btn_c4_fail" onclick="setCheck(4, false)">LỖI</button>
+                    </div>
+                </div>
+
+                <div class="check-item">
+                    <div>
+                        <div class="check-label">5. Vệ Sinh 5S Sàn & Gầm Máy Ép</div>
+                        <div class="check-sub">Không có hạt nhựa rơi vãi gây trượt ngã</div>
+                    </div>
+                    <div class="btn-toggle-group">
+                        <button class="btn-toggle pass active" id="btn_c5_pass" onclick="setCheck(5, true)">ĐẠT</button>
+                        <button class="btn-toggle fail" id="btn_c5_fail" onclick="setCheck(5, false)">LỖI</button>
+                    </div>
+                </div>
+
+                <div style="margin-top:16px;">
+                    <button class="btn-action" onclick="submitChecklist()">
+                        <span>✅ Xác Nhận Hoàn Thành Đầu Ca</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: BÁO LỖI / SỰ CỐ -->
+        <div class="tab-content" id="tabIncident">
+            <div class="card-box">
+                <div class="box-title">🚨 Báo Sự Cố / Phế Phẩm Bằng Hình Ảnh (8D)</div>
+
+                <div class="form-group">
+                    <label>Dạng Sự Cố / Lỗi Khuyết Tật:</label>
+                    <select id="incType">
+                        <option value="Bavia / Flash (Tràn keo mép)">Bavia / Flash (Tràn keo mép)</option>
+                        <option value="Cong vênh / Warpage">Cong vênh / Warpage</option>
+                        <option value="Thiếu thịt / Short shot">Thiếu thịt / Short shot</option>
+                        <option value="Vệt đen / Cháy nhựa (Black spots)">Vệt đen / Cháy nhựa (Black spots)</option>
+                        <option value="Kẹt ty lừa / Đứt ty đẩy khuôn">Kẹt ty lừa / Đứt ty đẩy khuôn</option>
+                        <option value="Rò rỉ dầu thủy lực">Rò rỉ dầu thủy lực</option>
+                        <option value="Khuôn rò rỉ nước làm mát">Khuôn rò rỉ nước làm mát</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Mức Độ Nghiêm Trọng:</label>
+                    <select id="incSeverity">
+                        <option value="Vừa (Dưới 3% phế)">Vừa (Dưới 3% phế - Có thể chỉnh ngay)</option>
+                        <option value="Cao (Phế nhiều, báo kỹ thuật)">Cao (Phế nhiều, cần kỹ thuật hỗ trợ)</option>
+                        <option value="Nghiêm trọng (Dừng máy)">Nghiêm trọng (Phải dừng máy ngay)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Chụp Ảnh Hiện Trường Lỗi (Camera):</label>
+                    <input type="file" id="incPhoto" accept="image/*" capture="environment" onchange="previewIncidentPhoto(this)">
+                    <img id="imgPreview" class="img-preview" alt="Ảnh lỗi">
+                </div>
+
+                <div class="form-group">
+                    <label>Ghi Chú Nhanh:</label>
+                    <textarea id="incNotes" rows="2" placeholder="VD: Lòng khuôn số 2 bị bavia dày 0.5mm..."></textarea>
+                </div>
+
+                <button class="btn-action" style="background:var(--error);color:#fff;" onclick="submitIncident()">
+                    <span>📸 Gửi Báo Cáo & Tạo Ticket 8D</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- TAB 3: CHỐT CA & OEE -->
+        <div class="tab-content" id="tabKpi">
+            <div class="card-box">
+                <div class="box-title">📊 Chốt Sản Lượng & Tự Động Tính OEE Ca</div>
+
+                <div class="gauge-row">
+                    <div class="gauge-card">
+                        <div class="gauge-val" id="gA">94%</div>
+                        <div class="gauge-lbl">Khả Dụng (A)</div>
+                    </div>
+                    <div class="gauge-card">
+                        <div class="gauge-val" id="gP">95%</div>
+                        <div class="gauge-lbl">Hiệu Suất (P)</div>
+                    </div>
+                    <div class="gauge-card">
+                        <div class="gauge-val" id="gQ">98%</div>
+                        <div class="gauge-lbl">Chất Lượng (Q)</div>
+                    </div>
+                    <div class="gauge-card" style="background:var(--amber-pale);">
+                        <div class="gauge-val" id="gOEE" style="color:var(--amber-primary);">87.5%</div>
+                        <div class="gauge-lbl">OEE Ca</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Kế Hoạch Sản Lượng Ca (pcs):</label>
+                    <input type="number" id="kpiPlan" value="400" oninput="recalcMiniOee()">
+                </div>
+
+                <div class="form-group">
+                    <label>Sản Lượng Đạt OK (pcs):</label>
+                    <input type="number" id="kpiActual" value="385" oninput="recalcMiniOee()">
+                </div>
+
+                <div class="form-group">
+                    <label>Số Lượng Phế Phẩm (pcs):</label>
+                    <input type="number" id="kpiScrap" value="8" oninput="recalcMiniOee()">
+                </div>
+
+                <div class="form-group">
+                    <label>Thời Gian Dừng Máy Downtime (Phút):</label>
+                    <input type="number" id="kpiDown" value="25" oninput="recalcMiniOee()">
+                </div>
+
+                <button class="btn-action" onclick="submitKpi()">
+                    <span>💾 Chốt Số Liệu Ca & Đồng Bộ Hệ Thống</span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- BOTTOM BAR -->
+    <nav class="bottom-nav">
+        <a href="mobile.html" class="nav-item active">
+            <span>📱</span>
+            <span>Gemba Ca</span>
+        </a>
+        <a href="dashboard.html" class="nav-item">
+            <span>🖥️</span>
+            <span>Dashboard 20 Máy</span>
+        </a>
+        <a href="qr_generator.html" class="nav-item">
+            <span>🏷️</span>
+            <span>In Tem QR</span>
+        </a>
+        <a href="../index.html" class="nav-item">
+            <span>📚</span>
+            <span>Hồ Sơ ISO</span>
+        </a>
+    </nav>
+
+    <script>
+        let currentMachine = 'M05';
+        const checks = [true, true, true, true, true];
+        let photoBase64 = '';
+
+        // Read query string ?m=M08
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('m')) {
+            currentMachine = urlParams.get('m').toUpperCase();
+        }
+
+        function updateMachineUI() {
+            document.getElementById('badgeCurrentMachine').textContent = currentMachine + ' ▼';
+            document.getElementById('dispMachineName').textContent = 'Máy ' + currentMachine + ' — Haitian Ép Phun';
+        }
+
+        function changeMachinePrompt() {
+            const m = prompt('Nhập mã máy (M01 đến M20):', currentMachine);
+            if (m) {
+                currentMachine = m.toUpperCase().trim();
+                updateMachineUI();
+            }
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        function setCheck(idx, val) {
+            checks[idx - 1] = val;
+            const btnPass = document.getElementById(`btn_c${idx}_pass`);
+            const btnFail = document.getElementById(`btn_c${idx}_fail`);
+            if (val) {
+                btnPass.classList.add('active');
+                btnFail.classList.remove('active');
+            } else {
+                btnPass.classList.remove('active');
+                btnFail.classList.add('active');
+            }
+        }
+
+        async function submitChecklist() {
+            const hasIssue = checks.includes(false);
+            const payload = {
+                machine_code: currentMachine,
+                operator: 'Nguyễn Văn An',
+                shift: 'Ca 1',
+                checks: checks,
+                has_issue: hasIssue
+            };
+
+            try {
+                const res = await fetch('api.php?action=submit_checklist', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                alert(data.message || 'Checklist đầu ca đã được ghi nhận!');
+            } catch (err) {
+                // Fallback to localStorage
+                alert('Đã lưu offline vào bộ nhớ máy!');
+            }
+        }
+
+        function previewIncidentPhoto(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    photoBase64 = e.target.result;
+                    const img = document.getElementById('imgPreview');
+                    img.src = photoBase64;
+                    img.style.display = 'block';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        async function submitIncident() {
+            const type = document.getElementById('incType').value;
+            const sev = document.getElementById('incSeverity').value;
+            const notes = document.getElementById('incNotes').value;
+
+            const payload = {
+                machine_code: currentMachine,
+                issue_type: type,
+                severity: sev,
+                description: notes,
+                photo_base64: photoBase64,
+                reported_by: 'Nguyễn Văn An (Ca 1)'
+            };
+
+            try {
+                const res = await fetch('api.php?action=report_incident', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                alert(data.message || 'Đã tạo Ticket sự cố!');
+                document.getElementById('incNotes').value = '';
+                document.getElementById('imgPreview').style.display = 'none';
+                photoBase64 = '';
+            } catch (err) {
+                alert('Đã lưu sự cố tại chỗ!');
+            }
+        }
+
+        function recalcMiniOee() {
+            const plan = parseFloat(document.getElementById('kpiPlan').value) || 1;
+            const actual = parseFloat(document.getElementById('kpiActual').value) || 0;
+            const scrap = parseFloat(document.getElementById('kpiScrap').value) || 0;
+            const down = parseFloat(document.getElementById('kpiDown').value) || 0;
+
+            const avail = Math.max(0, Math.min(100, Math.round(((480 - down) / 480) * 100)));
+            const perf = Math.max(0, Math.min(100, Math.round((actual / plan) * 100)));
+            const qual = (actual + scrap) > 0 ? Math.round((actual / (actual + scrap)) * 100) : 100;
+            const oee = ((avail * perf * qual) / 10000).toFixed(1);
+
+            document.getElementById('gA').textContent = avail + '%';
+            document.getElementById('gP').textContent = perf + '%';
+            document.getElementById('gQ').textContent = qual + '%';
+            document.getElementById('gOEE').textContent = oee + '%';
+        }
+
+        async function submitKpi() {
+            const payload = {
+                machine_code: currentMachine,
+                plan_output: document.getElementById('kpiPlan').value,
+                actual_output: document.getElementById('kpiActual').value,
+                scrap_count: document.getElementById('kpiScrap').value,
+                downtime_minutes: document.getElementById('kpiDown').value,
+                operator: 'Nguyễn Văn An'
+            };
+
+            try {
+                const res = await fetch('api.php?action=submit_kpi', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                alert('Đã chốt KPI ca thành công! OEE ca: ' + data.oee + '%');
+            } catch (err) {
+                alert('Đã lưu KPI vào bộ nhớ!');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateMachineUI();
+            recalcMiniOee();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMED — Chuyển đổi khuôn nhanh</title>
+<style>
+:root {
+  --navy-dark: #0a1628;
+  --navy-med: #122442;
+  --amber: #d97706;
+  --amber-light: #fbbf24;
+  --bg: #f8fafc;
+  --text: #1e293b;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --success: #16a34a;
+  --error: #dc2626;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.6; color: var(--text); background: var(--bg);
+}
+.container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+/* HERO */
+.hero {
+  background: linear-gradient(135deg, var(--navy-dark), var(--navy-med));
+  color: white; padding: 60px 0 40px; text-align: center;
+}
+.hero h1 { font-size: 2.5rem; margin-bottom: 10px; color: var(--amber-light); }
+.hero p { font-size: 1.1rem; opacity: 0.9; max-width: 700px; margin: 0 auto; }
+
+/* NAV */
+.nav {
+  position: sticky; top: 0; background: white; border-bottom: 1px solid var(--border);
+  z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.nav ul { list-style: none; display: flex; flex-wrap: wrap; justify-content: center; }
+.nav a {
+  display: block; padding: 15px 12px; color: var(--navy-med); text-decoration: none;
+  font-weight: 500; border-bottom: 3px solid transparent; transition: all 0.2s;
+}
+.nav a:hover, .nav a.active { color: var(--amber); border-bottom-color: var(--amber); }
+
+/* SECTIONS */
+section { padding: 50px 0; border-bottom: 1px solid var(--border); scroll-margin-top: 60px; }
+section h2 {
+  color: var(--navy-dark); font-size: 1.8rem; margin-bottom: 25px;
+  padding-bottom: 10px; border-bottom: 3px solid var(--amber);
+}
+section h3 { color: var(--navy-med); margin: 20px 0 12px; }
+
+/* CALLOUT */
+.callout {
+  background: #fef3c7; border-left: 4px solid var(--amber);
+  padding: 15px 20px; margin: 20px 0; border-radius: 0 8px 8px 0;
+}
+.callout strong { color: var(--navy-dark); }
+
+/* TABLES */
+table { width: 100%; border-collapse: collapse; margin: 20px 0; background: white; }
+th, td { padding: 12px 15px; text-align: left; border: 1px solid var(--border); }
+th { background: var(--navy-med); color: white; }
+tr:nth-child(even) { background: #f1f5f9; }
+tr:hover { background: #e0f2fe; }
+
+/* TOOLS */
+.tool-card {
+  background: white; border: 1px solid var(--border); border-radius: 8px;
+  padding: 25px; margin: 20px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.tool-card h3 { margin-top: 0; color: var(--navy-dark); }
+.form-group { margin: 15px 0; }
+.form-group label { display: block; font-weight: 500; margin-bottom: 6px; color: var(--navy-med); }
+.form-group input {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+  border-radius: 6px; font-size: 1rem;
+}
+.form-group input:focus { outline: none; border-color: var(--amber); box-shadow: 0 0 0 3px rgba(217,119,6,0.1); }
+.btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+.btn {
+  padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer;
+  font-size: 1rem; font-weight: 500; transition: all 0.2s;
+}
+.btn-primary { background: var(--amber); color: white; }
+.btn-primary:hover { background: #b45309; }
+.btn-secondary { background: #e2e8f0; color: var(--navy-med); }
+.btn-secondary:hover { background: #cbd5e1; }
+.result-box {
+  background: #f0fdf4; border: 1px solid var(--success); border-radius: 8px;
+  padding: 20px; margin-top: 20px; display: none;
+}
+.result-box.show { display: block; animation: fadeIn 0.3s; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+.result-item { margin: 10px 0; font-size: 1.05rem; }
+.result-item strong { color: var(--navy-dark); }
+
+/* IN-OUT CLASSIFIER */
+.activity-row {
+  display: flex; align-items: center; gap: 12px; padding: 12px;
+  border: 1px solid var(--border); border-radius: 6px; margin: 10px 0; background: white;
+}
+.activity-row.correct { border-color: var(--success); background: #f0fdf4; }
+.activity-row.incorrect { border-color: var(--error); background: #fef2f2; }
+.activity-text { flex: 1; font-weight: 500; }
+.activity-btns { display: flex; gap: 8px; }
+.activity-btn {
+  padding: 6px 14px; border: 1px solid var(--border); border-radius: 4px;
+  cursor: pointer; font-size: 0.9rem; transition: all 0.2s;
+}
+.activity-btn:hover { background: #f1f5f9; }
+.activity-btn.selected-in { background: var(--navy-med); color: white; border-color: var(--navy-med); }
+.activity-btn.selected-out { background: var(--amber); color: white; border-color: var(--amber); }
+.classifier-stats {
+  background: var(--navy-med); color: white; padding: 15px 20px;
+  border-radius: 8px; margin: 20px 0; display: flex; gap: 30px; flex-wrap: wrap;
+}
+.stat-item { font-size: 1.1rem; }
+.stat-item strong { color: var(--amber-light); font-size: 1.3rem; }
+
+/* CHECKLIST */
+.checklist-item {
+  display: flex; align-items: flex-start; gap: 12px; padding: 15px;
+  border: 1px solid var(--border); border-radius: 6px; margin: 10px 0; background: white;
+}
+.checklist-item input[type="checkbox"] { width: 20px; height: 20px; margin-top: 2px; }
+.checklist-item label { flex: 1; cursor: pointer; font-weight: 500; }
+.progress-bar {
+  height: 20px; background: #e2e8f0; border-radius: 10px; overflow: hidden; margin: 15px 0;
+}
+.progress-fill {
+  height: 100%; background: linear-gradient(90deg, var(--amber), var(--amber-light));
+  width: 0%; transition: width 0.5s;
+}
+
+/* QUIZ */
+.quiz-question {
+  background: white; border: 1px solid var(--border); border-radius: 8px;
+  padding: 20px; margin: 20px 0;
+}
+.quiz-question h4 { color: var(--navy-dark); margin-bottom: 15px; }
+.quiz-option {
+  display: flex; align-items: flex-start; gap: 10px; padding: 10px;
+  margin: 8px 0; border: 1px solid var(--border); border-radius: 6px; cursor: pointer;
+  transition: all 0.2s;
+}
+.quiz-option:hover { background: #f1f5f9; }
+.quiz-option input { margin-top: 3px; }
+.quiz-option label { flex: 1; cursor: pointer; }
+.quiz-feedback {
+  margin-top: 12px; padding: 12px; border-radius: 6px; display: none;
+}
+.quiz-feedback.correct { background: #f0fdf4; border: 1px solid var(--success); display: block; }
+.quiz-feedback.incorrect { background: #fef2f2; border: 1px solid var(--error); display: block; }
+.quiz-result {
+  background: var(--navy-med); color: white; padding: 25px;
+  border-radius: 8px; margin: 20px 0; text-align: center; display: none;
+}
+.quiz-result.show { display: block; }
+.quiz-result h3 { font-size: 2rem; margin-bottom: 10px; color: var(--amber-light); }
+.pass-badge {
+  display: inline-block; background: var(--success); padding: 8px 20px;
+  border-radius: 20px; font-weight: bold; margin-top: 10px;
+}
+.fail-badge {
+  display: inline-block; background: var(--error); padding: 8px 20px;
+  border-radius: 20px; font-weight: bold; margin-top: 10px;
+}
+
+/* FOOTER */
+footer {
+  background: var(--navy-dark); color: white; padding: 30px 0; text-align: center;
+}
+footer p { opacity: 0.8; font-size: 0.9rem; }
+
+/* BACK TO TOP */
+.back-to-top {
+  position: fixed; bottom: 30px; right: 30px; background: var(--amber);
+  color: white; width: 50px; height: 50px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; border: none; font-size: 1.5rem; opacity: 0;
+  transition: all 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.back-to-top.visible { opacity: 1; }
+.back-to-top:hover { background: #b45309; transform: translateY(-3px); }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .hero h1 { font-size: 1.8rem; }
+  .nav ul { flex-direction: column; text-align: center; }
+  .nav a { padding: 10px; border-bottom: 2px solid transparent; }
+  section { padding: 30px 0; }
+  .activity-row { flex-direction: column; align-items: flex-start; }
+  .activity-btns { width: 100%; justify-content: flex-start; }
+  .classifier-stats { flex-direction: column; gap: 15px; }
+}
+
+/* PRINT */
+@media print {
+  .nav, .btn-group, .back-to-top { display: none !important; }
+  section { page-break-inside: avoid; }
+  body { background: white; }
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="container">
+    <h1>SMED — Chuyển đổi khuôn nhanh</h1>
+    <p>Single-Minute Exchange of Die · Shigeo Shingo (Toyota) · 90 phút → dưới 10 phút</p>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="container">
+    <ul>
+      <li><a href="#tong-quan">Tổng quan</a></li>
+      <li><a href="#noi-ngoai">Nội/Ngoại</a></li>
+      <li><a href="#8-buoc">8 bước</a></li>
+      <li><a href="#vi-du">Ví dụ</a></li>
+      <li><a href="#loi-ich">Lợi ích</a></li>
+      <li><a href="#lien-he">Liên hệ</a></li>
+      <li><a href="#cong-cu">Công cụ</a></li>
+      <li><a href="#phan-loai">Phân loại</a></li>
+      <li><a href="#checklist">Checklist</a></li>
+      <li><a href="#trac-nghiem">Trắc nghiệm</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- KHỐI 1: TỔNG QUAN -->
+<section id="tong-quan">
+  <div class="container">
+    <h2>Tổng quan về SMED</h2>
+    <p><strong>SMED</strong> (Single-Minute Exchange of Die) là phương pháp rút thời gian đổi khuôn xuống "phút một chữ số" (dưới 10 phút), do <strong>Shigeo Shingo</strong> phát triển tại Toyota.</p>
+    
+    <div class="callout">
+      <strong>⚠ Lưu ý quan trọng:</strong> "Single-Minute" nghĩa là đơn vị phút một chữ số (0-9 phút), <em>không nhất thiết dưới 1 phút</em>.
+    </div>
+
+    <h3>Vì sao SMED quan trọng với nhà máy ép phun?</h3>
+    <p>Ví dụ thực tế: 90 phút đổi khuôn, 2 lần/ca, 6 lần/ngày → ~9 giờ/ngày mất sản xuất. Chưa kể phế phẩm lúc khởi động lại (vài chục sản phẩm thử).</p>
+    <p>SMED cho phép sản xuất lô nhỏ hơn → giảm tồn kho/WIP, linh hoạt theo đơn hàng.</p>
+
+    <div class="callout">
+      <strong>💡 Nguyên lý cốt lõi:</strong> Thời gian máy dừng == hoạt động NỘI. Mục tiêu là đẩy Nội sang Ngoại + rút ngắn Nội còn lại. Đừng vội mua máy mới — 80% kết quả từ bước 2 (chuyển Nội→Ngoại) và 5S không tốn tiền.
+    </div>
+  </div>
+</section>
+
+<!-- KHỐI 2: NỘI vs NGOẠI -->
+<section id="noi-ngoai">
+  <div class="container">
+    <h2>Phân biệt Nội và Ngoại</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Loại</th>
+          <th>Định nghĩa</th>
+          <th>Ví dụ ép phun</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Nội (Internal)</strong></td>
+          <td>Phải dừng máy mới làm được</td>
+          <td>Tháo khuôn cũ, lắp khuôn mới, siết bu lông, căn chỉnh, chạy thử</td>
+        </tr>
+        <tr>
+          <td><strong>Ngoại (External)</strong></td>
+          <td>Làm được khi máy vẫn chạy</td>
+          <td>Chuẩn bị khuôn mới trước, sưởi sơ khuôn, mang dụng cụ đến, bàn thao tác, vệ sinh khuôn cũ sau khi tháo</td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <div class="callout">
+      <strong>Nguyên lý vàng:</strong> Thời gian máy dừng chỉ đến từ hoạt động Nội.
+    </div>
+  </div>
+</section>
+
+<!-- KHỐI 3: 8 BƯỚC -->
+<section id="8-buoc">
+  <div class="container">
+    <h2>8 Bước Triển Khai SMED</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Bước</th>
+          <th>Việc làm</th>
+          <th>Ví dụ ép phun</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>0. Quan sát & đo hiện trạng</strong></td>
+          <td>Bấm giờ từng bước + video + Fishbone tại sao chậm</td>
+          <td>90' = 25' chờ cầu trục, 15' tìm dụng cụ, 20' sưởi khuôn, 20' căn chỉnh, 10' chạy thử</td>
+        </tr>
+        <tr>
+          <td><strong>1. Tách Nội/Ngoại</strong></td>
+          <td>Phân loại từng hoạt động</td>
+          <td>Sưởi khuôn/chuẩn bị dụng cụ/kéo khuôn tới = Ngoại</td>
+        </tr>
+        <tr>
+          <td><strong>2. Chuyển Nội→Ngoại</strong></td>
+          <td>Bước tạo giá trị lớn nhất</td>
+          <td>Sưởi sơ khuôn trước khi kẹp; bàn khuôn+dụng cụ cạnh máy trước; khuôn mới đợi sẵn trên xe nâng khi máy còn chạy</td>
+        </tr>
+        <tr>
+          <td><strong>3. Hợp lý hóa Nội</strong></td>
+          <td>Rút ngắn hoạt động Nội còn lại</td>
+          <td>Kẹp nhanh 1 vòng ren, kẹp thủy lực/mâm kẹp nhanh, căn chỉnh 1 lần chạm nhờ khớp dẫn hướng + chốt định vị</td>
+        </tr>
+        <tr>
+          <td><strong>4. Hợp lý hóa Ngoại</strong></td>
+          <td>Tối ưu hoạt động Ngoại</td>
+          <td>Tiêu chuẩn hóa dụng cụ mỗi máy; xe đẩy khuôn mang sẵn bu lông/kim phun; bảng thông số treo cạnh máy</td>
+        </tr>
+        <tr>
+          <td><strong>5. Song song hóa</strong></td>
+          <td>Làm nhiều việc cùng lúc</td>
+          <td>2 người: 1 tháo + 1 lắp đồng thời</td>
+        </tr>
+        <tr>
+          <td><strong>6. Bôi trơn / Mã hóa</strong></td>
+          <td>Giảm thao tác thừa</td>
+          <td>Bu lông định vị cố định; mã màu theo máy/khuôn</td>
+        </tr>
+        <tr>
+          <td><strong>7. Chuẩn hóa + PDCA</strong></td>
+          <td>Duy trì và cải tiến tiếp</td>
+          <td>SOP 1 trang có ảnh; đào tạo; đo lại sau mỗi vòng Kaizen; vào Control Plan</td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <p><strong>Ghi chú:</strong> Quy gọn 5 giai đoạn: Quan sát → Tách Nội/Ngoại → Chuyển Nội→Ngoại → Rút ngắn Nội còn lại → Chuẩn hóa + cải tiến tiếp.</p>
+  </div>
+</section>
+
+<!-- KHỐI 4: VÍ DỤ -->
+<section id="vi-du">
+  <div class="container">
+    <h2>Ví dụ Đổi Khuôn Trước–Sau</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Giai đoạn</th>
+          <th>Trước (90')</th>
+          <th>Sau vòng 1 (25')</th>
+          <th>Sau vòng 2 (12')</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Chuẩn bị (Ngoại)</strong></td>
+          <td>Chưa có — tìm sau khi dừng máy</td>
+          <td>Chuẩn bị khuôn + dụng cụ sẵn khi máy chạy</td>
+          <td>Như vòng 1 + bàn thao tác cạnh máy</td>
+        </tr>
+        <tr>
+          <td><strong>Sưởi khuôn</strong></td>
+          <td>20' sau khi kẹp (dừng máy)</td>
+          <td>Sưởi sơ trước khi kẹp (Ngoại)</td>
+          <td>Sưởi chuẩn hóa nhiệt độ nạp</td>
+        </tr>
+        <tr>
+          <td><strong>Kẹp/siết</strong></td>
+          <td>Vặn nhiều vòng, 15'</td>
+          <td>Kẹp nhanh 1/4 vòng, 5'</td>
+          <td>Kẹp thủy lực 2'</td>
+        </tr>
+        <tr>
+          <td><strong>Căn chỉnh</strong></td>
+          <td>20' lặp lại</td>
+          <td>Khớp dẫn hướng, 5'</td>
+          <td>Chốt định vị, 2'</td>
+        </tr>
+        <tr>
+          <td><strong>Chạy thử</strong></td>
+          <td>10' + phế thử</td>
+          <td>8'</td>
+          <td>5' + ít phế hơn</td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <div class="callout">
+      <strong>Kết luận:</strong> 90' → 12' (giảm ~87%) → tăng Availability, giảm phế khởi động, batch nhỏ hơn.
+    </div>
+  </div>
+</section>
+
+<!-- KHỐI 5: LỢI ÍCH -->
+<section id="loi-ich">
+  <div class="container">
+    <h2>Lợi ích Đo được + 3 Lưu ý</h2>
+    
+    <h3>Lợi ích:</h3>
+    <ul>
+      <li>Tăng Availability (OEE)</li>
+      <li>Giảm phế khởi động lại</li>
+      <li>Cho phép lô nhỏ → giảm WIP/tồn kho</li>
+      <li>Linh hoạt theo đơn hàng</li>
+      <li>Tăng năng suất thao tác</li>
+    </ul>
+
+    <h3>3 Lưu ý quan trọng:</h3>
+    <ol>
+      <li><strong>Đừng vội mua máy mới</strong> — 80% từ bước 2 + 5S</li>
+      <li><strong>Đo lại thật sau mỗi vòng Kaizen</strong> — không đo = không biết đạt chưa</li>
+      <li><strong>Nhanh không được đổi an toàn lấy tốc độ</strong> — kẹp dù, khóa van an toàn</li>
+    </ol>
+  </div>
+</section>
+
+<!-- KHỐI 6: LIÊN HỆ -->
+<section id="lien-he">
+  <div class="container">
+    <h2>Liên hệ Bộ Tài liệu</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Việc</th>
+          <th>Dùng gì</th>
+          <th>File</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Tìm lãng phí Waiting</td>
+          <td>7 Wastes</td>
+          <td>7-lang-phi</td>
+        </tr>
+        <tr>
+          <td>Triển khai đúng chu trình</td>
+          <td>Kaizen/PDCA</td>
+          <td>kaizen-pdca</td>
+        </tr>
+        <tr>
+          <td>Nền tảng ngăn nắp khuôn/dụng cụ</td>
+          <td>5S</td>
+          <td>5s</td>
+        </tr>
+        <tr>
+          <td>Đo Availability/OEE</td>
+          <td>KPI, SPC</td>
+          <td>kpi-nha-may-theo-gio, spc-cpk</td>
+        </tr>
+        <tr>
+          <td>Kế hoạch 5W2H</td>
+          <td>5W2H</td>
+          <td>5w2h</td>
+        </tr>
+        <tr>
+          <td>Phân tích tại sao chậm</td>
+          <td>Fishbone/Why-Why</td>
+          <td>fishbone-whywhy</td>
+        </tr>
+        <tr>
+          <td>An toàn nâng/kẹp khuôn</td>
+          <td>Đào tạo an toàn</td>
+          <td>dao-tao-an-toan</td>
+        </tr>
+        <tr>
+          <td>PM mâm kẹp</td>
+          <td>Bảo trì</td>
+          <td>bao-tri</td>
+        </tr>
+        <tr>
+          <td>Chuẩn hóa SOP vào QMS</td>
+          <td>Giai đoạn 6</td>
+          <td>giai-doan-6-qms</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- KHỐI 7: CÔNG CỤ TÍNH -->
+<section id="cong-cu">
+  <div class="container">
+    <h2>Công cụ Tính Lợi ích SMED</h2>
+    
+    <div class="tool-card">
+      <h3>📊 Nhập thông số</h3>
+      
+      <div class="form-group">
+        <label for="so-lan">Số lần đổi khuôn mỗi tuần:</label>
+        <input type="number" id="so-lan" value="6" min="1">
+      </div>
+      
+      <div class="form-group">
+        <label for="thoi-gian-truoc">Thời gian đổi hiện tại (phút):</label>
+        <input type="number" id="thoi-gian-truoc" value="90" min="1">
+      </div>
+      
+      <div class="form-group">
+        <label for="thoi-gian-sau">Thời gian đổi sau cải tiến (phút):</label>
+        <input type="number" id="thoi-gian-sau" value="12" min="1">
+      </div>
+      
+      <div class="form-group">
+        <label for="gia-tri-gio">Giá trị sản xuất mỗi giờ máy (VNĐ) — tùy chọn, đặt 0 để bỏ qua:</label>
+        <input type="number" id="gia-tri-gio" value="500000" min="0">
+      </div>
+      
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="tinhLoiIch()">⚡ Tính lợi ích</button>
+        <button class="btn btn-secondary" onclick="viDuMau()">⚡ Ví dụ mẫu</button>
+        <button class="btn btn-secondary" onclick="resetCalc()">↺ Reset</button>
+      </div>
+      
+      <div id="ket-qua" class="result-box">
+        <h3>📈 Kết quả</h3>
+        <div class="result-item"><strong>Phút tiết kiệm mỗi lần:</strong> <span id="phut-tiet-kiem">0</span> phút</div>
+        <div class="result-item"><strong>Giờ máy tiết kiệm/tuần:</strong> <span id="gio-tuan">0</span> giờ</div>
+        <div class="result-item"><strong>% Giảm thời gian:</strong> <span id="phan-tram-giam">0</span>%</div>
+        <div class="result-item"><strong>Giờ máy tiết kiệm/tháng:</strong> <span id="gio-thang">0</span> giờ</div>
+        <div id="tiet-kiem-tien" style="display:none;">
+          <div class="result-item"><strong>Tiền tiết kiệm/tuần:</strong> <span id="tien-tuan">0</span> VNĐ</div>
+          <div class="result-item"><strong>Tiền tiết kiệm/tháng:</strong> <span id="tien-thang">0</span> VNĐ</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KHỐI 8: PHÂN LOẠI -->
+<section id="phan-loai">
+  <div class="container">
+    <h2>Phân loại Nội/Ngoại Tương tác</h2>
+    <p>Chọn mỗi hoạt động là <strong>Nội</strong> (phải dừng máy) hay <strong>Ngoại</strong> (làm được khi máy chạy):</p>
+    
+    <div id="classifier-container"></div>
+    
+    <div class="classifier-stats">
+      <div class="stat-item">Đã phân loại: <strong id="da-phan-loai">0</strong>/10</div>
+      <div class="stat-item">% Nội: <strong id="phan-tram-noi">0</strong>%</div>
+      <div class="stat-item">% Ngoại: <strong id="phan-tram-ngoai">0</strong>%</div>
+    </div>
+    
+    <div class="callout">
+      <strong>Mục tiêu:</strong> Đẩy %Nội xuống — thời gian dừng máy = hoạt động Nội.
+    </div>
+    
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="hienGoiY()">Hiện gợi ý đúng</button>
+      <button class="btn btn-secondary" onclick="resetClassifier()">↺ Reset</button>
+    </div>
+  </div>
+</section>
+
+<!-- KHỐI 9: CHECKLIST -->
+<section id="checklist">
+  <div class="container">
+    <h2>Checklist 8 Bước</h2>
+    
+    <div id="checklist-container"></div>
+    
+    <div class="progress-bar">
+      <div id="progress-fill" class="progress-fill"></div>
+    </div>
+    <p><strong>Tiến độ:</strong> <span id="tien-do">0</span>/8 bước (<span id="tien-do-pt">0</span>%)</p>
+    
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="chamChecklist()">Chấm tiến độ</button>
+      <button class="btn btn-secondary" onclick="resetChecklist()">↺ Reset</button>
+    </div>
+    
+    <div id="goi-y-buoc" class="callout" style="display:none;"></div>
+  </div>
+</section>
+
+<!-- KHỐI 10: TRẮC NGHIỆM -->
+<section id="trac-nghiem">
+  <div class="container">
+    <h2>Trắc nghiệm 10 Câu</h2>
+    <p><strong>Yêu cầu:</strong> ≥80% (8/10 câu) để ĐẠT.</p>
+    
+    <div id="quiz-container"></div>
+    
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="chapBai()">Chấm bài</button>
+      <button class="btn btn-secondary" onclick="resetQuiz()">↺ Làm lại</button>
+    </div>
+    
+    <div id="quiz-result" class="quiz-result">
+      <h3 id="quiz-score">0/10</h3>
+      <p id="quiz-percent">0%</p>
+      <div id="quiz-badge"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p>Tài liệu trình bày — SMED trong bộ hồ sơ nhà máy ép phun theo ISO 9001. Ví dụ minh họa.</p>
+    <p>Cập nhật 01/10/2026 · Phiên bản 1.0</p>
+  </div>
+</footer>
+
+<!-- BACK TO TOP -->
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// === ESCAPE HTML ===
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// === CALCULATOR ===
+function tinhLoiIch() {
+  const soLan = parseFloat(document.getElementById('so-lan').value) || 0;
+  const truoc = parseFloat(document.getElementById('thoi-gian-truoc').value) || 0;
+  const sau = parseFloat(document.getElementById('thoi-gian-sau').value) || 0;
+  const giaTriGio = parseFloat(document.getElementById('gia-tri-gio').value) || 0;
+  
+  if (soLan <= 0 || truoc <= 0 || sau <= 0) {
+    alert('Vui lòng nhập số hợp lệ!');
+    return;
+  }
+  
+  const phutTietKiem = truoc - sau;
+  const gioTuan = (soLan * phutTietKiem) / 60;
+  const phanTramGiam = ((truoc - sau) / truoc) * 100;
+  const gioThang = gioTuan * 4.3;
+  
+  document.getElementById('phut-tiet-kiem').textContent = phutTietKiem.toFixed(1);
+  document.getElementById('gio-tuan').textContent = gioTuan.toFixed(1);
+  document.getElementById('phan-tram-giam').textContent = phanTramGiam.toFixed(1);
+  document.getElementById('gio-thang').textContent = gioThang.toFixed(1);
+  
+  const tienTuanEl = document.getElementById('tiet-kiem-tien');
+  if (giaTriGio > 0) {
+    const tienTuan = gioTuan * giaTriGio;
+    const tienThang = tienTuan * 4.3;
+    document.getElementById('tien-tuan').textContent = tienTuan.toLocaleString('vi-VN', {maximumFractionDigits: 0});
+    document.getElementById('tien-thang').textContent = tienThang.toLocaleString('vi-VN', {maximumFractionDigits: 0});
+    tienTuanEl.style.display = 'block';
+  } else {
+    tienTuanEl.style.display = 'none';
+  }
+  
+  document.getElementById('ket-qua').classList.add('show');
+  
+  localStorage.setItem('smed-calc-v1', JSON.stringify({
+    soLan, thoiGianTruoc: truoc, thoiGianSau: sau, giaTriGio
+  }));
+}
+
+function viDuMau() {
+  document.getElementById('so-lan').value = 6;
+  document.getElementById('thoi-gian-truoc').value = 90;
+  document.getElementById('thoi-gian-sau').value = 12;
+  document.getElementById('gia-tri-gio').value = 500000;
+  tinhLoiIch();
+}
+
+function resetCalc() {
+  document.getElementById('so-lan').value = 6;
+  document.getElementById('thoi-gian-truoc').value = 90;
+  document.getElementById('thoi-gian-sau').value = 12;
+  document.getElementById('gia-tri-gio').value = 500000;
+  document.getElementById('ket-qua').classList.remove('show');
+  localStorage.removeItem('smed-calc-v1');
+}
+
+function loadCalc() {
+  const saved = localStorage.getItem('smed-calc-v1');
+  if (saved) {
+    try {
+      const data = JSON.parse(saved);
+      document.getElementById('so-lan').value = data.soLan || 6;
+      document.getElementById('thoi-gian-truoc').value = data.thoiGianTruoc || 90;
+      document.getElementById('thoi-gian-sau').value = data.thoiGianSau || 12;
+      document.getElementById('gia-tri-gio').value = data.giaTriGio || 500000;
+    } catch(e) {}
+  }
+}
+
+// === CLASSIFIER ===
+const activities = [
+  { text: 'Tìm dụng cụ/kìm khuôn', correct: 'out' },
+  { text: 'Sưởi sơ khuôn mới trước khi máy dừng', correct: 'out' },
+  { text: 'Tháo khuôn cũ', correct: 'in' },
+  { text: 'Lắp khuôn mới lên máy', correct: 'in' },
+  { text: 'Siết bu lông kẹp khuôn', correct: 'in' },
+  { text: 'Chuẩn bị bàn dụng cụ + xe đẩy cạnh máy', correct: 'out' },
+  { text: 'Căn chỉnh tâm khuôn', correct: 'in' },
+  { text: 'Kéo khuôn mới tới vị trí chờ trước khi dừng máy', correct: 'out' },
+  { text: 'Siết chặt + kiểm tra bằng cờ lê lực', correct: 'in' },
+  { text: 'Chạy thử lấy thông số đầu tiên', correct: 'in' }
+];
+
+let userChoices = {};
+
+function renderClassifier() {
+  const container = document.getElementById('classifier-container');
+  container.innerHTML = '';
+  
+  activities.forEach((act, idx) => {
+    const row = document.createElement('div');
+    row.className = 'activity-row';
+    row.id = 'activity-' + idx;
+    
+    const text = document.createElement('div');
+    text.className = 'activity-text';
+    text.textContent = (idx + 1) + '. ' + act.text;
+    
+    const btns = document.createElement('div');
+    btns.className = 'activity-btns';
+    
+    const btnIn = document.createElement('button');
+    btnIn.className = 'activity-btn' + (userChoices[idx] === 'in' ? ' selected-in' : '');
+    btnIn.textContent = 'Nội';
+    btnIn.onclick = () => selectActivity(idx, 'in');
+    
+    const btnOut = document.createElement('button');
+    btnOut.className = 'activity-btn' + (userChoices[idx] === 'out' ? ' selected-out' : '');
+    btnOut.textContent = 'Ngoại';
+    btnOut.onclick = () => selectActivity(idx, 'out');
+    
+    btns.appendChild(btnIn);
+    btns.appendChild(btnOut);
+    
+    row.appendChild(text);
+    row.appendChild(btns);
+    container.appendChild(row);
+  });
+  
+  updateStats();
+}
+
+function selectActivity(idx, type) {
+  userChoices[idx] = type;
+  renderClassifier();
+  localStorage.setItem('smed-inexternal-v1', JSON.stringify(userChoices));
+}
+
+function updateStats() {
+  const classified = Object.keys(userChoices).length;
+  let noiCount = 0;
+  let ngoaiCount = 0;
+  
+  for (let idx in userChoices) {
+    if (userChoices[idx] === 'in') noiCount++;
+    else ngoaiCount++;
+  }
+  
+  const total = classified || 1;
+  document.getElementById('da-phan-loai').textContent = classified;
+  document.getElementById('phan-tram-noi').textContent = ((noiCount / total) * 100).toFixed(1);
+  document.getElementById('phan-tram-ngoai').textContent = ((ngoaiCount / total) * 100).toFixed(1);
+}
+
+function hienGoiY() {
+  activities.forEach((act, idx) => {
+    const row = document.getElementById('activity-' + idx);
+    const userChoice = userChoices[idx];
+    
+    if (userChoice) {
+      if (userChoice === act.correct) {
+        row.classList.add('correct');
+        row.classList.remove('incorrect');
+      } else {
+        row.classList.add('incorrect');
+        row.classList.remove('correct');
+      }
+    }
+  });
+}
+
+function resetClassifier() {
+  userChoices = {};
+  renderClassifier();
+  localStorage.removeItem('smed-inexternal-v1');
+}
+
+function loadClassifier() {
+  const saved = localStorage.getItem('smed-inexternal-v1');
+  if (saved) {
+    try {
+      userChoices = JSON.parse(saved);
+    } catch(e) {}
+  }
+  renderClassifier();
+}
+
+// === CHECKLIST ===
+const checklistSteps = [
+  'Bước 0: Quan sát & đo hiện trạng (bấm giờ, video, Fishbone)',
+  'Bước 1: Tách Nội/Ngoại từng hoạt động',
+  'Bước 2: Chuyển Nội→Ngoại (bước tạo giá trị lớn nhất)',
+  'Bước 3: Hợp lý hóa Nội (kẹp nhanh, căn chỉnh 1 lần)',
+  'Bước 4: Hợp lý hóa Ngoại (tiêu chuẩn dụng cụ)',
+  'Bước 5: Song song hóa (2 người làm đồng thời)',
+  'Bước 6: Bôi trơn / Mã hóa (giảm thao tác thừa)',
+  'Bước 7: Chuẩn hóa + PDCA (SOP, đào tạo, đo lại)'
+];
+
+let checklistState = {};
+
+function renderChecklist() {
+  const container = document.getElementById('checklist-container');
+  container.innerHTML = '';
+  
+  checklistSteps.forEach((step, idx) => {
+    const item = document.createElement('div');
+    item.className = 'checklist-item';
+    
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.id = 'check-' + idx;
+    checkbox.checked = checklistState[idx] || false;
+    checkbox.onchange = () => {
+      checklistState[idx] = checkbox.checked;
+      localStorage.setItem('smed-checklist-v1', JSON.stringify(checklistState));
+    };
+    
+    const label = document.createElement('label');
+    label.htmlFor = 'check-' + idx;
+    label.textContent = step;
+    
+    item.appendChild(checkbox);
+    item.appendChild(label);
+    container.appendChild(item);
+  });
+}
+
+function chamChecklist() {
+  let count = 0;
+  for (let idx in checklistState) {
+    if (checklistState[idx]) count++;
+  }
+  
+  const percent = (count / 8) * 100;
+  document.getElementById('progress-fill').style.width = percent + '%';
+  document.getElementById('tien-do').textContent = count;
+  document.getElementById('tien-do-pt').textContent = percent.toFixed(0);
+  
+  const goiYEl = document.getElementById('goi-y-buoc');
+  if (count < 8) {
+    const nextStep = checklistSteps.findIndex((_, idx) => !checklistState[idx]);
+    if (nextStep >= 0) {
+      goiYEl.innerHTML = '<strong>Bước tiếp theo:</strong> ' + checklistSteps[nextStep];
+      goiYEl.style.display = 'block';
+    }
+  } else {
+    goiYEl.innerHTML = '<strong>🎉 Hoàn thành!</strong> Bạn đã chuẩn bị đủ 8 bước SMED.';
+    goiYEl.style.display = 'block';
+  }
+}
+
+function resetChecklist() {
+  checklistState = {};
+  renderChecklist();
+  document.getElementById('progress-fill').style.width = '0%';
+  document.getElementById('tien-do').textContent = '0';
+  document.getElementById('tien-do-pt').textContent = '0';
+  document.getElementById('goi-y-buoc').style.display = 'none';
+  localStorage.removeItem('smed-checklist-v1');
+}
+
+function loadChecklist() {
+  const saved = localStorage.getItem('smed-checklist-v1');
+  if (saved) {
+    try {
+      checklistState = JSON.parse(saved);
+    } catch(e) {}
+  }
+  renderChecklist();
+}
+
+// === QUIZ ===
+const quizQuestions = [
+  { q: '"SMED" nghĩa là gì?', options: ['Tự động hóa toàn bộ nhà máy', 'Rút thời gian đổi khuôn xuống dưới 10 phút (phút một chữ số)', 'Tăng cỡ lô sản xuất'], correct: 1, gt: 'single-minute = đơn vị phút một chữ số.' },
+  { q: 'Ai phát triển SMED tại Toyota?', options: ['Henry Ford', 'Shigeo Shingo', 'Kaoru Ishikawa'], correct: 1, gt: 'Shigeo Shingo phát triển SMED tại Toyota.' },
+  { q: 'Hoạt động NỘI là gì?', options: ['Làm được khi máy vẫn chạy', 'Phải dừng máy mới làm được', 'Làm ở văn phòng'], correct: 1, gt: 'Nội = phải dừng máy.' },
+  { q: 'Hoạt động NGOẠI là gì?', options: ['Làm được khi máy vẫn đang chạy', 'Phải dừng máy mới làm được', 'Phải dừng cả xưởng'], correct: 0, gt: 'Ngoại = làm được khi máy chạy.' },
+  { q: 'Hoạt động có thể chuyển Nội→Ngoại điển hình khi đổi khuôn ép phun?', options: ['Siết bu lông', 'Sưởi sơ khuôn trước khi kẹp', 'Căn chỉnh tâm'], correct: 1, gt: 'Sưởi sơ làm được khi máy chạy.' },
+  { q: 'Bước tạo giá trị lớn nhất của SMED?', options: ['Trang bị máy móc đắt tiền', 'Chuyển hoạt động Nội sang Ngoại', 'Tăng ca'], correct: 1, gt: 'Bước 2 tạo 80% kết quả.' },
+  { q: 'Kẹp nhanh 1 vòng ren / kẹp thủy lực thuộc cải tiến nào?', options: ['Hợp lý hóa phần Nội còn lại', 'Chuẩn bị ngoại', 'Chạy thử nhiều lần'], correct: 0, gt: 'Thuộc bước 3 - hợp lý hóa Nội.' },
+  { q: 'Hai người một tháo một lắp đồng thời gọi là?', options: ['Song song hóa', 'Kiểm tra tuần tự', 'Tăng ca'], correct: 0, gt: 'Bước 5 - song song hóa.' },
+  { q: 'Ngoài giảm thời gian dừng, SMED còn giúp gì?', options: ['Chỉ giảm thời gian dừng', 'Cho phép lô nhỏ hơn, giảm tồn kho, linh hoạt theo đơn', 'Bắt buộc tăng cỡ lô'], correct: 1, gt: 'Lợi ích quan trọng của SMED.' },
+  { q: 'Điều NÊN tránh khi triển khai SMED?', options: ['Hi sinh an toàn để đạt tốc độ', 'Đo lại kết quả sau mỗi vòng Kaizen', 'Triển khai 5S trước'], correct: 0, gt: 'Nhanh không được đổi an toàn lấy tốc độ.' }
+];
+
+let quizAnswers = {};
+
+function renderQuiz() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  
+  quizQuestions.forEach((q, idx) => {
+    const qDiv = document.createElement('div');
+    qDiv.className = 'quiz-question';
+    qDiv.id = 'question-' + idx;
+    
+    const title = document.createElement('h4');
+    title.textContent = 'Câu ' + (idx + 1) + ': ' + q.q;
+    qDiv.appendChild(title);
+    
+    q.options.forEach((opt, optIdx) => {
+      const optDiv = document.createElement('div');
+      optDiv.className = 'quiz-option';
+      
+      const input = document.createElement('input');
+      input.type = 'radio';
+      input.name = 'q' + idx;
+      input.id = 'q' + idx + '-' + optIdx;
+      input.value = optIdx;
+      input.checked = quizAnswers[idx] === optIdx;
+      
+      const label = document.createElement('label');
+      label.htmlFor = 'q' + idx + '-' + optIdx;
+      label.textContent = opt;
+      
+      optDiv.appendChild(input);
+      optDiv.appendChild(label);
+      qDiv.appendChild(optDiv);
+    });
+    
+    const feedback = document.createElement('div');
+    feedback.className = 'quiz-feedback';
+    feedback.id = 'feedback-' + idx;
+    qDiv.appendChild(feedback);
+    
+    container.appendChild(qDiv);
+  });
+}
+
+function chapBai() {
+  let score = 0;
+  
+  quizQuestions.forEach((q, idx) => {
+    const selected = quizAnswers[idx];
+    const feedback = document.getElementById('feedback-' + idx);
+    
+    if (selected === q.correct) {
+      score++;
+      feedback.innerHTML = '<strong>✅ Đúng!</strong> ' + q.gt;
+      feedback.className = 'quiz-feedback correct';
+    } else {
+      feedback.innerHTML = '<strong>❌ Sai.</strong> Đáp án: ' + q.options[q.correct] + '<br><em>' + q.gt + '</em>';
+      feedback.className = 'quiz-feedback incorrect';
+    }
+  });
+  
+  const percent = (score / 10) * 100;
+  const resultDiv = document.getElementById('quiz-result');
+  resultDiv.classList.add('show');
+  
+  document.getElementById('quiz-score').textContent = score + '/10';
+  document.getElementById('quiz-percent').textContent = percent.toFixed(0) + '%';
+  
+  const badge = document.getElementById('quiz-badge');
+  if (percent >= 80) {
+    badge.innerHTML = '<span class="pass-badge">🎉 ĐẠT</span>';
+  } else {
+    badge.innerHTML = '<span class="fail-badge">Cần cố gắng hơn</span>';
+  }
+  
+  localStorage.setItem('smed-quiz-v1', JSON.stringify(quizAnswers));
+}
+
+function resetQuiz() {
+  quizAnswers = {};
+  renderQuiz();
+  document.getElementById('quiz-result').classList.remove('show');
+  localStorage.removeItem('smed-quiz-v1');
+}
+
+function loadQuiz() {
+  const saved = localStorage.getItem('smed-quiz-v1');
+  if (saved) {
+    try {
+      quizAnswers = JSON.parse(saved);
+    } catch(e) {}
+  }
+  renderQuiz();
+}
+
+// === NAV SCROLLSPY ===
+function updateNav() {
+  const sections = document.querySelectorAll('section');
+  const navLinks = document.querySelectorAll('.nav a');
+  
+  let current = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop;
+    if (window.scrollY >= sectionTop - 100) {
+      current = section.getAttribute('id');
+    }
+  });
+  
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === '#' + current) {
+      link.classList.add('active');
+    }
+  });
+}
+
+// === BACK TO TOP ===
+function toggleBackToTop() {
+  const btn = document.getElementById('backToTop');
+  if (window.scrollY > 300) {
+    btn.classList.add('visible');
+  } else {
+    btn.classList.remove('visible');
+  }
+}
+
+// === INIT ===
+window.addEventListener('scroll', () => {
+  updateNav();
+  toggleBackToTop();
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  loadCalc();
+  loadClassifier();
+  loadChecklist();
+  loadQuiz();
+  updateNav();
+});
+</script>
+</body>
+</html>

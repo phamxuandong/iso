@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ý tưởng & Kế hoạch triển khai Webapp Quản lý nhà máy theo ISO 9001</title>
+<style>
+:root {
+  --navy-dark: #0a1628;
+  --navy-md: #122442;
+  --navy-light: #1a365d;
+  --amber: #d97706;
+  --amber-light: #fbbf24;
+  --amber-pale: #fef3c7;
+  --bg-light: #f8fafc;
+  --white: #ffffff;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --success: #059669;
+  --warning: #d97706;
+  --danger: #dc2626;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg-light);
+}
+.container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+section { scroll-margin-top: 80px; padding: 2rem 0; }
+
+/* Hero */
+.hero {
+  background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-md) 100%);
+  color: var(--white);
+  padding: 3rem 0;
+  text-align: center;
+}
+.hero h1 { font-size: 1.75rem; margin-bottom: 0.5rem; font-weight: 700; }
+.hero p { font-size: 1rem; opacity: 0.9; max-width: 800px; margin: 0 auto; }
+
+/* Nav */
+.nav {
+  background: var(--navy-light);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 0;
+}
+.nav a {
+  color: var(--amber-light);
+  text-decoration: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  transition: background 0.2s, color 0.2s;
+}
+.nav a:hover, .nav a.active {
+  background: var(--amber);
+  color: var(--navy-dark);
+}
+
+/* Section titles */
+.section-title {
+  font-size: 1.5rem;
+  color: var(--navy-dark);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 3px solid var(--amber);
+  display: inline-block;
+}
+.section-subtitle {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+
+/* Cards */
+.card {
+  background: var(--white);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border-left: 4px solid var(--amber);
+}
+.card h3 {
+  color: var(--navy-md);
+  margin-bottom: 0.75rem;
+  font-size: 1.125rem;
+}
+
+/* Boxes */
+.info-box {
+  background: var(--amber-pale);
+  border: 1px solid var(--amber-light);
+  border-radius: 6px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+.info-box strong { color: var(--navy-dark); }
+
+/* Principles */
+.principles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.principle {
+  background: var(--navy-md);
+  color: var(--white);
+  padding: 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+.principle-num {
+  color: var(--amber-light);
+  font-weight: 700;
+  font-size: 1.25rem;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+/* Architecture blocks */
+.arch-layers {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.arch-layer {
+  background: var(--navy-light);
+  color: var(--white);
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  border-left: 4px solid var(--amber);
+  font-size: 0.9rem;
+}
+.arch-layer span { color: var(--amber-light); font-weight: 600; }
+
+/* Flow diagram */
+.flow-diagram {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  align-items: center;
+}
+.flow-step {
+  background: var(--white);
+  border: 2px solid var(--navy-md);
+  border-radius: 6px;
+  padding: 1rem;
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+}
+.flow-step strong { color: var(--amber); display: block; margin-bottom: 0.25rem; }
+.flow-arrow {
+  color: var(--amber);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.flow-callout {
+  background: var(--amber-pale);
+  border: 2px dashed var(--amber);
+  padding: 1rem;
+  border-radius: 6px;
+  margin-top: 1rem;
+  font-style: italic;
+}
+
+/* Tables */
+.table-wrapper {
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  background: var(--white);
+}
+th, td {
+  border: 1px solid var(--border);
+  padding: 0.75rem;
+  text-align: left;
+}
+th {
+  background: var(--navy-md);
+  color: var(--white);
+  font-weight: 600;
+  white-space: nowrap;
+}
+tr:nth-child(even) { background: var(--bg-light); }
+tr:hover { background: var(--amber-pale); }
+code {
+  background: var(--bg-light);
+  padding: 0.125rem 0.375rem;
+  border-radius: 3px;
+  font-size: 0.85em;
+  font-family: "Consolas", "Monaco", monospace;
+  color: var(--navy-md);
+}
+
+/* Timeline */
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+  margin: 1.5rem 0;
+}
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 0.5rem;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--amber);
+}
+.timeline-item {
+  position: relative;
+  margin-bottom: 1.5rem;
+  padding-left: 1rem;
+}
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  left: -1.75rem;
+  top: 0.25rem;
+  width: 1rem;
+  height: 1rem;
+  background: var(--navy-md);
+  border: 3px solid var(--amber);
+  border-radius: 50%;
+}
+.timeline-item h4 {
+  color: var(--navy-dark);
+  margin-bottom: 0.5rem;
+}
+.timeline-item .deliverable {
+  background: var(--amber-pale);
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+/* Risk table */
+.risk-table td:first-child { font-weight: 600; color: var(--navy-dark); }
+
+/* MVP Checklist */
+.checklist-container {
+  background: var(--white);
+  border: 2px solid var(--navy-md);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+}
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.checklist-item:last-child { border-bottom: none; }
+.checklist-item input[type="checkbox"] {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 0.125rem;
+  accent-color: var(--amber);
+}
+.checklist-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+.btn {
+  padding: 0.625rem 1.25rem;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: opacity 0.2s;
+}
+.btn:hover { opacity: 0.9; }
+.btn-primary { background: var(--amber); color: var(--navy-dark); }
+.btn-secondary { background: var(--navy-md); color: var(--white); }
+.btn-print { background: var(--navy-light); color: var(--white); }
+.progress-bar {
+  height: 1.5rem;
+  background: var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 1rem 0;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--amber), var(--amber-light));
+  transition: width 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--navy-dark);
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+/* Footer */
+.footer {
+  background: var(--navy-dark);
+  color: var(--white);
+  text-align: center;
+  padding: 1.5rem 0;
+  margin-top: 2rem;
+  font-size: 0.875rem;
+}
+
+/* Back to top */
+.back-to-top {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: var(--amber);
+  color: var(--navy-dark);
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transition: transform 0.2s;
+  border: none;
+}
+.back-to-top:hover { transform: translateY(-3px); }
+
+/* Print */
+@media print {
+  .nav, .back-to-top, .checklist-actions, .no-print { display: none !important; }
+  body { background: var(--white); }
+  .hero { background: var(--navy-dark); padding: 1.5rem 0; }
+  section { padding: 1rem 0; }
+  .card { box-shadow: none; border: 1px solid var(--border); }
+  a { text-decoration: none; color: var(--text); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero h1 { font-size: 1.25rem; }
+  .hero p { font-size: 0.9rem; }
+  .nav ul { gap: 0.25rem; }
+  .nav a { padding: 0.375rem 0.5rem; font-size: 0.75rem; }
+  .section-title { font-size: 1.25rem; }
+  .principles { grid-template-columns: 1fr; }
+  table { font-size: 0.75rem; }
+  th, td { padding: 0.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="container">
+    <h1>Webapp Quản lý nhà máy theo ISO 9001</h1>
+    <p>Ý tưởng & Kế hoạch triển khai · tự phát triển trên server sẵn có · dùng trên điện thoại · nhà máy ép phun 20 máy</p>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav class="nav no-print">
+  <div class="container">
+    <ul>
+      <li><a href="#tong-quan">Tổng quan</a></li>
+      <li><a href="#kien-truc">Kiến trúc</a></li>
+      <li><a href="#module">Module</a></li>
+      <li><a href="#database">CSDL</a></li>
+      <li><a href="#api">API</a></li>
+      <li><a href="#vai-tro">Vai trò</a></li>
+      <li><a href="#lo-trinh">Lộ trình</a></li>
+      <li><a href="#rui-ro">Rủi ro</a></li>
+      <li><a href="#checklist">Checklist MVP</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="container">
+
+<!-- KHỐI 1: TỔNG QUAN -->
+<section id="tong-quan">
+  <h2 class="section-title">Tổng quan & Mục tiêu</h2>
+  <p class="section-subtitle">Bối cảnh triển khai và nguyên tắc thiết kế cốt lõi</p>
+  
+  <div class="card">
+    <h3>Bối cảnh</h3>
+    <p>Có server/host sẵn → tự viết PWA/webapp, <strong>điện thoại là công cụ chính</strong>; không mua phần mềm lớn. Hệ thống khép vòng từ điểm/KPI → hành động (người+hạn) → đóng → điểm tăng; mọi thao tác có nhật ký (bằng chứng audit §9.1/§9.3).</p>
+  </div>
+  
+  <div class="info-box">
+    <strong>5 nguyên tắc thiết kế:</strong>
+    <div class="principles">
+      <div class="principle"><span class="principle-num">①</span>Mobile-first: nút to, 1 thao tác 1 việc; máy tính chỉ xem dashboard</div>
+      <div class="principle"><span class="principle-num">②</span>Đăng nhập mã NV + phân quyền vai trò</div>
+      <div class="principle"><span class="principle-num">③</span>Audit trail mọi thay đổi</div>
+      <div class="principle"><span class="principle-num">④</span>Nhắc lịch tự động (push)</div>
+      <div class="principle"><span class="principle-num">⑤</span>Bắt đầu với 3 module lõi (vòng khép kín) trước khi mở rộng</div>
+    </div>
+  </div>
+</section>
+
+<!-- KHỐI 2: KIẾN TRÚC -->
+<section id="kien-truc">
+  <h2 class="section-title">Kiến trúc & Dòng dữ liệu vòng khép kín</h2>
+  <p class="section-subtitle">4 lớp hệ thống và luồng dữ liệu tuần hoàn</p>
+  
+  <div class="card">
+    <h3>Sơ đồ 4 lớp</h3>
+    <div class="arch-layers">
+      <div class="arch-layer"><span>Lớp 0:</span> Tính toán Excel hiện hữu → nhập liệu thủ công ban đầu</div>
+      <div class="arch-layer"><span>Lớp 1:</span> Thu thập Mobile Forms → checklist, KPI, sự cố (điện thoại)</div>
+      <div class="arch-layer"><span>Lớp 2:</span> Tổng hợp Dashboard → điểm %, OEE, xu hướng, cảnh báo</div>
+      <div class="arch-layer"><span>Lớp 3:</span> Quy trình/Hồ sơ QMS → tài liệu, audit, NC, hành động khắc phục</div>
+      <div class="arch-layer"><span>Lớp 4:</span> MES-lite sau này → truy vết QR, nhật ký máy, MTTR/MTBF</div>
+    </div>
+  </div>
+  
+  <div class="card">
+    <h3>Dòng dữ liệu vòng khép kín</h3>
+    <div class="flow-diagram">
+      <div class="flow-step"><strong>NHẬP</strong>Checklist/Đánh giá/KPI hằng ca</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step"><strong>LƯU</strong>DB trung tâm (kết quả + nhật ký)</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step"><strong>HIỂN THỊ</strong>Dashboard & cảnh báo (điểm &lt; 70% → tự tạo hành động)</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step"><strong>HÀNH ĐỘNG</strong>Bảng 5W2H (người+hạn+nhắc)</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step"><strong>ĐÓNG</strong>Xác nhận + bằng chứng (ảnh)</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step"><strong>LẶP</strong>Điểm/KPI quý sau tăng</div>
+    </div>
+    <div class="flow-callout">
+      <strong>Lưu ý:</strong> Phần mềm không tạo cải thiện — <em>vòng khép kín</em> mới tạo ra.
+    </div>
+  </div>
+</section>
+
+<!-- KHỐI 3: MODULE CHỨC NĂNG -->
+<section id="module">
+  <h2 class="section-title">Module chức năng</h2>
+  <p class="section-subtitle">5 module chính với chi tiết từng chức năng</p>
+  
+  <div class="card">
+    <h3>🅰 Module Lõi 1 — Kiểm tra & Đánh giá (xây trước)</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Chức năng</th><th>Mô tả</th><th>Nguồn tài liệu</th></tr></thead>
+        <tbody>
+          <tr><td>Checklist hằng ca (động)</td><td>Tạo checklist (5S, an toàn đầu ca, vệ sinh máy), gán theo ca/người, lịch sáng, chấm Đạt/Không/NA + ảnh, tự %</td><td><code>5s</code></td></tr>
+          <tr><td>Tự đánh giá theo vai trò (A–H)</td><td>Chỉ hiện câu của vai trò, chấm mức 2/1/0 (Đạt/Một phần/Chưa đạt + N/A), % tự động, danh sách điểm yếu tự sinh</td><td><code>bo-235-cau</code></td></tr>
+          <tr><td>Đánh giá chéo (6 cặp)</td><td>Phòng này đánh giá phòng kia, chấm mức 2/1/0 + N/A, % tự động</td><td><code>bo-235-cau</code></td></tr>
+          <tr><td>Audit nội bộ</td><td>Checklist theo điều khoản, ghi phát hiện NC/OFI kèm ảnh, phân loại lớn/nhỏ</td><td><code>audit-noi-bo</code></td></tr>
+          <tr><td>Bảng theo dõi NC</td><td>Mở/Đang/Đóng, nhắc hạn, gán người</td><td><code>audit-noi-bo</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <div class="card">
+    <h3>🅱 Module Lõi 2 — Nhập liệu KPI nhanh</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Chức năng</th><th>Mô tả</th><th>Nguồn tài liệu</th></tr></thead>
+        <tbody>
+          <tr><td>Nhập KPI 3 phút/ca</td><td>Số sản xuất, phế theo loại, downtime, dừng máy → tự OEE/phế %</td><td><code>kpi-nha-may-theo-gio</code>, <code>spc-cpk</code></td></tr>
+          <tr><td>Dashboard theo vai trò</td><td>Công nhân/giữ ca/trưởng/quản đốc/QA; công khai tại xưởng</td><td>—</td></tr>
+          <tr><td>Xu hướng & so sánh</td><td>Tuần/tháng, so ca/phòng/máy</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <div class="card">
+    <h3>🅲 Module Lõi 3 — Sự cố, Khắc phục & Cải tiến</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Chức năng</th><th>Mô tả</th><th>Nguồn tài liệu</th></tr></thead>
+        <tbody>
+          <tr><td>Báo sự cố/NC bằng ảnh</td><td>1 thao tác: ảnh + loại + máy/ca → bảng theo dõi</td><td><code>8d</code>, <code>7-lang-phi</code></td></tr>
+          <tr><td>Form hành động khắc phục 5W2H</td><td>Người+hạn+mô tả+nhắc, đóng có bằng chứng</td><td><code>5w2h</code></td></tr>
+          <tr><td>Mẫu 8D cho NC lớn</td><td>Điền từng bước D0–D8</td><td><code>8d</code></td></tr>
+          <tr><td>Hòm ý tưởng Kaizen</td><td>Gửi→duyệt→phân loại→board trạng thái</td><td><code>kaizen-pdca</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <div class="card">
+    <h3>🅳 Module Hồ sơ & Truy vết (giai đoạn 2)</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Chức năng</th><th>Mô tả</th><th>Ghi chú</th></tr></thead>
+        <tbody>
+          <tr><td>Tài liệu/WI kiểm soát phiên bản</td><td>Upload, phê duyệt, hiệu lực/hết hiệu lực, nhắc xem lại</td><td>—</td></tr>
+          <tr><td>QR truy vết khuôn & sản phẩm</td><td>Quét → thông số, lịch sử sửa khuôn, nguồn lô</td><td>Hỗ trợ <code>smed</code>, <code>bao-tri</code></td></tr>
+          <tr><td>Nhật ký máy</td><td>Lịch sử bảo trì/sự cố, MTTR/MTBF tự tổng hợp</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <div class="card">
+    <h3>🅴 Module Báo cáo & Động lực (giai đoạn 2–3)</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Chức năng</th><th>Mô tả</th></tr></thead>
+        <tbody>
+          <tr><td>Xuất PDF theo phòng/quý</td><td>Cho review §9.3 và khách/audit</td></tr>
+          <tr><td>Bảng xếp hạng ca</td><td>Điểm 5S, phế, tuân thủ — gamification nhẹ</td></tr>
+          <tr><td>Cảnh báo tự động</td><td>Điểm phòng &lt; 70% → tạo hành động khắc phục</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- KHỐI 4: CƠ SỞ DỮ LIỆU -->
+<section id="database">
+  <h2 class="section-title">Cơ sở dữ liệu</h2>
+  <p class="section-subtitle">9 bảng chính + bảng hệ thống</p>
+  
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Bảng gợi ý</th><th>Mục đích</th><th>Cột chính</th></tr></thead>
+      <tbody>
+        <tr><td><code>users</code></td><td>Thông tin người dùng</td><td>id, ma_nv, hoten, role_id, ca_id, mat_khau_hash, trang_thai</td></tr>
+        <tr><td><code>roles</code></td><td>Phân quyền vai trò</td><td>id, ten, quyen_json</td></tr>
+        <tr><td><code>checklists</code></td><td>Danh sách kiểm tra</td><td>id, ten, loai[5s/an_toan/audit/tu_danh_gia], phienban, nguoi_tao, ngay_tao, trang_thai, json_cau_hoi</td></tr>
+        <tr><td><code>checklist_items</code></td><td>Câu hỏi chi tiết</td><td>id, checklist_id, stt, cau_hoi, thang_diem[2/1/0], nhom_dieu_khoan_iso, yeu_cau_bang_chung</td></tr>
+        <tr><td><code>checklist_results</code></td><td>Kết quả chấm</td><td>id, checklist_id, user_id, ca, may, ngay, json_dap_an, diem_so, diem_toi_da, phan_tram, trang_thai</td></tr>
+        <tr><td><code>kpi_logs</code></td><td>Nhật ký KPI</td><td>id, user_id, ca, may, ngay_gio, san_luong, phe_loai_json, downtime_phut, note</td></tr>
+        <tr><td><code>actions</code></td><td>Hành động khắc phục</td><td>id, loai_action[NC/kaizen/hanh_dong], mo_ta, nguoi_phu_trach, han_ngay, trang_thai, bang_chung_anh, created_by</td></tr>
+        <tr><td><code>documents</code></td><td>Tài liệu/WI</td><td>id, ma_tl, ten, phien_ban, duong_dan_file, trang_thai[draft/phe_duyet/hieu_luc/het_hieu_luc], ngay_hieu_luc</td></tr>
+        <tr><td><code>qr_assets</code></td><td>QR truy vết</td><td>id, loai_asset[khuon/sp/may], ma_asset, json_thong_tin, qr_code, lich_su_json</td></tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="info-box">
+    <strong>Ghi chú kỹ thuật:</strong>
+    <ul style="margin-left: 1.25rem; margin-top: 0.5rem;">
+      <li>Form động lưu JSON (thêm form không sửa code)</li>
+      <li>1 bảng nguồn đúng cho điểm/KPI</li>
+      <li>PWA/service worker nếu ca đêm mất sóng</li>
+      <li>Nén ảnh trước upload</li>
+    </ul>
+  </div>
+  
+  <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-muted);">
+    <strong>Bảng hệ thống:</strong> <code>notifications</code> (nhắc lịch) + <code>audit_log</code> (nhật ký thao tác: user_id, hanh_dong, thoi_gian, du_lieu_cu_moi)
+  </p>
+</section>
+
+<!-- KHỐI 5: API -->
+<section id="api">
+  <h2 class="section-title">API gợi ý</h2>
+  <p class="section-subtitle">Tối thiểu 12 nhóm API cho MVP</p>
+  
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Nhóm</th><th>Ví dụ API</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr><td>Xác thực</td><td><code>POST /api/login</code> · <code>POST /api/logout</code> · <code>GET /api/me</code></td><td>Đăng nhập mã NV + lấy quyền</td></tr>
+        <tr><td>Checklist</td><td><code>GET /api/checklists?type=5s</code> · <code>POST /api/checklists</code> · <code>GET /api/checklists/:id/items</code></td><td>Xem/tạo danh sách</td></tr>
+        <tr><td>Kết quả</td><td><code>POST /api/checklists/:id/submit</code> · <code>GET /api/results?from&to&department</code></td><td>Nộp bài + tổng hợp</td></tr>
+        <tr><td>KPI</td><td><code>POST /api/kpi</code> · <code>GET /api/kpi/summary?from&to</code></td><td>Nhập/tổng OEE·phế</td></tr>
+        <tr><td>Hành động</td><td><code>GET/POST /api/actions</code> · <code>PATCH /api/actions/:id</code> (đóng) · <code>GET /api/actions?status=open</code></td><td>5W2H theo dõi khắc phục</td></tr>
+        <tr><td>Tài liệu</td><td><code>POST /api/documents</code> (upload) · <code>GET /api/documents?status=active</code> · <code>POST /api/documents/:id/approve</code></td><td>Phiên bản + phê duyệt</td></tr>
+        <tr><td>QR</td><td><code>POST /api/assets</code> · <code>GET /api/assets/:qr</code></td><td>Truy vết khuôn/sp</td></tr>
+        <tr><td>Dashboard</td><td><code>GET /api/dashboard/summary?period=month</code> · <code>GET /api/dashboard/departments</code></td><td>Tổng hợp review §9.3</td></tr>
+        <tr><td>Ảnh</td><td><code>POST /api/upload/image</code> (compress)</td><td>Bằng chứng</td></tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 1rem;">
+    <strong>Ghi chú:</strong> <code>audit_log</code> tự động ghi mọi mutation.
+  </p>
+</section>
+
+<!-- KHỐI 6: VAI TRÒ -->
+<section id="vai-tro">
+  <h2 class="section-title">Vai trò & Phân quyền</h2>
+  <p class="section-subtitle">Ma trận quyền theo chức năng</p>
+  
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Chức năng</th>
+          <th>Công nhân</th>
+          <th>Ca trưởng</th>
+          <th>QC</th>
+          <th>QA</th>
+          <th>Quản đốc</th>
+          <th>Bảo trì</th>
+          <th>Quản trị</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Nhập checklist hằng ca</td><td>✓</td><td>✓</td><td>✓</td><td>xem</td><td>xem</td><td>xem</td><td>✓</td></tr>
+        <tr><td>Nhập KPI ca</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>xem</td><td>✓</td><td>✓</td></tr>
+        <tr><td>Tự đánh giá vai trò</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+        <tr><td>Ghi NC bằng ảnh</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+        <tr><td>Tạo/đóng hành động</td><td>xem</td><td>tạo</td><td>tạo</td><td>✓ đóng</td><td>✓</td><td>tạo</td><td>✓</td></tr>
+        <tr><td>Chạy audit nội bộ</td><td>–</td><td>–</td><td>✓</td><td>✓</td><td>–</td><td>–</td><td>✓</td></tr>
+        <tr><td>Phê duyệt WI/tài liệu</td><td>–</td><td>–</td><td>–</td><td>✓</td><td>✓</td><td>–</td><td>✓</td></tr>
+        <tr><td>Xem dashboard tổng</td><td>ca mình</td><td>ca mình</td><td>toàn QC</td><td>toàn</td><td>toàn</td><td>máy mình</td><td>toàn</td></tr>
+        <tr><td>Quản trị users/roles</td><td>–</td><td>–</td><td>–</td><td>–</td><td>–</td><td>–</td><td>✓</td></tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 1rem;">
+    <strong>Ghi chú:</strong> Công nhân chỉ sửa dữ liệu của mình trong ca; QA khóa điểm cuối kỳ.
+  </p>
+</section>
+
+<!-- KHỐI 7: LỘ TRÌNH -->
+<section id="lo-trinh">
+  <h2 class="section-title">Lộ trình triển khai</h2>
+  <p class="section-subtitle">3 đợt với deliverable rõ ràng</p>
+  
+  <div class="timeline">
+    <div class="timeline-item">
+      <h4>Đợt 1 — MVP vòng khép kín (tuần 1–4)</h4>
+      <p>Checklist hằng ca + KPI nhanh + Sự cố/hành động khắc phục + Dashboard gộp.</p>
+      <div class="deliverable">
+        <strong>Kết quả:</strong> Mỗi sáng quản đốc thấy điểm + KPI hôm qua; thấy ca/phòng cần hỗ trợ.
+      </div>
+    </div>
+    <div class="timeline-item">
+      <h4>Đợt 2 (tuần 5–8)</h4>
+      <p>Bộ tự đánh giá 235 theo vai trò + Audit nội bộ + theo dõi NC.</p>
+      <div class="deliverable">
+        <strong>Kết quả:</strong> Q1 có % tuân thủ thật + NC đóng đúng hạn.
+      </div>
+    </div>
+    <div class="timeline-item">
+      <h4>Đợt 3 (tháng 3–6)</h4>
+      <p>Tài liệu/WI phiên bản + QR khuôn/sp + Kaizen board + xuất PDF.</p>
+      <div class="deliverable">
+        <strong>Kết quả:</strong> Hồ sơ sẵn cho audit chứng nhận.
+      </div>
+    </div>
+  </div>
+  
+  <p style="font-size: 0.9rem; color: var(--text-muted);">
+    <strong>Tiêu chí:</strong> Mỗi đợt có ô mô tả đầu ra (deliverable) + tiêu chí "chạy ổn" trước khi sang đợt kế.
+  </p>
+</section>
+
+<!-- KHỐI 8: RỦI RO -->
+<section id="rui-ro">
+  <h2 class="section-title">Rủi ro & Biện pháp</h2>
+  <p class="section-subtitle">5 rủi ro chính và cách phòng ngừa</p>
+  
+  <div class="table-wrapper">
+    <table class="risk-table">
+      <thead><tr><th>Rủi ro</th><th>Biện pháp</th></tr></thead>
+      <tbody>
+        <tr><td>Đánh giá suông không hành động</td><td>Ràng buộc mỗi phòng điểm &lt; 70% → tối thiểu 1 hành động 5W2H trong tuần; QA theo dõi</td></tr>
+        <tr><td>Tự đánh giá đẹp giả (100% nhưng phế cao)</td><td>Đối chiếu tự đánh giá với số liệu khách quan (phế %, kết quả audit độc lập)</td></tr>
+        <tr><td>Mất sóng ca đêm</td><td>PWA/service worker lưu tạm offline, đồng bộ khi có mạng (MS Form/Lists offline cũng là chuẩn)</td></tr>
+        <tr><td>Dữ liệu không tới người quyết định</td><td>Dashboard công khai tại xưởng (bảng TV/điện thoại ca trưởng) + cảnh báo tự động</td></tr>
+        <tr><td>Phình phạm vi, code lâu không ra</td><td>Khóa MVP 3 module trước; form động bằng JSON để thêm form không sửa code</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- KHỐI 9: CHECKLIST MVP -->
+<section id="checklist">
+  <h2 class="section-title">Checklist MVP tương tác</h2>
+  <p class="section-subtitle">12 hạng mục cần hoàn thành cho phiên bản đầu tiên</p>
+  
+  <div class="checklist-container">
+    <div class="checklist-item"><input type="checkbox" id="mvp1"><label for="mvp1">Đăng nhập mã NV + phân quyền</label></div>
+    <div class="checklist-item"><input type="checkbox" id="mvp2"><label for="mvp2">Form động (JSON)</label></div>
+    <div class="checklist-item"><input type="checkbox" id="mvp3"><label for="mvp3">Checklist 5S hằng ca</label></div>
+    <div class="checklist-item"><input type="checkbox" id="mvp4"><label for="mvp4">Nhập KPI 3 phút/ca</label></div>
+    <div class="checklist-item"><input type="checkbox" id="mvp5"><label for="mvp5">Báo sự cố ảnh</label></div>
+    <div class="checklist-item"><input type="checkbox" id="mvp6"><label for="mvp6">Bảng hành động 5W2H + nhắc hạn</label></div>
+    <div class="checklist-item"><input type="checkbox" id="mvp7"><label for="mvp7">Dashboard tổng theo vai trò</label></div>
+    <div class="checklist-item"><input type="checkbox" id="mvp8"><label for="mvp8">Cảnh báo &lt; 70% tự tạo hành động</label></div>
+    <div class="checklist-item"><input type="checkbox" id="mvp9"><label for="mvp9">Audit_log mọi mutation</label></div>
+    <div class="checklist-item"><input type="checkbox" id="mvp10"><label for="mvp10">Backup hằng ngày</label></div>
+    <div class="checklist-item"><input type="checkbox" id="mvp11"><label for="mvp11">Giao diện mobile-first test trên 3 điện thoại</label></div>
+    <div class="checklist-item"><input type="checkbox" id="mvp12"><label for="mvp12">SSL/https + phân quyền admin</label></div>
+    
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width: 0%;">0%</div>
+    </div>
+    
+    <div class="checklist-actions">
+      <button class="btn btn-primary" onclick="updateProgress()">Chấm tiến độ</button>
+      <button class="btn btn-secondary" onclick="resetChecklist()">Reset</button>
+      <button class="btn btn-print no-print" onclick="window.print()">🖨 In</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <p>Tài liệu ý tưởng & kế hoạch — Webapp quản lý nhà máy theo ISO 9001 (Nhà máy ép phun). Ví dụ minh họa, điều chỉnh theo thực tế. Cập nhật 01/10/2026 · Phiên bản 1.0</p>
+  </div>
+</footer>
+
+<!-- BACK TO TOP -->
+<button class="back-to-top no-print" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Lên đầu trang">↑</button>
+
+<script>
+// Scrollspy nav
+(function() {
+  const sections = document.querySelectorAll('section');
+  const navLinks = document.querySelectorAll('.nav a');
+  
+  function updateActive() {
+    let current = '';
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop;
+      if (scrollY >= sectionTop - 100) {
+        current = section.getAttribute('id');
+      }
+    });
+    navLinks.forEach(link => {
+      link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+    });
+  }
+  
+  window.addEventListener('scroll', updateActive);
+  updateActive();
+})();
+
+// MVP Checklist
+const CHECKLIST_KEY = 'webapp-mvp-checklist-v1';
+
+function updateProgress() {
+  const checkboxes = document.querySelectorAll('.checklist-item input[type="checkbox"]');
+  let checked = 0;
+  checkboxes.forEach(cb => { if (cb.checked) checked++; });
+  
+  const pct = Math.round((checked / checkboxes.length) * 100);
+  const fill = document.getElementById('progressFill');
+  fill.style.width = pct + '%';
+  fill.textContent = pct + '%';
+  
+  // Save to localStorage
+  const state = [];
+  checkboxes.forEach((cb, i) => { if (cb.checked) state.push(i); });
+  localStorage.setItem(CHECKLIST_KEY, JSON.stringify(state));
+}
+
+function resetChecklist() {
+  const checkboxes = document.querySelectorAll('.checklist-item input[type="checkbox"]');
+  checkboxes.forEach(cb => { cb.checked = false; });
+  document.getElementById('progressFill').style.width = '0%';
+  document.getElementById('progressFill').textContent = '0%';
+  localStorage.removeItem(CHECKLIST_KEY);
+}
+
+function loadChecklist() {
+  const saved = localStorage.getItem(CHECKLIST_KEY);
+  if (saved) {
+    const state = JSON.parse(saved);
+    const checkboxes = document.querySelectorAll('.checklist-item input[type="checkbox"]');
+    state.forEach(i => { if (checkboxes[i]) checkboxes[i].checked = true; });
+    updateProgress();
+  }
+}
+
+// Escape HTML helper (not used for user content but available)
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', loadChecklist);
+</script>
+
+</body>
+</html>

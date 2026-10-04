@@ -1,0 +1,2272 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPC & Cpk — Kiểm soát quá trình bằng thống kê</title>
+    <style>
+        :root {
+            --navy-dark: #0a1628;
+            --navy: #122442;
+            --navy-light: #1a3a6e;
+            --amber: #d97706;
+            --amber-light: #fbbf24;
+            --amber-bg: #fef3c7;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --success: #059669;
+            --success-bg: #d1fae5;
+            --danger: #dc2626;
+            --danger-bg: #fee2e2;
+            --warning: #d97706;
+            --warning-bg: #fef3c7;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.7;
+            color: var(--gray-800);
+            background: var(--bg-light);
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%);
+            color: var(--white);
+            padding: 80px 20px 60px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .hero p {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .nav-container {
+            background: var(--white);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px solid var(--amber);
+        }
+
+        .nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .nav a {
+            flex-shrink: 0;
+            padding: 16px 20px;
+            color: var(--navy);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .nav a:hover {
+            background: var(--gray-100);
+            border-bottom-color: var(--amber-light);
+        }
+
+        .nav a.active {
+            color: var(--amber);
+            border-bottom-color: var(--amber);
+        }
+
+        .main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        section {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow);
+            scroll-margin-top: 100px;
+        }
+
+        section h2 {
+            font-size: 1.5rem;
+            color: var(--navy);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--amber-light);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        section h3 {
+            font-size: 1.2rem;
+            color: var(--navy-dark);
+            margin: 24px 0 16px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border: 1px solid var(--gray-200);
+        }
+
+        th {
+            background: var(--navy);
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background: var(--gray-100);
+        }
+
+        tr:hover {
+            background: var(--amber-bg);
+        }
+
+        .callout {
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid;
+        }
+
+        .callout-info {
+            background: var(--gray-100);
+            border-color: var(--navy);
+        }
+
+        .callout-warning {
+            background: var(--amber-bg);
+            border-color: var(--amber);
+        }
+
+        .callout-success {
+            background: var(--success-bg);
+            border-color: var(--success);
+        }
+
+        .callout-danger {
+            background: var(--danger-bg);
+            border-color: var(--danger);
+        }
+
+        .formula-box {
+            background: var(--navy-dark);
+            color: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .formula-box code {
+            display: block;
+            margin: 8px 0;
+        }
+
+        .nelson-rules {
+            list-style: none;
+            counter-reset: nelson;
+        }
+
+        .nelson-rules li {
+            counter-increment: nelson;
+            padding: 12px 16px 12px 50px;
+            margin: 8px 0;
+            background: var(--gray-100);
+            border-radius: 6px;
+            position: relative;
+        }
+
+        .nelson-rules li::before {
+            content: counter(nelson);
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 28px;
+            height: 28px;
+            background: var(--navy);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .nelson-rules li.critical::before {
+            background: var(--danger);
+        }
+
+        .tool-container {
+            background: var(--gray-100);
+            padding: 24px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .input-group label {
+            font-weight: 500;
+            color: var(--gray-700);
+            font-size: 0.9rem;
+        }
+
+        .input-group input {
+            padding: 10px 12px;
+            border: 2px solid var(--gray-300);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--amber);
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--amber);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--navy);
+        }
+
+        .btn-secondary {
+            background: var(--navy);
+            color: var(--white);
+        }
+
+        .btn-secondary:hover {
+            background: var(--amber);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--navy);
+            color: var(--navy);
+        }
+
+        .btn-outline:hover {
+            background: var(--navy);
+            color: var(--white);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: var(--white);
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        .data-table-wrapper {
+            overflow-x: auto;
+            margin: 20px 0;
+            background: var(--white);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .data-table {
+            min-width: 100%;
+        }
+
+        .data-table input {
+            width: 80px;
+            padding: 8px;
+            border: 1px solid var(--gray-300);
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .data-table input:focus {
+            outline: none;
+            border-color: var(--amber);
+        }
+
+        .data-table th {
+            background: var(--navy-light);
+        }
+
+        .data-table td {
+            text-align: center;
+        }
+
+        .result-cell {
+            font-weight: 600;
+            color: var(--navy);
+        }
+
+        .result-cell.violation {
+            color: var(--danger);
+            background: var(--danger-bg);
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            margin: 24px 0;
+        }
+
+        @media (min-width: 768px) {
+            .charts-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .chart-wrapper {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .chart-wrapper h4 {
+            text-align: center;
+            color: var(--navy);
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .chart-svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .status-banner {
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .status-in-control {
+            background: var(--success-bg);
+            color: var(--success);
+            border: 2px solid var(--success);
+        }
+
+        .status-out-control {
+            background: var(--danger-bg);
+            color: var(--danger);
+            border: 2px solid var(--danger);
+        }
+
+        .status-warning {
+            background: var(--warning-bg);
+            color: var(--warning);
+            border: 2px solid var(--warning);
+        }
+
+        .cpk-result {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .cpk-card {
+            background: var(--navy);
+            color: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .cpk-card.warning {
+            background: var(--amber);
+        }
+
+        .cpk-card.danger {
+            background: var(--danger);
+        }
+
+        .cpk-card.success {
+            background: var(--success);
+        }
+
+        .cpk-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        .cpk-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+
+        .violations-list {
+            background: var(--danger-bg);
+            border: 1px solid var(--danger);
+            border-radius: 8px;
+            padding: 16px;
+            margin: 20px 0;
+        }
+
+        .violations-list h4 {
+            color: var(--danger);
+            margin-bottom: 12px;
+        }
+
+        .violations-list ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .violations-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--danger-bg);
+        }
+
+        .violations-list li:last-child {
+            border-bottom: none;
+        }
+
+        .history-section {
+            margin-top: 32px;
+        }
+
+        .history-table {
+            font-size: 0.9rem;
+        }
+
+        .history-table .btn {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+
+        .quiz-container {
+            background: var(--gray-100);
+            padding: 24px;
+            border-radius: 8px;
+        }
+
+        .quiz-question {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 16px 0;
+            border-left: 4px solid var(--navy);
+        }
+
+        .quiz-question h4 {
+            color: var(--navy);
+            margin-bottom: 16px;
+        }
+
+        .quiz-options {
+            list-style: none;
+        }
+
+        .quiz-option {
+            padding: 12px 16px;
+            margin: 8px 0;
+            background: var(--gray-100);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .quiz-option:hover {
+            background: var(--amber-bg);
+        }
+
+        .quiz-option input {
+            width: 20px;
+            height: 20px;
+        }
+
+        .quiz-option.correct {
+            background: var(--success-bg);
+            border: 2px solid var(--success);
+        }
+
+        .quiz-option.incorrect {
+            background: var(--danger-bg);
+            border: 2px solid var(--danger);
+        }
+
+        .quiz-feedback {
+            margin-top: 12px;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+        }
+
+        .quiz-feedback.correct {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        .quiz-feedback.incorrect {
+            background: var(--danger-bg);
+            color: var(--danger);
+        }
+
+        .quiz-result {
+            background: var(--navy);
+            color: var(--white);
+            padding: 24px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 24px 0;
+        }
+
+        .quiz-result h3 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+        }
+
+        .quiz-result .score {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--amber-light);
+        }
+
+        .quiz-result.pass {
+            background: var(--success);
+        }
+
+        .quiz-result.fail {
+            background: var(--danger);
+        }
+
+        .quiz-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .quiz-stat {
+            background: var(--white);
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .quiz-stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .quiz-stat-label {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+        }
+
+        footer {
+            background: var(--navy-dark);
+            color: var(--white);
+            text-align: center;
+            padding: 32px 20px;
+            margin-top: 40px;
+        }
+
+        footer p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 50px;
+            height: 50px;
+            background: var(--amber);
+            color: var(--white);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow-lg);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 999;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background: var(--navy);
+            transform: translateY(-4px);
+        }
+
+        @media print {
+            .nav-container, .btn-group, .back-to-top, .tool-container .btn, .history-section {
+                display: none !important;
+            }
+
+            body {
+                background: var(--white);
+            }
+
+            section {
+                box-shadow: none;
+                page-break-inside: avoid;
+            }
+
+            .hero {
+                padding: 40px 20px;
+            }
+
+            .data-table input {
+                border: 1px solid #000;
+            }
+        }
+
+        @media (max-width: 768px) {
+            section {
+                padding: 20px;
+            }
+
+            .tool-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cpk-result {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .quiz-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .text-center { text-align: center; }
+        .text-danger { color: var(--danger); }
+        .text-success { color: var(--success); }
+        .text-warning { color: var(--warning); }
+        .mb-0 { margin-bottom: 0; }
+        .mt-20 { margin-top: 20px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <header class="hero">
+        <h1>SPC & Cpk — Kiểm soát quá trình bằng thống kê</h1>
+        <p>Biểu đồ X̄-R · 6 qui tắc phát bất thường · chỉ số năng lực Cpk — phòng ngừa thay vì phát hiện</p>
+    </header>
+
+    <nav class="nav-container">
+        <div class="nav">
+            <a href="#tong-quan">Tổng quan</a>
+            <a href="#bieu-do">Biểu đồ kiểm soát</a>
+            <a href="#cpk">Cpk</a>
+            <a href="#vi-du">Ví dụ KL-102</a>
+            <a href="#trien-khai">Triển khai</a>
+            <a href="#cong-cu">Công cụ</a>
+            <a href="#trac-nghiem">Trắc nghiệm</a>
+        </div>
+    </nav>
+
+    <main class="main">
+        <section id="tong-quan" class="reveal">
+            <h2>📊 Tổng quan về SPC</h2>
+            
+            <h3>Triết lý SPC</h3>
+            <p>SPC (Statistical Process Control — Kiểm soát quá trình bằng thống kê) chuyển từ <strong>kiểm tra phát hiện</strong> sang <strong>kiểm soát phòng ngừa</strong>. Thay vì đợi sản phẩm hỏng rồi mới lọc, chúng ta theo dõi quá trình để can thiệp trước khi có phế phẩm.</p>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cách cũ (Phát hiện)</th>
+                            <th>Cách SPC (Phòng ngừa)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Đợi có phế rồi mới lọc/sửa</td>
+                            <td>Lấy mẫu định kỳ, vẽ biểu đồ tại máy</td>
+                        </tr>
+                        <tr>
+                            <td>Kiểm 100% cuối dây chuyền</td>
+                            <td>Can thiệp sớm khi có dấu hiệu bất thường</td>
+                        </tr>
+                        <tr>
+                            <td>Tốn công, tốn thời gian</td>
+                            <td>Giảm phế, tiết kiệm chi phí</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Hai loại biến động</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Loại</th>
+                            <th>Bản chất</th>
+                            <th>Ví dụ ép phun</th>
+                            <th>Hành động đúng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Nguyên nhân chung</strong><br>(Common Cause)</td>
+                            <td>Nằm trong quá trình, vốn có</td>
+                            <td>Nhiệt khuôn dao động nhẹ, hao phụ gia</td>
+                            <td>Cải tiến quá trình để giảm biến động</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Nguyên nhân đặc biệt</strong><br>(Special Cause)</td>
+                            <td>Bất thường từ bên ngoài</td>
+                            <td>Khuôn IM-03 kẹt chốt, lô hạt ẩm, máy sấy tắt</td>
+                            <td>Chạy 8D + Fishbone/Why-Why ngay</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="callout callout-info">
+                <strong>💡 Biểu đồ kiểm soát = "Máy dò"</strong> phân biệt 2 loại nguyên nhân bằng giới hạn 3σ. Khi điểm vượt giới hạn hoặc vi phạm qui tắc Nelson → nguyên nhân đặc biệt xuất hiện.
+            </div>
+        </section>
+
+        <section id="bieu-do" class="reveal">
+            <h2>📈 Biểu đồ kiểm soát X̄-R</h2>
+
+            <h3>Cấu tạo</h3>
+            <ul>
+                <li><strong>Đường trung tâm (CL)</strong>: Trung bình của quá trình</li>
+                <li><strong>UCL (Upper Control Limit)</strong>: Giới hạn kiểm soát trên = trung bình + 3σ</li>
+                <li><strong>LCL (Lower Control Limit)</strong>: Giới hạn kiểm soát dưới = trung bình − 3σ</li>
+            </ul>
+
+            <div class="callout callout-warning">
+                <strong>⚠️ Lưu ý quan trọng:</strong> UCL/LCL <strong>KHÔNG phải</strong> là dung sai kỹ thuật (USL/LSL). Giới hạn kiểm soát tính từ dữ liệu quá trình, không phải từ yêu cầu khách hàng.
+            </div>
+
+            <h3>Công thức tính (cỡ nhóm n=5)</h3>
+            <div class="formula-box">
+                <code><strong>Trung bình nhóm (X̄):</strong> X̄ = (x₁ + x₂ + x₃ + x₄ + x₅) / 5</code>
+                <code><strong>Range (R):</strong> R = max − min</code>
+                <code><strong>Trung bình tổng (X̿):</strong> X̿ = (X̄₁ + X̄₂ + ... + X̄ₖ) / k</code>
+                <code><strong>Trung bình Range (R̄):</strong> R̄ = (R₁ + R₂ + ... + Rₖ) / k</code>
+                <hr style="border-color: rgba(255,255,255,0.3); margin: 12px 0;">
+                <code><strong>Biểu đồ X̄:</strong> UCLₓ = X̿ + A₂·R̄ | LCLₓ = X̿ − A₂·R̄ (A₂ = 0,577)</code>
+                <code><strong>Biểu đồ R:</strong> UCLᵣ = D₄·R̄ | LCLᵣ = 0 (D₄ = 2,114)</code>
+                <code><strong>Ước lượng σ:</strong> σ̂ = R̄ / d₂ (d₂ = 2,326)</code>
+            </div>
+
+            <h3>6 qui tắc phát hiện bất thường (Nelson/Western Electric)</h3>
+            <ul class="nelson-rules">
+                <li class="critical"><strong>1 điểm ngoài 3σ</strong> — Vượt UCL hoặc LCL</li>
+                <li><strong>2 trong 3 điểm ngoài 2σ</strong> (cùng phía đường trung tâm)</li>
+                <li><strong>4 trong 5 điểm ngoài 1σ</strong> (cùng phía đường trung tâm)</li>
+                <li class="critical"><strong>8 điểm liên tiếp 1 phía</strong> đường trung tâm — Dịch chuyển (phổ biến nhất)</li>
+                <li><strong>6 điểm tăng/giảm đều</strong> — Xu hướng</li>
+                <li><strong>14 điểm xen kẽ lên–xuống</strong> — Chu kỳ</li>
+            </ul>
+
+            <div class="callout callout-danger">
+                <strong>🚨 Hành động khi có bất thường:</strong> Dừng máy → Khoanh vùng sản phẩm → Chạy 8D + Fishbone/Why-Why tìm nguyên nhân gốc rễ.
+            </div>
+        </section>
+
+        <section id="cpk" class="reveal">
+            <h2>📐 Chỉ số năng lực Cpk</h2>
+
+            <h3>Tại sao cần Cpk?</h3>
+            <p>SPC trả lời câu hỏi <strong>"Quá trình đã ổn định chưa?"</strong>. Cpk trả lời câu hỏi <strong>"Biến động đó có vừa dung sai không?"</strong> — tức là ước tính tỷ lệ phế (ppm).</p>
+
+            <h3>Công thức tính</h3>
+            <div class="formula-box">
+                <code><strong>Cp (năng lực tiềm năng):</strong> Cp = (USL − LSL) / (6σ)</code>
+                <code><strong>Cpk (năng lực thực tế):</strong> Cpk = min(USL − X̿, X̿ − LSL) / (3σ)</code>
+                <hr style="border-color: rgba(255,255,255,0.3); margin: 12px 0;">
+                <code><strong>Lưu ý:</strong> Cpk ≤ Cp luôn đúng. (Cp − Cpk) lớn = lệch tâm → trung tâm hóa trước.</code>
+                <code><strong>Cpk âm:</strong> Khi trung bình nằm ngoài dung sai.</code>
+            </div>
+
+            <h3>Ngưỡng đánh giá</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cpk</th>
+                            <th>Đánh giá</th>
+                            <th>ppm ước tính</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>&lt; 1,00</strong></td>
+                            <td class="text-danger">❌ Không đạt, cải tiến ngay</td>
+                            <td>~2.700+</td>
+                        </tr>
+                        <tr>
+                            <td><strong>1,00 – 1,33</strong></td>
+                            <td class="text-warning">⚠️ Chấp nhận tạm, phải cải tiến</td>
+                            <td>63 – 2.700</td>
+                        </tr>
+                        <tr>
+                            <td><strong>≥ 1,33</strong></td>
+                            <td class="text-success">✅ Đạt (yêu cầu tối thiểu phổ biến)</td>
+                            <td>≤ 63</td>
+                        </tr>
+                        <tr>
+                            <td><strong>≥ 1,67</strong></td>
+                            <td class="text-success">🌟 Rất tốt (ô tô/tự động hóa yêu cầu PPAP)</td>
+                            <td>≤ 0,6</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="callout callout-warning">
+                <strong>⚠️ Cảnh báo:</strong> Chỉ tính Cpk khi quá trình <strong>ỔN ĐỊNH</strong> (không vi phạm qui tắc Nelson). Nếu chưa ổn định, dùng Ppk để tham khảo, nhưng không cam kết với khách hàng. Cần tối thiểu 25 nhóm × 5 mẫu.
+            </div>
+        </section>
+
+        <section id="vi-du" class="reveal">
+            <h2>🔧 Ví dụ KL-102 (Tính tay)</h2>
+
+            <h3>Thông số</h3>
+            <ul>
+                <li><strong>Đặc tính:</strong> Đường kính lỗ ∅10.000 ± 0.200 mm</li>
+                <li><strong>USL = 10.200</strong> | <strong>LSL = 9.800</strong></li>
+                <li><strong>Lấy mẫu:</strong> 10 nhóm × 5 mẫu, mỗi 30 phút</li>
+            </ul>
+
+            <h3>Dữ liệu mẫu</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nhóm</th>
+                            <th>1</th>
+                            <th>2</th>
+                            <th>3</th>
+                            <th>4</th>
+                            <th>5</th>
+                            <th>6</th>
+                            <th>7</th>
+                            <th>8</th>
+                            <th>9</th>
+                            <th>10</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>X̄</strong></td>
+                            <td>10.01</td>
+                            <td>10.02</td>
+                            <td>10.00</td>
+                            <td>10.03</td>
+                            <td>9.99</td>
+                            <td>10.02</td>
+                            <td>10.01</td>
+                            <td>10.00</td>
+                            <td>10.02</td>
+                            <td>10.01</td>
+                        </tr>
+                        <tr>
+                            <td><strong>R</strong></td>
+                            <td>0.11</td>
+                            <td>0.13</td>
+                            <td>0.10</td>
+                            <td>0.14</td>
+                            <td>0.12</td>
+                            <td>0.11</td>
+                            <td>0.13</td>
+                            <td>0.10</td>
+                            <td>0.12</td>
+                            <td>0.14</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Tính toán</h3>
+            <div class="formula-box">
+                <code><strong>Bước 1:</strong> X̿ = 10.011 | R̄ = 0.120</code>
+                <code>UCLₓ = 10.011 + 0.577 × 0.120 = <strong>10.080</strong></code>
+                <code>LCLₓ = 10.011 − 0.577 × 0.120 = <strong>9.942</strong></code>
+                <code>UCLᵣ = 2.114 × 0.120 = <strong>0.254</strong> | LCLᵣ = 0</code>
+                <hr style="border-color: rgba(255,255,255,0.3); margin: 12px 0;">
+                <code><strong>Kiểm tra:</strong> Mọi X̄ trong [9.942, 10.080] → Ổn định</code>
+                <code>Mọi R dưới 0.254 → Ổn định</code>
+                <hr style="border-color: rgba(255,255,255,0.3); margin: 12px 0;">
+                <code><strong>Bước 2:</strong> σ̂ = R̄ / d₂ = 0.120 / 2.326 = <strong>0.0516</strong></code>
+                <code>Cp = (10.200 − 9.800) / (6 × 0.0516) = 0.400 / 0.3096 = <strong>1.29</strong></code>
+                <code>Cpk = min(10.200−10.011, 10.011−9.800) / (3 × 0.0516)</code>
+                <code>Cpk = min(0.189, 0.211) / 0.1548 = 0.189 / 0.1548 = <strong>1.22</strong></code>
+            </div>
+
+            <h3>Kết luận</h3>
+            <div class="callout callout-warning">
+                <strong>📊 Kết quả:</strong> Cpk = 1.22 &lt; 1.33 → <strong>CHƯA ĐẠT</strong> yêu cầu tối thiểu.
+                <br><strong>Nguyên nhân:</strong> Lệch tâm nhẹ về phía trên (mean &gt; target 10.000).
+                <br><strong>Hành động:</strong> Ưu tiên trung tâm hóa quá trình trước, sau đó giảm biến động.
+                <br><strong>ppm ước tính:</strong> ~130 ppm.
+            </div>
+        </section>
+
+        <section id="trien-khai" class="reveal">
+            <h2>📋 Triển khai SPC — 7 bước</h2>
+
+            <ol style="line-height: 2.2; margin-left: 20px;">
+                <li><strong>Chọn đặc tính CTQ:</strong> Kích thước, trọng lượng, độ warp, sink, flash</li>
+                <li><strong>Xác định dung sai:</strong> USL/LSL từ bản vẽ/yêu cầu khách hàng</li>
+                <li><strong>Chọn biểu đồ:</strong> Đo lường → X̄-R (nhóm 5); Đếm lỗi → p/c/u</li>
+                <li><strong>Tần suất:</strong> 5 mẫu/30–60 phút, tối thiểu 25 nhóm ban đầu</li>
+                <li><strong>Ghi tại máy:</strong> Operator ghi số liệu hằng giờ vào biểu đồ</li>
+                <li><strong>Bất thường → Dừng + 8D/Fishbone:</strong> Tìm nguyên nhân gốc rễ</li>
+                <li><strong>Tính Cpk định kỳ:</strong> Theo dõi theo ngưỡng yêu cầu</li>
+            </ol>
+
+            <h3>5 lỗi thường gặp</h3>
+            <div class="callout callout-danger">
+                <ol style="margin: 0; padding-left: 20px;">
+                    <li><strong>Giới hạn biểu đồ = dung sai</strong> — SAI! Phải tính từ 3σ của quá trình.</li>
+                    <li><strong>Bỏ qua qui tắc 4</strong> — "8 điểm liên tiếp 1 phía" là dấu hiệu dịch chuyển phổ biến nhất.</li>
+                    <li><strong>Tính Cpk khi chưa ổn định</strong> — Chỉ có ý nghĩa khi quá trình in-control.</li>
+                    <li><strong>Chỉ nhìn Cpk một lúc</strong> — Phải theo dõi biểu đồ hằng ngày, không chỉ Cpk cuối tháng.</li>
+                    <li><strong>Không hành động khi vi phạm</strong> — Biểu đồ chỉ có ý nghĩa khi có hành động khắc phục.</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="cong-cu" class="reveal">
+            <h2>🛠️ Công cụ tính toán SPC & Cpk</h2>
+
+            <div class="tool-container">
+                <div class="tool-grid">
+                    <div class="input-group">
+                        <label for="usl">USL (giới hạn trên)</label>
+                        <input type="number" id="usl" value="10.2" step="0.001" placeholder="10.200">
+                    </div>
+                    <div class="input-group">
+                        <label for="lsl">LSL (giới hạn dưới)</label>
+                        <input type="number" id="lsl" value="9.8" step="0.001" placeholder="9.800">
+                    </div>
+                    <div class="input-group">
+                        <label for="numGroups">Số nhóm (2–25)</label>
+                        <input type="number" id="numGroups" value="10" min="2" max="25">
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="createTable()">Tạo bảng</button>
+                    <button class="btn btn-secondary" onclick="loadExampleKL102()">⚡ Nạp ví dụ KL-102</button>
+                    <button class="btn btn-outline" onclick="clearData()">↺ Xóa toàn bộ</button>
+                    <button class="btn btn-primary" onclick="calculateSPC()">⚙️ Tính toán</button>
+                </div>
+
+                <div class="input-group" style="max-width: 400px; margin: 20px 0;">
+                    <label for="saveName">Tên phiên phân tích (để lưu)</label>
+                    <input type="text" id="saveName" placeholder="VD: KL-102 Ca sáng 01/10">
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="saveAnalysis()">💾 Lưu phân tích</button>
+                    <button class="btn btn-outline" onclick="printReport()">🖨 In báo cáo</button>
+                </div>
+            </div>
+
+            <div id="dataTableContainer" class="data-table-wrapper hidden"></div>
+
+            <div id="statusBanner" class="status-banner hidden"></div>
+
+            <div id="chartsContainer" class="charts-container hidden">
+                <div class="chart-wrapper">
+                    <h4>Biểu đồ X̄</h4>
+                    <svg id="xBarChart" class="chart-svg" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid meet"></svg>
+                </div>
+                <div class="chart-wrapper">
+                    <h4>Biểu đồ R</h4>
+                    <svg id="rChart" class="chart-svg" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid meet"></svg>
+                </div>
+            </div>
+
+            <div id="violationsContainer" class="violations-list hidden">
+                <h4>⚠️ Vi phạm qui tắc Nelson</h4>
+                <ul id="violationsList"></ul>
+            </div>
+
+            <div id="cpkResult" class="cpk-result hidden">
+                <div class="cpk-card" id="cpCard">
+                    <span class="cpk-value" id="cpValue">-</span>
+                    <span class="cpk-label">Cp (tiềm năng)</span>
+                </div>
+                <div class="cpk-card" id="cpkCard">
+                    <span class="cpk-value" id="cpkValue">-</span>
+                    <span class="cpk-label">Cpk (thực tế)</span>
+                </div>
+                <div class="cpk-card" id="ppmCard">
+                    <span class="cpk-value" id="ppmValue">-</span>
+                    <span class="cpk-label">ppm ước tính</span>
+                </div>
+                <div class="cpk-card" id="assessmentCard">
+                    <span class="cpk-value" id="assessmentValue">-</span>
+                    <span class="cpk-label">Đánh giá</span>
+                </div>
+            </div>
+
+            <div id="processWarning" class="callout callout-warning hidden">
+                <strong>⚠️ Cảnh báo:</strong> Quá trình CHƯA ỔN ĐỊNH — Cpk dưới đây chỉ mang tính tham khảo (Ppk). Hãy xử lý các điểm bất thường trước khi cam kết với khách hàng.
+            </div>
+
+            <div class="history-section">
+                <h3>📜 Lịch sử phân tích</h3>
+                <div class="table-container">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Ngày giờ</th>
+                                <th>Tên</th>
+                                <th>Kết quả</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            <tr><td colspan="4" class="text-center">Chưa có lịch sử</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="lien-he" class="reveal">
+            <h2>📚 Liên hệ bộ tài liệu nhà máy</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Bước công việc</th>
+                            <th>Dùng gì</th>
+                            <th>File</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Lý thuyết SPC/Pareto</td>
+                            <td>6 Tools</td>
+                            <td><code>6-tools-...</code></td>
+                        </tr>
+                        <tr>
+                            <td>Điểm bất thường → tìm gốc rễ</td>
+                            <td>8D D4 + Fishbone/Why-Why</td>
+                            <td><code>8d-...</code>, <code>fishbone-whywhy-...</code></td>
+                        </tr>
+                        <tr>
+                            <td>Giao hành động</td>
+                            <td>5W2H</td>
+                            <td><code>5w2h-...</code></td>
+                        </tr>
+                        <tr>
+                            <td>Theo dõi phế/OEE</td>
+                            <td>Dashboard KPI</td>
+                            <td><code>kpi-nha-may-theo-gio-...</code></td>
+                        </tr>
+                        <tr>
+                            <td>Chuẩn hóa CTQ vào Control Plan/PFMEA</td>
+                            <td>Giai đoạn 6 QMS</td>
+                            <td><code>giai-doan-6-qms-...</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="trac-nghiem" class="reveal">
+            <h2>📝 Trắc nghiệm 10 câu</h2>
+            <p>Chọn đáp án đúng nhất cho mỗi câu hỏi. Đạt ≥80% (8/10 câu) là ĐẠT.</p>
+
+            <div class="quiz-container">
+                <div id="quizQuestions"></div>
+
+                <div class="btn-group" style="justify-content: center;">
+                    <button class="btn btn-primary" onclick="submitQuiz()">Chấm bài</button>
+                    <button class="btn btn-outline" onclick="resetQuiz()">Làm lại</button>
+                </div>
+
+                <div id="quizResult" class="quiz-result hidden">
+                    <h3 id="quizResultTitle">Kết quả</h3>
+                    <div class="score" id="quizScore">0/10</div>
+                    <p id="quizMessage"></p>
+                </div>
+
+                <div id="quizStats" class="quiz-stats hidden">
+                    <div class="quiz-stat">
+                        <div class="quiz-stat-value text-success" id="correctCount">0</div>
+                        <div class="quiz-stat-label">Đúng</div>
+                    </div>
+                    <div class="quiz-stat">
+                        <div class="quiz-stat-value text-danger" id="incorrectCount">0</div>
+                        <div class="quiz-stat-label">Sai</div>
+                    </div>
+                    <div class="quiz-stat">
+                        <div class="quiz-stat-value" id="unansweredCount">0</div>
+                        <div class="quiz-stat-label">Chưa trả lời</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Tài liệu trình bày — SPC & Cpk trong bộ hồ sơ nhà máy ép phun theo ISO 9001. Ví dụ minh họa.</p>
+        <p>Cập nhật 01/10/2026 · Phiên bản 1.0</p>
+    </footer>
+
+    <button class="back-to-top" onclick="scrollToTop()" aria-label="Về đầu trang">↑</button>
+
+    <script>
+        const A2 = 0.577;
+        const D4 = 2.114;
+        const d2 = 2.326;
+        const STORAGE_HISTORY_KEY = 'spc-history-v1';
+        const STORAGE_FORM_KEY = 'spc-form-v1';
+        const STORAGE_QUIZ_KEY = 'spc-quiz-v1';
+
+        const QUIZ_QUESTIONS = [
+            {
+                question: "Mục đích chính của SPC là gì?",
+                options: [
+                    "Lọc phế cuối dây chuyền",
+                    "Phát hiện sớm quá trình bất thường để phòng ngừa phế",
+                    "Tăng công suất máy"
+                ],
+                correct: 1,
+                explanation: "SPC tập trung vào phòng ngừa, không phải phát hiện."
+            },
+            {
+                question: "Nguyên nhân CHUNG (common cause) nên xử lý bằng cách nào?",
+                options: [
+                    "Quở trách công nhân",
+                    "Tăng kiểm tra 100%",
+                    "Cải tiến quá trình để giảm biến động"
+                ],
+                correct: 2,
+                explanation: "Nguyên nhân chung là vốn có của quá trình, cần cải tiến hệ thống."
+            },
+            {
+                question: "Giới hạn kiểm soát UCL/LCL được tính từ đâu?",
+                options: [
+                    "Dung sai kỹ thuật USL/LSL",
+                    "Trung bình quá trình ± 3σ",
+                    "Do khách hàng chỉ định"
+                ],
+                correct: 1,
+                explanation: "UCL/LCL tính từ dữ liệu quá trình (±3σ), không phải từ dung sai."
+            },
+            {
+                question: "Có 1 điểm vượt UCL trên biểu đồ X̄, hành động đúng là?",
+                options: [
+                    "Ghi chú rồi chạy tiếp",
+                    "Dừng, khoanh vùng, chạy 8D + Fishbone vì là nguyên nhân đặc biệt",
+                    "Tăng cỡ mẫu lên gấp đôi"
+                ],
+                correct: 1,
+                explanation: "Vượt UCL là nguyên nhân đặc biệt, cần điều tra ngay."
+            },
+            {
+                question: "Ý nghĩa qui tắc '8 điểm liên tiếp cùng một phía đường trung tâm'?",
+                options: [
+                    "Quá trình đang dịch chuyển dù chưa ra phế",
+                    "Máy đang chạy tốt hơn",
+                    "Dữ liệu bị sai"
+                ],
+                correct: 0,
+                explanation: "8 điểm 1 phía cho thấy quá trình đã dịch chuyển, cần điều chỉnh."
+            },
+            {
+                question: "Cpk khác Cp ở điểm nào?",
+                options: [
+                    "Cpk xét thêm độ lệch tâm của trung bình so với tâm dung sai",
+                    "Cpk luôn lớn hơn Cp",
+                    "Cpk chỉ dùng khi có phế"
+                ],
+                correct: 0,
+                explanation: "Cpk = Cp khi quá trình được trung tâm hóa. Cpk < Cp khi lệch tâm."
+            },
+            {
+                question: "Khi nào KHÔNG nên dùng Cpk để cam kết với khách?",
+                options: [
+                    "Khi quá trình chưa ổn định (có điểm bất thường) — chỉ tham khảo Ppk",
+                    "Khi quá trình rất ổn định",
+                    "Không có trường hợp nào"
+                ],
+                correct: 0,
+                explanation: "Cpk chỉ có ý nghĩa khi quá trình ổn định (in-control)."
+            },
+            {
+                question: "Cpk = 1.33 tương ứng mức phế ước tính khoảng?",
+                options: [
+                    "~2700 ppm",
+                    "~63 ppm",
+                    "~0.6 ppm"
+                ],
+                correct: 1,
+                explanation: "Cpk 1.33 tương đương ~63 ppm (parts per million)."
+            },
+            {
+                question: "Trường hợp Cpk nhỏ nhưng Cp lớn nghĩa là gì?",
+                options: [
+                    "Quá trình lệch tâm — ưu tiên trung tâm hóa trước",
+                    "Biến động quá rộng so với dung sai",
+                    "Máy đo sai"
+                ],
+                correct: 0,
+                explanation: "Cp lớn = biến động nhỏ. Cpk nhỏ = lệch tâm. Ưu tiên trung tâm hóa."
+            },
+            {
+                question: "Cỡ nhóm và số nhóm tối thiểu nên dùng để đặt giới hạn kiểm soát?",
+                options: [
+                    "5 mẫu/nhóm, ≥25 nhóm",
+                    "1 mẫu/nhóm, 3 nhóm",
+                    "10 mẫu/nhóm, 2 nhóm"
+                ],
+                correct: 0,
+                explanation: "25 nhóm × 5 mẫu là tối thiểu để ước lượng giới hạn kiểm soát tin cậy."
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderQuiz();
+            loadHistory();
+            loadFormData();
+            setupScrollSpy();
+            setupReveal();
+            setupBackToTop();
+        });
+
+        function createTable() {
+            const numGroups = parseInt(document.getElementById('numGroups').value) || 10;
+            const validGroups = Math.max(2, Math.min(25, numGroups));
+            document.getElementById('numGroups').value = validGroups;
+
+            const container = document.getElementById('dataTableContainer');
+            let html = '<table class="data-table"><thead><tr><th>Nhóm</th>';
+            
+            for (let i = 1; i <= 5; i++) {
+                html += '<th>Mẫu ' + i + '</th>';
+            }
+            html += '<th>X̄</th><th>R</th></tr></thead><tbody>';
+
+            const existingData = getExistingData();
+            
+            for (let g = 0; g < validGroups; g++) {
+                html += '<tr><td><strong>' + (g + 1) + '</strong></td>';
+                for (let s = 0; s < 5; s++) {
+                    const value = existingData[g] && existingData[g][s] ? existingData[g][s] : '';
+                    html += '<td><input type="text" class="sample-input" data-group="' + g + '" data-sample="' + s + '" value="' + value + '" placeholder="0.00"></td>';
+                }
+                html += '<td class="result-cell" id="xbar-' + g + '">-</td>';
+                html += '<td class="result-cell" id="range-' + g + '">-</td></tr>';
+            }
+            html += '</tbody></table>';
+            container.innerHTML = html;
+            container.classList.remove('hidden');
+            
+            container.querySelectorAll('.sample-input').forEach(input => {
+                input.addEventListener('input', () => {
+                    calculateRow(input.dataset.group);
+                    saveFormData();
+                });
+            });
+            
+            for (let g = 0; g < validGroups; g++) {
+                calculateRow(g);
+            }
+        }
+
+        function getExistingData() {
+            const data = [];
+            for (let g = 0; g < 25; g++) {
+                data[g] = [];
+                for (let s = 0; s < 5; s++) {
+                    const input = document.querySelector('.sample-input[data-group="' + g + '"][data-sample="' + s + '"]');
+                    data[g][s] = input ? input.value : '';
+                }
+            }
+            return data;
+        }
+
+        function calculateRow(groupIndex) {
+            let sum = 0;
+            let min = Infinity;
+            let max = -Infinity;
+            let count = 0;
+            
+            for (let s = 0; s < 5; s++) {
+                const input = document.querySelector('.sample-input[data-group="' + groupIndex + '"][data-sample="' + s + '"]');
+                if (input && input.value.trim()) {
+                    const val = parseFloat(input.value);
+                    if (!isNaN(val)) {
+                        sum += val;
+                        min = Math.min(min, val);
+                        max = Math.max(max, val);
+                        count++;
+                    }
+                }
+            }
+            
+            const xbarCell = document.getElementById('xbar-' + groupIndex);
+            const rangeCell = document.getElementById('range-' + groupIndex);
+            
+            if (count >= 2) {
+                const xbar = sum / count;
+                const range = max - min;
+                xbarCell.textContent = xbar.toFixed(3);
+                rangeCell.textContent = range.toFixed(3);
+            } else {
+                xbarCell.textContent = '-';
+                rangeCell.textContent = '-';
+            }
+        }
+
+        function loadExampleKL102() {
+            const kl102Data = [
+                [10.06, 9.98, 10.00, 10.01, 10.01],
+                [10.08, 9.96, 10.02, 10.01, 10.03],
+                [10.04, 9.96, 10.00, 10.00, 10.00],
+                [10.09, 9.96, 10.02, 10.03, 10.02],
+                [10.04, 9.94, 10.00, 9.99, 9.98],
+                [10.07, 9.97, 10.01, 10.02, 10.03],
+                [10.06, 9.96, 10.01, 10.00, 10.02],
+                [10.04, 9.94, 10.00, 9.99, 10.01],
+                [10.07, 9.97, 10.02, 10.01, 10.02],
+                [10.06, 9.96, 10.01, 10.00, 10.02]
+            ];
+            
+            document.getElementById('usl').value = '10.2';
+            document.getElementById('lsl').value = '9.8';
+            document.getElementById('numGroups').value = '10';
+            
+            createTable();
+            
+            kl102Data.forEach((group, gIdx) => {
+                group.forEach((val, sIdx) => {
+                    const input = document.querySelector('.sample-input[data-group="' + gIdx + '"][data-sample="' + sIdx + '"]');
+                    if (input) {
+                        input.value = val.toFixed(2);
+                    }
+                });
+            });
+            
+            for (let g = 0; g < 10; g++) {
+                calculateRow(g);
+            }
+            
+            calculateSPC();
+        }
+
+        function clearData() {
+            if (!confirm('Xóa toàn bộ dữ liệu bảng?')) return;
+            
+            const inputs = document.querySelectorAll('.sample-input');
+            inputs.forEach(input => input.value = '');
+            
+            const numGroups = parseInt(document.getElementById('numGroups').value) || 10;
+            for (let g = 0; g < numGroups; g++) {
+                document.getElementById('xbar-' + g).textContent = '-';
+                document.getElementById('range-' + g).textContent = '-';
+            }
+            
+            document.getElementById('statusBanner').classList.add('hidden');
+            document.getElementById('chartsContainer').classList.add('hidden');
+            document.getElementById('violationsContainer').classList.add('hidden');
+            document.getElementById('cpkResult').classList.add('hidden');
+            document.getElementById('processWarning').classList.add('hidden');
+            
+            localStorage.removeItem(STORAGE_FORM_KEY);
+        }
+
+        function calculateSPC() {
+            const usl = parseFloat(document.getElementById('usl').value);
+            const lsl = parseFloat(document.getElementById('lsl').value);
+            const numGroups = parseInt(document.getElementById('numGroups').value) || 10;
+            
+            if (isNaN(usl) || isNaN(lsl)) {
+                alert('Vui lòng nhập USL và LSL hợp lệ.');
+                return;
+            }
+            
+            const xbars = [];
+            const ranges = [];
+            let validGroups = 0;
+            
+            for (let g = 0; g < numGroups; g++) {
+                let sum = 0;
+                let min = Infinity;
+                let max = -Infinity;
+                let count = 0;
+                
+                for (let s = 0; s < 5; s++) {
+                    const input = document.querySelector('.sample-input[data-group="' + g + '"][data-sample="' + s + '"]');
+                    if (input && input.value.trim()) {
+                        const val = parseFloat(input.value);
+                        if (!isNaN(val)) {
+                            sum += val;
+                            min = Math.min(min, val);
+                            max = Math.max(max, val);
+                            count++;
+                        }
+                    }
+                }
+                
+                if (count >= 2) {
+                    xbars.push(sum / count);
+                    ranges.push(max - min);
+                    validGroups++;
+                } else {
+                    xbars.push(null);
+                    ranges.push(null);
+                }
+            }
+            
+            if (validGroups < 2) {
+                alert('Cần ít nhất 2 nhóm có dữ liệu hợp lệ.');
+                return;
+            }
+            
+            let xbarSum = 0;
+            let rSum = 0;
+            let validCount = 0;
+            
+            for (let i = 0; i < xbars.length; i++) {
+                if (xbars[i] !== null) {
+                    xbarSum += xbars[i];
+                    rSum += ranges[i];
+                    validCount++;
+                }
+            }
+            
+            const xDoubleBar = xbarSum / validCount;
+            const rBar = rSum / validCount;
+            
+            const uclX = xDoubleBar + A2 * rBar;
+            const lclX = xDoubleBar - A2 * rBar;
+            const uclR = D4 * rBar;
+            const sigmaHat = rBar / d2;
+            const sigmaX = sigmaHat / Math.sqrt(5);
+            
+            const violations = detectNelsonRules(xbars, xDoubleBar, sigmaX);
+            
+            drawXBarChart(xbars, xDoubleBar, uclX, lclX, sigmaX, violations);
+            drawRChart(ranges, rBar, uclR, violations);
+            
+            const statusBanner = document.getElementById('statusBanner');
+            const violationsContainer = document.getElementById('violationsContainer');
+            const violationsList = document.getElementById('violationsList');
+            const processWarning = document.getElementById('processWarning');
+            
+            if (violations.length === 0) {
+                statusBanner.className = 'status-banner status-in-control';
+                statusBanner.textContent = 'IN CONTROL — Quá trình ổn định';
+                violationsContainer.classList.add('hidden');
+                processWarning.classList.add('hidden');
+            } else {
+                statusBanner.className = 'status-banner status-out-control';
+                statusBanner.textContent = 'OUT OF CONTROL — Có ' + violations.length + ' điểm bất thường';
+                
+                violationsList.innerHTML = violations.map(v => 
+                    '<li><strong>Nhóm ' + (v.group + 1) + ':</strong> ' + v.rule + '</li>'
+                ).join('');
+                violationsContainer.classList.remove('hidden');
+                processWarning.classList.remove('hidden');
+            }
+            
+            const cp = (usl - lsl) / (6 * sigmaHat);
+            const cpu = (usl - xDoubleBar) / (3 * sigmaHat);
+            const cpl = (xDoubleBar - lsl) / (3 * sigmaHat);
+            const cpk = Math.min(cpu, cpl);
+            
+            const zMin = Math.min(cpu, cpl) * 3;
+            const ppm = estimatePPM(zMin);
+            
+            let assessment = '';
+            if (cpk < 1.0) assessment = 'Không đạt';
+            else if (cpk < 1.33) assessment = 'Chấp nhận tạm';
+            else if (cpk < 1.67) assessment = 'Đạt';
+            else assessment = 'Rất tốt';
+            
+            document.getElementById('cpValue').textContent = cp.toFixed(3);
+            document.getElementById('cpkValue').textContent = cpk.toFixed(3);
+            document.getElementById('ppmValue').textContent = Math.round(ppm).toLocaleString();
+            document.getElementById('assessmentValue').textContent = assessment;
+            
+            const cpCard = document.getElementById('cpCard');
+            const cpkCard = document.getElementById('cpkCard');
+            const ppmCard = document.getElementById('ppmCard');
+            const assessmentCard = document.getElementById('assessmentCard');
+            
+            [cpCard, cpkCard, ppmCard, assessmentCard].forEach(card => {
+                card.className = 'cpk-card';
+                if (cpk < 1.0) card.classList.add('danger');
+                else if (cpk < 1.33) card.classList.add('warning');
+                else if (cpk >= 1.67) card.classList.add('success');
+            });
+            
+            document.getElementById('chartsContainer').classList.remove('hidden');
+            document.getElementById('cpkResult').classList.remove('hidden');
+            
+            saveFormData();
+        }
+
+        function detectNelsonRules(xbars, center, sigmaX) {
+            const violations = [];
+            const n = xbars.length;
+            
+            const outsideSigma = (val, k) => Math.abs(val - center) > k * sigmaX;
+            const aboveSigma = (val, k) => (val - center) > k * sigmaX;
+            const belowSigma = (val, k) => (center - val) > k * sigmaX;
+            
+            for (let i = 0; i < n; i++) {
+                if (xbars[i] === null) continue;
+                
+                if (outsideSigma(xbars[i], 3)) {
+                    violations.push({ group: i, rule: 'Qui tắc 1 — Điểm ngoài 3σ' });
+                }
+                
+                if (i >= 2) {
+                    const window = [xbars[i-2], xbars[i-1], xbars[i]].filter(v => v !== null);
+                    if (window.length >= 3) {
+                        const above2 = window.filter(v => aboveSigma(v, 2)).length;
+                        const below2 = window.filter(v => belowSigma(v, 2)).length;
+                        if (above2 >= 2 || below2 >= 2) {
+                            violations.push({ group: i, rule: 'Qui tắc 2 — 2 trong 3 điểm ngoài 2σ' });
+                        }
+                    }
+                }
+                
+                if (i >= 4) {
+                    const window = [xbars[i-4], xbars[i-3], xbars[i-2], xbars[i-1], xbars[i]].filter(v => v !== null);
+                    if (window.length >= 5) {
+                        const above1 = window.filter(v => aboveSigma(v, 1)).length;
+                        const below1 = window.filter(v => belowSigma(v, 1)).length;
+                        if (above1 >= 4 || below1 >= 4) {
+                            violations.push({ group: i, rule: 'Qui tắc 3 — 4 trong 5 điểm ngoài 1σ' });
+                        }
+                    }
+                }
+                
+                if (i >= 7) {
+                    const window = [xbars[i-7], xbars[i-6], xbars[i-5], xbars[i-4], xbars[i-3], xbars[i-2], xbars[i-1], xbars[i]];
+                    if (window.every(v => v !== null && v >= center) || window.every(v => v !== null && v <= center)) {
+                        violations.push({ group: i, rule: 'Qui tắc 4 — 8 điểm liên tiếp 1 phía' });
+                    }
+                }
+                
+                if (i >= 5) {
+                    const window = [xbars[i-5], xbars[i-4], xbars[i-3], xbars[i-2], xbars[i-1], xbars[i]];
+                    if (window.every(v => v !== null)) {
+                        const increasing = window.every((v, idx, arr) => idx === 0 || v >= arr[idx-1]);
+                        const decreasing = window.every((v, idx, arr) => idx === 0 || v <= arr[idx-1]);
+                        if (increasing || decreasing) {
+                            violations.push({ group: i, rule: 'Qui tắc 5 — 6 điểm tăng/giảm đều' });
+                        }
+                    }
+                }
+                
+                if (i >= 13) {
+                    const window = [];
+                    for (let j = i - 13; j <= i; j++) {
+                        if (xbars[j] === null) break;
+                        window.push(xbars[j]);
+                    }
+                    if (window.length === 14) {
+                        let alternating = true;
+                        for (let j = 2; j < window.length; j++) {
+                            const prevDiff = window[j-1] - window[j-2];
+                            const currDiff = window[j] - window[j-1];
+                            if (prevDiff * currDiff >= 0) {
+                                alternating = false;
+                                break;
+                            }
+                        }
+                        if (alternating) {
+                            violations.push({ group: i, rule: 'Qui tắc 6 — 14 điểm xen kẽ' });
+                        }
+                    }
+                }
+            }
+            
+            return violations;
+        }
+
+        function estimatePPM(z) {
+            if (z <= 0) return 500000;
+            if (z >= 6) return 0.001;
+            
+            const t = 1 / (1 + 0.2316419 * z);
+            const d = 0.3989423 * Math.exp(-z * z / 2);
+            const p = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
+            
+            return 2 * p * 1000000;
+        }
+
+        function drawXBarChart(xbars, center, ucl, lcl, sigmaX, violations) {
+            const svg = document.getElementById('xBarChart');
+            svg.innerHTML = '';
+            
+            const width = 600;
+            const height = 300;
+            const padding = { top: 30, right: 30, bottom: 40, left: 60 };
+            const plotWidth = width - padding.left - padding.right;
+            const plotHeight = height - padding.top - padding.bottom;
+            
+            const validXbars = xbars.filter(v => v !== null);
+            const minVal = Math.min(...validXbars, lcl);
+            const maxVal = Math.max(...validXbars, ucl);
+            const range = maxVal - minVal || 1;
+            
+            const scaleY = (val) => padding.top + plotHeight - ((val - minVal) / range) * plotHeight;
+            const scaleX = (idx) => padding.left + (idx / (xbars.length - 1 || 1)) * plotWidth;
+            
+            const violationGroups = new Set(violations.map(v => v.group));
+            
+            const lines = [
+                { val: ucl, label: 'UCL', color: '#dc2626', dash: '4,4' },
+                { val: center, label: 'CL', color: '#059669', dash: '' },
+                { val: lcl, label: 'LCL', color: '#dc2626', dash: '4,4' },
+                { val: center + sigmaX, label: '+1σ', color: '#9ca3af', dash: '2,2' },
+                { val: center - sigmaX, label: '-1σ', color: '#9ca3af', dash: '2,2' },
+                { val: center + 2*sigmaX, label: '+2σ', color: '#9ca3af', dash: '2,2' },
+                { val: center - 2*sigmaX, label: '-2σ', color: '#9ca3af', dash: '2,2' }
+            ];
+            
+            lines.forEach(line => {
+                const y = scaleY(line.val);
+                const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                path.setAttribute('x1', padding.left);
+                path.setAttribute('y1', y);
+                path.setAttribute('x2', width - padding.right);
+                path.setAttribute('y2', y);
+                path.setAttribute('stroke', line.color);
+                path.setAttribute('stroke-width', line.val === center ? '2' : '1');
+                if (line.dash) path.setAttribute('stroke-dasharray', line.dash);
+                
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', padding.left - 8);
+                text.setAttribute('y', y + 4);
+                text.setAttribute('text-anchor', 'end');
+                text.setAttribute('font-size', '10');
+                text.setAttribute('fill', line.color);
+                text.textContent = line.label;
+                
+                g.appendChild(path);
+                g.appendChild(text);
+                svg.appendChild(g);
+            });
+            
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            let d = '';
+            
+            xbars.forEach((val, idx) => {
+                if (val === null) return;
+                
+                const x = scaleX(idx);
+                const y = scaleY(val);
+                
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', x);
+                circle.setAttribute('cy', y);
+                circle.setAttribute('r', violationGroups.has(idx) ? '8' : '5');
+                circle.setAttribute('fill', violationGroups.has(idx) ? '#dc2626' : '#122442');
+                circle.setAttribute('stroke', '#fff');
+                circle.setAttribute('stroke-width', '2');
+                svg.appendChild(circle);
+                
+                if (violationGroups.has(idx)) {
+                    const marker = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    marker.setAttribute('x', x);
+                    marker.setAttribute('y', y - 15);
+                    marker.setAttribute('text-anchor', 'middle');
+                    marker.setAttribute('font-size', '10');
+                    marker.setAttribute('fill', '#dc2626');
+                    marker.setAttribute('font-weight', 'bold');
+                    marker.textContent = '!';
+                    svg.appendChild(marker);
+                }
+                
+                d += (d ? ' L' : 'M') + x + ',' + y;
+            });
+            
+            if (d) {
+                path.setAttribute('d', d);
+                path.setAttribute('fill', 'none');
+                path.setAttribute('stroke', '#122442');
+                path.setAttribute('stroke-width', '2');
+                svg.insertBefore(path, svg.firstChild);
+            }
+            
+            for (let i = 0; i < xbars.length; i += Math.max(1, Math.floor(xbars.length / 10))) {
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', scaleX(i));
+                text.setAttribute('y', height - 10);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-size', '11');
+                text.textContent = (i + 1).toString();
+                svg.appendChild(text);
+            }
+            
+            const yAxisLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            yAxisLabel.setAttribute('x', 15);
+            yAxisLabel.setAttribute('y', height / 2);
+            yAxisLabel.setAttribute('text-anchor', 'middle');
+            yAxisLabel.setAttribute('font-size', '12');
+            yAxisLabel.setAttribute('fill', '#334155');
+            yAxisLabel.textContent = 'X';
+            svg.appendChild(yAxisLabel);
+        }
+
+        function drawRChart(ranges, center, ucl, violations) {
+            const svg = document.getElementById('rChart');
+            svg.innerHTML = '';
+            
+            const width = 600;
+            const height = 300;
+            const padding = { top: 30, right: 30, bottom: 40, left: 60 };
+            const plotWidth = width - padding.left - padding.right;
+            const plotHeight = height - padding.top - padding.bottom;
+            
+            const validRanges = ranges.filter(v => v !== null);
+            const minVal = 0;
+            const maxVal = Math.max(...validRanges, ucl);
+            const range = maxVal - minVal || 1;
+            
+            const scaleY = (val) => padding.top + plotHeight - (val / range) * plotHeight;
+            const scaleX = (idx) => padding.left + (idx / (ranges.length - 1 || 1)) * plotWidth;
+            
+            const lines = [
+                { val: ucl, label: 'UCL', color: '#dc2626', dash: '4,4' },
+                { val: center, label: 'CL', color: '#059669', dash: '' }
+            ];
+            
+            lines.forEach(line => {
+                const y = scaleY(line.val);
+                const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                path.setAttribute('x1', padding.left);
+                path.setAttribute('y1', y);
+                path.setAttribute('x2', width - padding.right);
+                path.setAttribute('y2', y);
+                path.setAttribute('stroke', line.color);
+                path.setAttribute('stroke-width', line.val === center ? '2' : '1');
+                if (line.dash) path.setAttribute('stroke-dasharray', line.dash);
+                
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', padding.left - 8);
+                text.setAttribute('y', y + 4);
+                text.setAttribute('text-anchor', 'end');
+                text.setAttribute('font-size', '10');
+                text.setAttribute('fill', line.color);
+                text.textContent = line.label;
+                
+                g.appendChild(path);
+                g.appendChild(text);
+                svg.appendChild(g);
+            });
+            
+            ranges.forEach((val, idx) => {
+                if (val === null) return;
+                
+                const x = scaleX(idx);
+                const y = scaleY(val);
+                
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', x);
+                circle.setAttribute('cy', y);
+                circle.setAttribute('r', '5');
+                circle.setAttribute('fill', '#122442');
+                circle.setAttribute('stroke', '#fff');
+                circle.setAttribute('stroke-width', '2');
+                svg.appendChild(circle);
+            });
+            
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            let d = '';
+            
+            ranges.forEach((val, idx) => {
+                if (val === null) return;
+                const x = scaleX(idx);
+                const y = scaleY(val);
+                d += (d ? ' L' : 'M') + x + ',' + y;
+            });
+            
+            if (d) {
+                path.setAttribute('d', d);
+                path.setAttribute('fill', 'none');
+                path.setAttribute('stroke', '#122442');
+                path.setAttribute('stroke-width', '2');
+                svg.insertBefore(path, svg.firstChild);
+            }
+            
+            for (let i = 0; i < ranges.length; i += Math.max(1, Math.floor(ranges.length / 10))) {
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', scaleX(i));
+                text.setAttribute('y', height - 10);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-size', '11');
+                text.textContent = (i + 1).toString();
+                svg.appendChild(text);
+            }
+            
+            const yAxisLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            yAxisLabel.setAttribute('x', 15);
+            yAxisLabel.setAttribute('y', height / 2);
+            yAxisLabel.setAttribute('text-anchor', 'middle');
+            yAxisLabel.setAttribute('font-size', '12');
+            yAxisLabel.setAttribute('fill', '#334155');
+            yAxisLabel.textContent = 'R';
+            svg.appendChild(yAxisLabel);
+        }
+
+        function saveAnalysis() {
+            const name = document.getElementById('saveName').value.trim() || 'Phân tích ' + new Date().toLocaleString('vi-VN');
+            const usl = parseFloat(document.getElementById('usl').value);
+            const lsl = parseFloat(document.getElementById('lsl').value);
+            const numGroups = parseInt(document.getElementById('numGroups').value);
+            
+            const data = [];
+            for (let g = 0; g < numGroups; g++) {
+                const group = [];
+                for (let s = 0; s < 5; s++) {
+                    const input = document.querySelector('.sample-input[data-group="' + g + '"][data-sample="' + s + '"]');
+                    group.push(input ? input.value : '');
+                }
+                data.push(group);
+            }
+            
+            const cp = parseFloat(document.getElementById('cpValue').textContent) || 0;
+            const cpk = parseFloat(document.getElementById('cpkValue').textContent) || 0;
+            const isStable = !document.getElementById('statusBanner').classList.contains('status-out-control');
+            
+            const entry = {
+                id: Date.now(),
+                name: escapeHtml(name),
+                timestamp: new Date().toLocaleString('vi-VN'),
+                usl, lsl, numGroups, data,
+                cp, cpk, isStable
+            };
+            
+            let history = JSON.parse(localStorage.getItem(STORAGE_HISTORY_KEY) || '[]');
+            history.unshift(entry);
+            if (history.length > 15) history = history.slice(0, 15);
+            localStorage.setItem(STORAGE_HISTORY_KEY, JSON.stringify(history));
+            
+            loadHistory();
+            alert('Đã lưu phân tích vào lịch sử!');
+        }
+
+        function loadHistory() {
+            const tbody = document.getElementById('historyTableBody');
+            const history = JSON.parse(localStorage.getItem(STORAGE_HISTORY_KEY) || '[]');
+            
+            if (history.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center">Chưa có lịch sử</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = history.map(entry => 
+                '<tr>' +
+                    '<td>' + entry.timestamp + '</td>' +
+                    '<td>' + entry.name + '</td>' +
+                    '<td>Cp=' + entry.cp.toFixed(2) + ', Cpk=' + entry.cpk.toFixed(2) + ', ' + (entry.isStable ? 'Ổn định' : 'Bất thường') + '</td>' +
+                    '<td>' +
+                        '<button class="btn btn-outline" onclick="loadHistoryEntry(' + entry.id + ')">Xem lại</button> ' +
+                        '<button class="btn btn-danger" onclick="deleteHistoryEntry(' + entry.id + ')">Xóa</button>' +
+                    '</td>' +
+                '</tr>'
+            ).join('');
+        }
+
+        function loadHistoryEntry(id) {
+            const history = JSON.parse(localStorage.getItem(STORAGE_HISTORY_KEY) || '[]');
+            const entry = history.find(h => h.id === id);
+            
+            if (!entry) return;
+            
+            document.getElementById('usl').value = entry.usl;
+            document.getElementById('lsl').value = entry.lsl;
+            document.getElementById('numGroups').value = entry.numGroups;
+            document.getElementById('saveName').value = entry.name.replace('Phân tích ', '');
+            
+            createTable();
+            
+            entry.data.forEach((group, gIdx) => {
+                group.forEach((val, sIdx) => {
+                    const input = document.querySelector('.sample-input[data-group="' + gIdx + '"][data-sample="' + sIdx + '"]');
+                    if (input && val) {
+                        input.value = val;
+                    }
+                });
+            });
+            
+            for (let g = 0; g < entry.numGroups; g++) {
+                calculateRow(g);
+            }
+            
+            calculateSPC();
+            window.scrollTo({ top: document.getElementById('cong-cu').offsetTop - 100, behavior: 'smooth' });
+        }
+
+        function deleteHistoryEntry(id) {
+            if (!confirm('Xóa phân tích này khỏi lịch sử?')) return;
+            
+            let history = JSON.parse(localStorage.getItem(STORAGE_HISTORY_KEY) || '[]');
+            history = history.filter(h => h.id !== id);
+            localStorage.setItem(STORAGE_HISTORY_KEY, JSON.stringify(history));
+            loadHistory();
+        }
+
+        function saveFormData() {
+            const usl = document.getElementById('usl').value;
+            const lsl = document.getElementById('lsl').value;
+            const numGroups = document.getElementById('numGroups').value;
+            
+            const data = [];
+            const currentGroups = parseInt(numGroups) || 10;
+            
+            for (let g = 0; g < currentGroups; g++) {
+                const group = [];
+                for (let s = 0; s < 5; s++) {
+                    const input = document.querySelector('.sample-input[data-group="' + g + '"][data-sample="' + s + '"]');
+                    group.push(input ? input.value : '');
+                }
+                data.push(group);
+            }
+            
+            localStorage.setItem(STORAGE_FORM_KEY, JSON.stringify({ usl, lsl, numGroups, data }));
+        }
+
+        function loadFormData() {
+            const saved = localStorage.getItem(STORAGE_FORM_KEY);
+            if (!saved) return;
+            
+            try {
+                const parsed = JSON.parse(saved);
+                const usl = parsed.usl;
+                const lsl = parsed.lsl;
+                const numGroups = parsed.numGroups;
+                const data = parsed.data;
+                
+                document.getElementById('usl').value = usl;
+                document.getElementById('lsl').value = lsl;
+                document.getElementById('numGroups').value = numGroups;
+                
+                createTable();
+                
+                if (data) {
+                    data.forEach((group, gIdx) => {
+                        if (group) {
+                            group.forEach((val, sIdx) => {
+                                const input = document.querySelector('.sample-input[data-group="' + gIdx + '"][data-sample="' + sIdx + '"]');
+                                if (input && val) {
+                                    input.value = val;
+                                }
+                            });
+                        }
+                    });
+                    
+                    for (let g = 0; g < (parseInt(numGroups) || 10); g++) {
+                        calculateRow(g);
+                    }
+                }
+            } catch (e) {
+                console.error('Error loading form data:', e);
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function renderQuiz() {
+            const container = document.getElementById('quizQuestions');
+            let html = '';
+            QUIZ_QUESTIONS.forEach((q, idx) => {
+                html += '<div class="quiz-question" id="question-' + idx + '">';
+                html += '<h4>Câu ' + (idx + 1) + ': ' + q.question + '</h4>';
+                html += '<ul class="quiz-options">';
+                q.options.forEach((opt, optIdx) => {
+                    html += '<li class="quiz-option" onclick="selectQuizOption(' + idx + ', ' + optIdx + ')">';
+                    html += '<input type="radio" name="q' + idx + '" id="q' + idx + 'o' + optIdx + '" value="' + optIdx + '">';
+                    html += '<label for="q' + idx + 'o' + optIdx + '">' + opt + '</label>';
+                    html += '</li>';
+                });
+                html += '</ul>';
+                html += '<div class="quiz-feedback" id="feedback-' + idx + '"></div>';
+                html += '</div>';
+            });
+            container.innerHTML = html;
+        }
+
+        function selectQuizOption(questionIdx, optionIdx) {
+            const radio = document.getElementById('q' + questionIdx + 'o' + optionIdx);
+            radio.checked = true;
+        }
+
+        function submitQuiz() {
+            let correct = 0;
+            let incorrect = 0;
+            let unanswered = 0;
+            
+            QUIZ_QUESTIONS.forEach((q, idx) => {
+                const selected = document.querySelector('input[name="q' + idx + '"]:checked');
+                const feedback = document.getElementById('feedback-' + idx);
+                const questionDiv = document.getElementById('question-' + idx);
+                
+                questionDiv.querySelectorAll('.quiz-option').forEach(opt => {
+                    opt.classList.remove('correct', 'incorrect');
+                });
+                
+                if (!selected) {
+                    unanswered++;
+                    feedback.className = 'quiz-feedback';
+                    feedback.innerHTML = '<strong>Chưa trả lời.</strong> Đáp án đúng: ' + q.options[q.correct];
+                    return;
+                }
+                
+                const answer = parseInt(selected.value);
+                if (answer === q.correct) {
+                    correct++;
+                    feedback.className = 'quiz-feedback correct';
+                    feedback.innerHTML = '<strong>Đúng!</strong> ' + q.explanation;
+                    questionDiv.querySelector('#q' + idx + 'o' + answer).closest('.quiz-option').classList.add('correct');
+                } else {
+                    incorrect++;
+                    feedback.className = 'quiz-feedback incorrect';
+                    feedback.innerHTML = '<strong>Sai.</strong> Đáp án đúng: ' + q.options[q.correct] + '. ' + q.explanation;
+                    questionDiv.querySelector('#q' + idx + 'o' + answer).closest('.quiz-option').classList.add('incorrect');
+                    questionDiv.querySelector('#q' + idx + 'o' + q.correct).closest('.quiz-option').classList.add('correct');
+                }
+            });
+            
+            const score = correct;
+            const percentage = (score / QUIZ_QUESTIONS.length) * 100;
+            const passed = percentage >= 80;
+            
+            const resultDiv = document.getElementById('quizResult');
+            const resultTitle = document.getElementById('quizResultTitle');
+            const resultScore = document.getElementById('quizScore');
+            const resultMessage = document.getElementById('quizMessage');
+            
+            resultDiv.className = 'quiz-result ' + (passed ? 'pass' : 'fail');
+            resultTitle.textContent = passed ? 'ĐẠT' : 'ÔN LẠI';
+            resultScore.textContent = score + '/' + QUIZ_QUESTIONS.length + ' (' + percentage.toFixed(0) + '%)';
+            resultMessage.textContent = passed 
+                ? 'Chúc mừng! Bạn đã nắm vững kiến thức SPC & Cpk.' 
+                : 'Hãy ôn lại các khái niệm về biểu đồ kiểm soát, qui tắc Nelson, và Cpk.';
+            
+            resultDiv.classList.remove('hidden');
+            
+            document.getElementById('quizStats').classList.remove('hidden');
+            document.getElementById('correctCount').textContent = correct;
+            document.getElementById('incorrectCount').textContent = incorrect;
+            document.getElementById('unansweredCount').textContent = unanswered;
+            
+            const savedQuiz = JSON.parse(localStorage.getItem(STORAGE_QUIZ_KEY) || '{}');
+            if (!savedQuiz.highScore || score > savedQuiz.highScore) {
+                savedQuiz.highScore = score;
+                savedQuiz.lastAttempt = new Date().toLocaleString('vi-VN');
+                localStorage.setItem(STORAGE_QUIZ_KEY, JSON.stringify(savedQuiz));
+            }
+        }
+
+        function resetQuiz() {
+            document.getElementById('quizResult').classList.add('hidden');
+            document.getElementById('quizStats').classList.add('hidden');
+            
+            QUIZ_QUESTIONS.forEach((q, idx) => {
+                document.querySelector('input[name="q' + idx + '"]').checked = false;
+                const feedback = document.getElementById('feedback-' + idx);
+                feedback.className = 'quiz-feedback';
+                feedback.innerHTML = '';
+                
+                document.getElementById('question-' + idx).querySelectorAll('.quiz-option').forEach(opt => {
+                    opt.classList.remove('correct', 'incorrect');
+                });
+            });
+        }
+
+        function setupScrollSpy() {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav a');
+            
+            window.addEventListener('scroll', () => {
+                const scrollY = window.scrollY + 150;
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.offsetHeight;
+                    const sectionId = section.getAttribute('id');
+                    
+                    if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === '#' + sectionId) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            });
+        }
+
+        function setupReveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            
+            const revealOnScroll = () => {
+                reveals.forEach(reveal => {
+                    const windowHeight = window.innerHeight;
+                    const elementTop = reveal.getBoundingClientRect().top;
+                    const elementVisible = 100;
+                    
+                    if (elementTop < windowHeight - elementVisible) {
+                        reveal.classList.add('visible');
+                    }
+                });
+            };
+            
+            window.addEventListener('scroll', revealOnScroll);
+            revealOnScroll();
+        }
+
+        function setupBackToTop() {
+            const btn = document.querySelector('.back-to-top');
+            
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 500) {
+                    btn.classList.add('visible');
+                } else {
+                    btn.classList.remove('visible');
+                }
+            });
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function printReport() {
+            window.print();
+        }
+    </script>
+</body>
+</html>

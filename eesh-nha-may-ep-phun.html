@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EESH — An Toàn, Sức Khỏe, Môi Trường & An Ninh | Nhà máy ép phun</title>
+    <style>
+        :root {
+            --navy-dark: #0a1628;
+            --navy-primary: #122442;
+            --navy-light: #1a365d;
+            --amber-primary: #d97706;
+            --amber-light: #fbbf24;
+            --amber-pale: #fef3c7;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --success: #16a34a;
+            --warning: #f59e0b;
+            --error: #dc2626;
+            --border-radius: 8px;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --transition: all 0.2s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scroll-margin-top: 80px; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            background: var(--bg-light);
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        .nav {
+            position: sticky;
+            top: 0;
+            background: var(--navy-dark);
+            padding: 12px 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+        }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { color: #fff; font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+        .nav-logo a { color: var(--amber-light); text-decoration: none; font-size: 0.85rem; padding: 3px 8px; border: 1px solid var(--amber-light); border-radius: 4px; }
+        .nav-links { display: flex; gap: 18px; list-style: none; }
+        .nav-links a { color: var(--gray-200); text-decoration: none; font-size: 0.9rem; transition: var(--transition); }
+        .nav-links a:hover { color: var(--amber-light); }
+
+        .hero {
+            background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-primary) 100%);
+            color: var(--white);
+            padding: 50px 0;
+            text-align: center;
+        }
+        .hero h1 { font-size: 2.2rem; margin-bottom: 12px; font-weight: 700; }
+        .hero p { font-size: 1.05rem; opacity: 0.9; max-width: 850px; margin: 0 auto; }
+
+        section { padding: 45px 0; background: var(--white); border-bottom: 1px solid var(--gray-200); }
+        section:nth-child(even) { background: var(--bg-light); }
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--navy-primary);
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 3px solid var(--amber-primary);
+            display: inline-block;
+        }
+
+        .eesh-pillars {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .pillar-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 22px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            border-top: 4px solid var(--navy-primary);
+        }
+        .pillar-card.amber { border-top-color: var(--amber-primary); }
+        .pillar-card.green { border-top-color: var(--success); }
+        .pillar-card.red { border-top-color: var(--error); }
+        .pillar-card h3 { font-size: 1.2rem; color: var(--navy-primary); margin-bottom: 10px; }
+
+        /* Risk Matrix Table */
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 0.85rem;
+        }
+        .matrix-table th, .matrix-table td { border: 1px solid #cbd5e1; padding: 10px; }
+        .matrix-table th { background: var(--navy-primary); color: #fff; }
+        .lvl-low { background: #dcfce7; color: #166534; font-weight: 700; }
+        .lvl-med { background: #fef9c3; color: #854d0e; font-weight: 700; }
+        .lvl-high { background: #fed7aa; color: #9a3412; font-weight: 700; }
+        .lvl-critical { background: #fecaca; color: #991b1b; font-weight: 700; }
+
+        /* Interactive Risk Tool */
+        .risk-tool-box {
+            background: var(--white);
+            border: 2px solid var(--navy-primary);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: var(--shadow-md);
+        }
+        .risk-row {
+            display: grid;
+            grid-template-columns: 2.5fr 1fr 1fr 1fr 2fr;
+            gap: 12px;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray-200);
+            font-size: 0.9rem;
+        }
+        .risk-row:hover { background: #f8fafc; }
+        .risk-score-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+        .btn {
+            padding: 9px 18px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-primary { background: var(--amber-primary); color: var(--navy-dark); }
+        .btn-secondary { background: var(--navy-primary); color: #fff; }
+
+        .footer { background: var(--navy-dark); color: var(--gray-300); text-align: center; padding: 25px 0; font-size: 0.85rem; }
+        .footer a { color: var(--amber-light); text-decoration: none; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.6rem; }
+            .risk-row { grid-template-columns: 1fr; gap: 8px; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="container nav-container">
+            <div class="nav-logo">
+                <span>EESH · An Toàn Nhà Máy</span>
+                <a href="index.html">← Trang chủ ISO</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#tong-quan">Tổng quan 4 trụ cột</a></li>
+                <li><a href="#ma-tran-rui-ro">Ma trận rủi ro</a></li>
+                <li><a href="#danh-gia-tuong-tac">Công cụ đánh giá</a></li>
+                <li><a href="#quy-tac-vang">10 Quy tắc vàng</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="container">
+            <h1>EESH — An Toàn, Sức Khỏe, Môi Trường & An Ninh</h1>
+            <p>Hệ thống nhận diện mối nguy và đánh giá rủi ro định lượng (Risk Assessment C = S × O) cho 20 máy ép phun — Tương thích ISO 45001, ISO 14001 & ISO 9001 (§7.1.4)</p>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- 4 TRỤ CỘT -->
+        <section id="tong-quan">
+            <h2 class="section-title">1. Bốn Trụ Cột EESH Trong Nhà Máy Ép Phun</h2>
+            <div class="eesh-pillars">
+                <div class="pillar-card red">
+                    <h3>🛡️ E - Environment (Môi Trường)</h3>
+                    <p>Quản lý chất thải nguy hại (dầu thủy lực thải, giẻ dính dầu, bóng đèn huỳnh quang). Thu gom tái sinh hạt nhựa cuống keo theo tỷ lệ chuẩn (&lt; 15%). Kiểm soát nước giải nhiệt chiller tuần hoàn khép kín.</p>
+                </div>
+                <div class="pillar-card amber">
+                    <h3>⚠️ E - Emergency (Ứng Phó Khẩn Cấp)</h3>
+                    <p>Sẵn sàng cho các tình huống: Cháy chập điện gia nhiệt nòng nung, nổ đường ống dầu cao áp 160 bar, rò rỉ hóa chất tẩy rửa khuôn, mắc kẹt người vào khoảng kẹp khuôn.</p>
+                </div>
+                <div class="pillar-card green">
+                    <h3>🩺 S - Safety & Health (An Toàn & Sức Khỏe)</h3>
+                    <p>Kiểm soát nguy cơ kẹp dập tay (khóa liên động cửa an toàn cơ - điện - thủy lực), chống bỏng nhiệt nòng phun, chống ồn máy băm &gt; 85dB, giảm đau mỏi lưng do bê khuôn.</p>
+                </div>
+                <div class="pillar-card">
+                    <h3>🔒 S - Security (An Ninh Xưởng)</h3>
+                    <p>Bảo vệ tài sản khuôn mẫu (trị giá hàng tỷ đồng của khách hàng), bảo mật mẫu mã thiết kế sản phẩm OEM/ODM, kiểm soát người ra vào khu vực máy nghiền phế liệu.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- MA TRẬN RỦI RO -->
+        <section id="ma-tran-rui-ro">
+            <h2 class="section-title">2. Ma Trận Đánh Giá Rủi Ro Định Lượng (C = S × O)</h2>
+            <p>Mức độ rủi ro (Risk Criticality - C) được tính bằng tích giữa <strong>Mức độ nghiêm trọng (Severity - S)</strong> và <strong>Khả năng xảy ra (Occurrence - O)</strong>:</p>
+
+            <div style="overflow-x:auto;">
+                <table class="matrix-table">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" style="width:18%;">Mức độ nghiêm trọng (S)</th>
+                            <th colspan="5">Khả năng xảy ra (O)</th>
+                        </tr>
+                        <tr>
+                            <th>1 (Rất hiếm)</th>
+                            <th>2 (Hiếm khi)</th>
+                            <th>3 (Thỉnh thoảng)</th>
+                            <th>4 (Thường xuyên)</th>
+                            <th>5 (Liên tục)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>5. Thảm họa</strong> (Tử vong / Mất chi)</td>
+                            <td class="lvl-med">5 - Vừa</td>
+                            <td class="lvl-high">10 - Cao</td>
+                            <td class="lvl-critical">15 - Nguy hiểm</td>
+                            <td class="lvl-critical">20 - Cực đoan</td>
+                            <td class="lvl-critical">25 - Cực đoan</td>
+                        </tr>
+                        <tr>
+                            <td><strong>4. Nghiêm trọng</strong> (Nghỉ việc dài ngày)</td>
+                            <td class="lvl-low">4 - Thấp</td>
+                            <td class="lvl-med">8 - Vừa</td>
+                            <td class="lvl-high">12 - Cao</td>
+                            <td class="lvl-critical">16 - Nguy hiểm</td>
+                            <td class="lvl-critical">20 - Cực đoan</td>
+                        </tr>
+                        <tr>
+                            <td><strong>3. Trung bình</strong> (Cần sơ cứu y tế)</td>
+                            <td class="lvl-low">3 - Thấp</td>
+                            <td class="lvl-med">6 - Vừa</td>
+                            <td class="lvl-med">9 - Vừa</td>
+                            <td class="lvl-high">12 - Cao</td>
+                            <td class="lvl-critical">15 - Nguy hiểm</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2. Nhẹ</strong> (Sơ cứu nhẹ tại chỗ)</td>
+                            <td class="lvl-low">2 - Thấp</td>
+                            <td class="lvl-low">4 - Thấp</td>
+                            <td class="lvl-med">6 - Vừa</td>
+                            <td class="lvl-med">8 - Vừa</td>
+                            <td class="lvl-high">10 - Cao</td>
+                        </tr>
+                        <tr>
+                            <td><strong>1. Không đáng kể</strong> (Không tổn thương)</td>
+                            <td class="lvl-low">1 - Thấp</td>
+                            <td class="lvl-low">2 - Thấp</td>
+                            <td class="lvl-low">3 - Thấp</td>
+                            <td class="lvl-low">4 - Thấp</td>
+                            <td class="lvl-med">5 - Vừa</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="display:flex;gap:15px;flex-wrap:wrap;font-size:0.85rem;margin-top:10px;">
+                <span style="background:#dcfce7;color:#166534;padding:4px 10px;border-radius:4px;font-weight:600;">1 - 4: Rủi ro thấp (Chấp nhận được)</span>
+                <span style="background:#fef9c3;color:#854d0e;padding:4px 10px;border-radius:4px;font-weight:600;">5 - 9: Rủi ro trung bình (Cần kiểm soát định kỳ)</span>
+                <span style="background:#fed7aa;color:#9a3412;padding:4px 10px;border-radius:4px;font-weight:600;">10 - 14: Rủi ro cao (Cần biện pháp kỹ thuật giảm thiểu)</span>
+                <span style="background:#fecaca;color:#991b1b;padding:4px 10px;border-radius:4px;font-weight:600;">15 - 25: Cực kỳ nguy hiểm (Dừng máy, xử lý ngay)</span>
+            </div>
+        </section>
+
+        <!-- CÔNG CỤ ĐÁNH GIÁ TƯƠNG TÁC -->
+        <section id="danh-gia-tuong-tac">
+            <h2 class="section-title">3. Bảng Nhận Diện & Đánh Giá Rủi Ro 10 Mối Nguy Ép Phun</h2>
+            <p>Tự động tính toán điểm rủi ro $C = S \times O$ và chỉ định biện pháp kiểm soát theo thứ bậc an toàn:</p>
+
+            <div class="risk-tool-box">
+                <div style="font-weight:700;border-bottom:2px solid #122442;padding-bottom:8px;margin-bottom:10px;display:grid;grid-template-columns:2.5fr 1fr 1fr 1fr 2fr;gap:12px;font-size:0.85rem;color:#122442;">
+                    <div>MỐI NGUY & TÌNH HUỐNG RỦI RO</div>
+                    <div>MỨC NẶNG (S: 1-5)</div>
+                    <div>TẦN SUẤT (O: 1-5)</div>
+                    <div>ĐIỂM RỦI RO (C)</div>
+                    <div>BIỆN PHÁP KIỂM SOÁT</div>
+                </div>
+
+                <div id="riskItemsList"></div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="saveRiskAssessment()">💾 Lưu Đánh Giá Rủi Ro EESH</button>
+                    <button class="btn btn-secondary" onclick="window.print()">🖨 In Báo Cáo EESH</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 10 QUY TẮC VÀNG -->
+        <section id="quy-tac-vang">
+            <h2 class="section-title">4. 10 Quy Tắc Vàng An Toàn Vận Hành Máy Ép Phun</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:15px;margin-top:15px;">
+                <div style="padding:15px;background:#fff;border-left:4px solid #dc2626;box-shadow:var(--shadow-sm);border-radius:4px;">
+                    <strong>1. Khóa liên động cửa an toàn:</strong> Tuyệt đối không đấu tắt (bypass) công tắc an toàn điện hoặc thủy lực của cửa máy ép.
+                </div>
+                <div style="padding:15px;background:#fff;border-left:4px solid #dc2626;box-shadow:var(--shadow-sm);border-radius:4px;">
+                    <strong>2. Khóa LOTO khi sửa chữa:</strong> Luôn ngắt điện tổng, xả áp suất dầu thủy lực và móc khóa Lockout/Tagout trước khi chui vào gầm máy/khuôn.
+                </div>
+                <div style="padding:15px;background:#fff;border-left:4px solid #d97706;box-shadow:var(--shadow-sm);border-radius:4px;">
+                    <strong>3. Chống bỏng nòng phun:</strong> Đeo găng tay da chịu nhiệt và kính bảo hộ khi bắn keo purging vệ sinh trục vít nòng gia nhiệt.
+                </div>
+                <div style="padding:15px;background:#fff;border-left:4px solid #d97706;box-shadow:var(--shadow-sm);border-radius:4px;">
+                    <strong>4. Cẩu khuôn an toàn:</strong> Kiểm tra cáp cẩu, ma-nơ-ri, mắt móc bu lông (eyebolt) trước khi nhấc khuôn lên khỏi sàn. Cấm đứng dưới tải trọng cẩu.
+                </div>
+                <div style="padding:15px;background:#fff;border-left:4px solid #16a34a;box-shadow:var(--shadow-sm);border-radius:4px;">
+                    <strong>5. Dọn sạch hạt nhựa rơi:</strong> Hạt nhựa rơi xuống sàn có tác dụng như bi trượt ngã, phải quét dọn ngay lập tức.
+                </div>
+                <div style="padding:15px;background:#fff;border-left:4px solid #16a34a;box-shadow:var(--shadow-sm);border-radius:4px;">
+                    <strong>6. Bảo vệ thính giác máy băm:</strong> 100% công nhân vận hành máy nghiền hạt băm phải đeo chụp tai chống ồn đạt chuẩn.
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Hệ thống Quản lý Tích hợp ISO 9001 - ISO 14001 - ISO 45001 Nhà máy Ép Phun 20 Máy</p>
+            <p style="margin-top: 5px;"><a href="index.html">← Quay lại Cổng tra cứu tài liệu</a></p>
+        </div>
+    </footer>
+
+    <script>
+        const hazards = [
+            { id: 1, name: 'Kẹp tay vào lòng khuôn khi gỡ sản phẩm dính', s: 5, o: 2, ctrl: 'Cửa bảo vệ liên động cơ - điện - thủy lực; robot gắp tự động.' },
+            { id: 2, name: 'Bỏng nhiệt do nhựa nóng bắn tóe khi purging nòng ép', s: 3, o: 3, ctrl: 'Trang bị kính bảo hộ, găng tay da chịu nhiệt 300°C; tấm chắn an toàn.' },
+            { id: 3, name: 'Rò rỉ dầu thủy lực áp suất cao gây trượt ngã / cháy nổ', s: 4, o: 2, ctrl: 'Kiểm tra ống mềm thủy lực định kỳ; khay hứng dầu chống tràn.' },
+            { id: 4, name: 'Đứt cáp cẩu pa-lăng làm rơi khuôn 2 tấn khi đổi khuôn', s: 5, o: 1, ctrl: 'Kiểm định cáp cẩu 6 tháng/lần; không ai đứng trong bán kính nâng.' },
+            { id: 5, name: 'Kẹt cuốn tay vào phễu máy băm nhựa tái sinh', s: 5, o: 1, ctrl: 'Cổ phễu sâu có thanh chắn ziczac; công tắc khẩn cấp cạnh máy băm.' },
+            { id: 6, name: 'Hít phải khí độc do cháy phân hủy nhựa PVC/POM quá nhiệt', s: 3, o: 2, ctrl: 'Hệ thống chụp hút khói tại đầu nung; kiểm soát nhiệt độ nòng chuẩn.' },
+            { id: 7, name: 'Điện giật do chuột cắn hoặc mòn dây gia nhiệt nòng ép', s: 4, o: 2, ctrl: 'Bọc ruột gà kim loại cho dây sấy điện; lắp cầu dao chống rò ELCB.' },
+            { id: 8, name: 'Đau lưng thoái hóa do bốc vác bao hạt nhựa 25kg liên tục', s: 2, o: 4, ctrl: 'Trang bị xe nâng đẩy tay thủy lực; máy hút liệu chân không tự động.' },
+            { id: 9, name: 'Ô nhiễm tiếng ồn khu vực máy băm hạt (> 85 dBA)', s: 2, o: 4, ctrl: 'Phòng băm cách âm riêng biệt; bắt buộc đeo chụp tai giảm ồn.' },
+            { id: 10, name: 'Cháy nổ do tàn thuốc hoặc chập điện kho chứa hạt nhựa', s: 5, o: 1, ctrl: 'Nghiêm cấm hút thuốc xưởng; trang bị bình chữa cháy CO2 và bọt Foam.' }
+        ];
+
+        function renderHazards() {
+            const container = document.getElementById('riskItemsList');
+            container.innerHTML = hazards.map((h, i) => {
+                const c = h.s * h.o;
+                const badgeInfo = getRiskBadge(c);
+                return `
+                    <div class="risk-row">
+                        <div><strong>${i + 1}. ${h.name}</strong></div>
+                        <div>
+                            <select id="s_${i}" onchange="recalcRisk(${i})" style="padding:4px;border:1px solid #cbd5e1;border-radius:4px;">
+                                <option value="1" ${h.s===1?'selected':''}>1 - Nhẹ</option>
+                                <option value="2" ${h.s===2?'selected':''}>2 - Thấp</option>
+                                <option value="3" ${h.s===3?'selected':''}>3 - Vừa</option>
+                                <option value="4" ${h.s===4?'selected':''}>4 - Nặng</option>
+                                <option value="5" ${h.s===5?'selected':''}>5 - Thảm họa</option>
+                            </select>
+                        </div>
+                        <div>
+                            <select id="o_${i}" onchange="recalcRisk(${i})" style="padding:4px;border:1px solid #cbd5e1;border-radius:4px;">
+                                <option value="1" ${h.o===1?'selected':''}>1 - Rất hiếm</option>
+                                <option value="2" ${h.o===2?'selected':''}>2 - Hiếm khi</option>
+                                <option value="3" ${h.o===3?'selected':''}>3 - Thỉnh thoảng</option>
+                                <option value="4" ${h.o===4?'selected':''}>4 - Thường xuyên</option>
+                                <option value="5" ${h.o===5?'selected':''}>5 - Liên tục</option>
+                            </select>
+                        </div>
+                        <div>
+                            <span class="risk-score-badge" id="badge_${i}" style="${badgeInfo.style}">
+                                ${c} - ${badgeInfo.text}
+                            </span>
+                        </div>
+                        <div style="font-size:0.85rem;color:#475569;">${h.ctrl}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getRiskBadge(c) {
+            if (c <= 4) return { text: 'Thấp', style: 'background:#dcfce7;color:#166534;' };
+            if (c <= 9) return { text: 'Vừa', style: 'background:#fef9c3;color:#854d0e;' };
+            if (c <= 14) return { text: 'Cao', style: 'background:#fed7aa;color:#9a3412;' };
+            return { text: 'Nguy hiểm', style: 'background:#fecaca;color:#991b1b;' };
+        }
+
+        function recalcRisk(idx) {
+            const s = parseInt(document.getElementById(`s_${idx}`).value);
+            const o = parseInt(document.getElementById(`o_${idx}`).value);
+            const c = s * o;
+            hazards[idx].s = s;
+            hazards[idx].o = o;
+            const badgeInfo = getRiskBadge(c);
+            const badge = document.getElementById(`badge_${idx}`);
+            badge.textContent = `${c} - ${badgeInfo.text}`;
+            badge.setAttribute('style', badgeInfo.style);
+        }
+
+        function saveRiskAssessment() {
+            localStorage.setItem('iso_eesh_hazards_v1', JSON.stringify(hazards));
+            alert('Đã lưu bảng đánh giá rủi ro EESH thành công!');
+        }
+
+        document.addEventListener('DOMContentLoaded', renderHazards);
+    </script>
+</body>
+</html>

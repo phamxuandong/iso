@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kaizen & PDCA — Cải tiến liên tục</title>
+<style>
+:root {
+  --navy-dark: #0a1628;
+  --navy: #122442;
+  --amber: #d97706;
+  --amber-light: #fbbf24;
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --text: #1e293b;
+  --text-light: #64748b;
+  --border: #e2e8f0;
+  --success: #16a34a;
+  --warning: #d97706;
+  --danger: #dc2626;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+}
+.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+/* NAV */
+nav {
+  position: sticky;
+  top: 0;
+  background: var(--navy-dark);
+  padding: 12px 0;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+nav .container { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; }
+nav a {
+  color: #fff;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+nav a:hover, nav a.active { background: var(--amber); }
+
+/* HERO */
+.hero {
+  background: linear-gradient(135deg, var(--navy-dark), var(--navy));
+  color: #fff;
+  padding: 60px 20px;
+  text-align: center;
+}
+.hero h1 { font-size: 2.5rem; margin-bottom: 12px; }
+.hero p { font-size: 1.2rem; opacity: 0.9; max-width: 800px; margin: 0 auto; }
+
+/* SECTIONS */
+section {
+  padding: 50px 0;
+  scroll-margin-top: 70px;
+}
+section h2 {
+  color: var(--navy-dark);
+  font-size: 1.8rem;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 3px solid var(--amber);
+  display: inline-block;
+}
+section h3 { color: var(--navy); margin: 24px 0 12px; }
+
+/* CARDS */
+.card {
+  background: var(--card);
+  border-radius: 8px;
+  padding: 24px;
+  margin: 16px 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border-left: 4px solid var(--amber);
+}
+.callout {
+  background: #fef3c7;
+  border-left-color: var(--amber);
+  padding: 16px 20px;
+  border-radius: 0 8px 8px 0;
+  margin: 20px 0;
+}
+.callout strong { color: var(--navy-dark); }
+
+/* TABLES */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  background: var(--card);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+th, td {
+  padding: 12px 16px;
+  text-align: left;
+  border: 1px solid var(--border);
+}
+th { background: var(--navy); color: #fff; }
+tr:nth-child(even) { background: #f1f5f9; }
+tr:hover { background: #e2e8f0; }
+
+/* LISTS */
+ul, ol { margin: 16px 0 16px 24px; }
+li { margin: 8px 0; }
+
+/* BOARD KAIZEN */
+.board-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.board-controls input, .board-controls textarea {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+}
+.board-controls input:focus, .board-controls textarea:focus {
+  outline: none;
+  border-color: var(--amber);
+  box-shadow: 0 0 0 3px rgba(217,119,6,0.2);
+}
+.board-controls textarea { width: 100%; min-height: 80px; resize: vertical; }
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.btn-primary { background: var(--amber); color: #fff; }
+.btn-primary:hover { background: var(--navy); }
+.btn-secondary { background: var(--navy); color: #fff; }
+.btn-secondary:hover { background: var(--amber); }
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-danger:hover { background: #b91c1c; }
+.btn-success { background: var(--success); color: #fff; }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+
+/* KANBAN BOARD */
+.kanban {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+.kanban-column {
+  background: #f1f5f9;
+  border-radius: 8px;
+  padding: 16px;
+  min-height: 400px;
+}
+.kanban-column h3 {
+  font-size: 1rem;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid;
+}
+.col-doing h3 { border-color: var(--amber); color: var(--amber); }
+.col-done h3 { border-color: var(--success); color: var(--success); }
+.col-retry h3 { border-color: var(--danger); color: var(--danger); }
+
+.kaizen-card {
+  background: var(--card);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  border-top: 3px solid var(--amber);
+}
+.kaizen-card h4 { color: var(--navy-dark); margin-bottom: 8px; }
+.kaizen-card .meta { font-size: 13px; color: var(--text-light); margin-bottom: 12px; }
+.kaizen-card .pa-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 12px 0;
+}
+.kaizen-card .pa-item {
+  background: #f8fafc;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+.kaizen-card .pa-item strong { color: var(--navy); display: block; margin-bottom: 4px; }
+.kaizen-card .actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.badge-doing { background: #fef3c7; color: var(--amber); }
+.badge-done { background: #dcfce7; color: var(--success); }
+.badge-retry { background: #fee2e2; color: var(--danger); }
+
+/* CHECKLIST */
+.checklist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  background: var(--card);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+.checklist-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--amber);
+}
+.checklist-result {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+.checklist-result.strong { background: #dcfce7; color: var(--success); }
+.checklist-result.forming { background: #fef3c7; color: var(--amber); }
+.checklist-result.weak { background: #fee2e2; color: var(--danger); }
+
+/* QUIZ */
+.quiz-container {
+  background: var(--card);
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.quiz-question {
+  margin: 24px 0;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.quiz-question.correct { border-color: var(--success); background: #f0fdf4; }
+.quiz-question.incorrect { border-color: var(--danger); background: #fef2f2; }
+.quiz-question h4 { color: var(--navy-dark); margin-bottom: 12px; }
+.quiz-options label {
+  display: block;
+  padding: 10px 14px;
+  margin: 6px 0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.quiz-options label:hover { background: #f1f5f9; }
+.quiz-options input[type="radio"] { margin-right: 10px; }
+.quiz-feedback {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+.quiz-feedback.correct { background: #dcfce7; color: var(--success); }
+.quiz-feedback.incorrect { background: #fee2e2; color: var(--danger); }
+.quiz-result {
+  margin-top: 24px;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+.quiz-result.pass { background: #dcfce7; color: var(--success); }
+.quiz-result.fail { background: #fee2e2; color: var(--danger); }
+
+/* FOOTER */
+footer {
+  background: var(--navy-dark);
+  color: #fff;
+  text-align: center;
+  padding: 30px 20px;
+  margin-top: 40px;
+}
+footer p { opacity: 0.8; font-size: 14px; }
+
+/* BACK TO TOP */
+.back-to-top {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: var(--amber);
+  color: #fff;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 999;
+}
+.back-to-top.visible { opacity: 1; }
+.back-to-top:hover { background: var(--navy); }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .hero h1 { font-size: 1.8rem; }
+  nav .container { flex-direction: column; align-items: center; }
+  .kanban { grid-template-columns: 1fr; }
+  .board-controls { flex-direction: column; }
+  .board-controls input, .board-controls textarea { width: 100%; }
+}
+
+/* PRINT */
+@media print {
+  nav, .back-to-top, .board-controls, .actions, .quiz-actions { display: none !important; }
+  section { page-break-inside: avoid; }
+  body { background: #fff; }
+  .card, .kanban-card { box-shadow: none; border: 1px solid #ccc; }
+}
+
+/* REVEAL ANIMATION */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s ease-out;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="container">
+    <a href="#tong-quan">Tổng quan</a>
+    <a href="#pdca">PDCA</a>
+    <a href="#kaizen">Kaizen</a>
+    <a href="#noi-kaizen-pdca">Kaizen ⇄ PDCA</a>
+    <a href="#vi-du">Ví dụ KL-102</a>
+    <a href="#goi-y">Gợi ý hằng ngày</a>
+    <a href="#lien-he">Liên hệ bộ tài liệu</a>
+    <a href="#board">Board Kaizen</a>
+    <a href="#checklist">Checklist</a>
+    <a href="#quiz">Trắc nghiệm</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="container">
+    <h1>Kaizen & PDCA — Cải tiến liên tục</h1>
+    <p>Vòng lặp Plan–Do–Check–Act · văn hóa cải tiến mỗi ngày · ISO 9001 §10.3</p>
+  </div>
+</header>
+
+<!-- KHỐI 1: TỔNG QUAN -->
+<section id="tong-quan" class="reveal">
+  <div class="container">
+    <h2>Tổng quan</h2>
+    <div class="card">
+      <p><strong>Kaizen</strong> là văn hóa cải tiến liên tục, nơi mỗi nhân viên — từ công nhân đến quản lý — đều đóng góp ý tưởng nhỏ mỗi ngày để làm việc tốt hơn.</p>
+      <p style="margin-top:12px"><strong>PDCA</strong> (Plan–Do–Check–Act) là vòng phương pháp khoa học để thực hiện cải tiến một cách có hệ thống, đảm bảo mỗi thay đổi đều được đo lường và chuẩn hóa.</p>
+      <p style="margin-top:12px"><strong>ISO 9001 §10.3</strong> yêu cầu "Cải tiến liên tục" — đây không phải là khẩu hiệu, mà là nghĩa vụ biến toàn bộ hồ sơ chất lượng thành một hệ thống quay vòng không ngừng.</p>
+    </div>
+    <div class="callout">
+      <strong>⚠ Lưu ý quan trọng:</strong> Vòng tròn phải QUAY — nhiều nhà máy dừng sau Check (đo xong để đó); chính Act (chuẩn hóa khi đạt / quay lại P khi chưa đạt) mới là nơi tạo giá trị bền vững.
+    </div>
+  </div>
+</section>
+
+<!-- KHỐI 2: PDCA CHI TIẾT -->
+<section id="pdca" class="reveal">
+  <div class="container">
+    <h2>PDCA — Vòng tròn Deming</h2>
+    <p>PDCA do Walter Shewhart đề xuất, W. Edwards Deming phổ biến. Đây là phương pháp khoa học áp dụng cho mọi cải tiến.</p>
+    
+    <table>
+      <thead>
+        <tr><th>Bước</th><th>Làm gì</th><th>Dùng công cụ nào</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>P – Plan</strong><br>(Lập kế hoạch)</td>
+          <td>Nhận diện vấn đề, phân tích nguyên nhân gốc, đặt mục tiêu đo được, lập kế hoạch hành động chi tiết</td>
+          <td>KPI → Pareto/7 Wastes (chọn vấn đề) → Fishbone/Why-Why/SPC (tìm gốc rễ) → 5W2H (lập kế hoạch)</td>
+        </tr>
+        <tr>
+          <td><strong>D – Do</strong><br>(Thực hiện)</td>
+          <td>Thực hiện theo kế hoạch: thí điểm nhỏ, đào tạo, ghi chép đầy đủ — chưa vội áp dụng rộng</td>
+          <td>Checklist 5S, lịch bảo trì, WI (Work Instruction), biên bản đào tạo</td>
+        </tr>
+        <tr>
+          <td><strong>C – Check</strong><br>(Kiểm tra)</td>
+          <td>Đo lại kết quả so với mục tiêu đã đặt ở P; nếu lệch → hiểu vì sao, thu thập dữ liệu</td>
+          <td>Dashboard KPI, SPC (biểu đồ kiểm soát), báo cáo Cpk</td>
+        </tr>
+        <tr>
+          <td><strong>A – Act</strong><br>(Hành động)</td>
+          <td>Đạt mục tiêu → chuẩn hóa + nhân rộng + huấn luyện; Chưa đạt → quay lại P, tìm nguyên nhân mới</td>
+          <td>QMS G6 (chuẩn hóa), 8D D7 (phòng ngừa tái phát), Control Plan, PFMEA, SOP cập nhật</td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <div class="callout">
+      <strong>Ghi chú lịch sử:</strong> PDCA do Walter Shewhart đề xuất năm 1939, được W. Edwards Deming phổ biến rộng rãi sau Thế chiến II, nên còn gọi là "Vòng tròn Deming".
+    </div>
+  </div>
+</section>
+
+<!-- KHỐI 3: KAIZEN CHI TIẾT -->
+<section id="kaizen" class="reveal">
+  <div class="container">
+    <h2>Kaizen — Triết lý cải tiến</h2>
+    <p><strong>Kai</strong> = cải thiện, <strong>Zen</strong> = tốt hơn. Kaizen là triết lý "cải tiến nhỏ, liên tục, mỗi ngày, do chính người làm việc đề xuất và thực hiện".</p>
+    
+    <h3>Kaizen vs Đổi mới (Innovation)</h3>
+    <table>
+      <thead>
+        <tr><th>Tiêu chí</th><th>Kaizen</th><th>Đổi mới (Innovation)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Quy mô</td><td>Nhỏ, từng bước</td><td>Lớn, đột phá</td></tr>
+        <tr><td>Chi phí & rủi ro</td><td>Thấp</td><td>Cao</td></tr>
+        <tr><td>Người thực hiện</td><td>Mọi nhân viên</td><td>Chuyên gia + ban lãnh đạo</td></tr>
+        <tr><td>Tốc độ</td><td>Liên tục, âm thầm</td><td>Ngắt quãng, nổi bật</td></tr>
+        <tr><td>Văn hóa</td><td>Việc hằng ngày</td><td>Sự kiện đặc biệt</td></tr>
+        <tr><td>Ví dụ ép phun</td><td>Giảm 1 bước di chuyển lấy phôi</td><td>Thay toàn bộ dây chuyền tự động</td></tr>
+      </tbody>
+    </table>
+    
+    <div class="callout">
+      <strong>Toán học Kaizen:</strong> Cải thiện 1% mỗi ngày → (1.01)^365 ≈ <strong>37 lần</strong> sau một năm.
+    </div>
+    
+    <h3>3 cấp độ Kaizen</h3>
+    <ol>
+      <li><strong>Kaizen cá nhân:</strong> Hòm/board Kaizen, thưởng nhỏ. VD: "Gắn đèn báo khi máy sấy chưa đạt độ ẩm".</li>
+      <li><strong>Kaizen nhóm:</strong> Chọn 1 vấn đề nhỏ/tuần, chạy PDCA nhanh trong tổ.</li>
+      <li><strong>Kaizen Event:</strong> 3–5 ngày, nhóm đa chức năng, giải quyết 1 vấn đề lớn, đo kết quả tuần sau.</li>
+    </ol>
+    
+    <h3>DNA Kaizen</h3>
+    <ul>
+      <li><strong>Genchi Genbutsu:</strong> Đi hiện trường, xem thực tế, không quyết định từ phòng họp.</li>
+      <li><strong>Muda:</strong> Xóa bỏ 7 lãng phí (vận chuyển, tồn kho, cử động, chờ đợi, sản xuất thừa, gia công thừa, phế phẩm).</li>
+      <li><strong>Không đổ lỗi:</strong> Tìm nguyên nhân trong quy trình, không đổ cho con người.</li>
+      <li><strong>Chuẩn hóa:</strong> Sau mỗi thành công → cập nhật SOP/WI/Control Plan.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- KHỐI 4: NỐI KAIZEN ⇄ PDCA -->
+<section id="noi-kaizen-pdca" class="reveal">
+  <div class="container">
+    <h2>Nối Kaizen ⇄ PDCA</h2>
+    <div class="card">
+      <p style="font-size:1.1rem;line-height:2">
+        <strong style="color:var(--amber)">Kaizen (văn hóa)</strong><br>
+        ↓ Mỗi người 1 ý tưởng/tháng<br>
+        <strong style="color:var(--navy)">Chọn 1 vấn đề có tác động lớn nhất</strong><br>
+        ↓<br>
+        <strong style="color:var(--navy)">P — Plan:</strong> Pareto/KPI + Fishbone/Why-Why/SPC + mục tiêu SMART + 5W2H<br>
+        ↓<br>
+        <strong style="color:var(--navy)">D — Do:</strong> Thử nghiệm nhỏ + đào tạo + ghi chép<br>
+        ↓<br>
+        <strong style="color:var(--navy)">C — Check:</strong> Đo lại KPI/SPC, so với mục tiêu<br>
+        ↓<br>
+        <strong style="color:var(--amber)">A — Act:</strong><br>
+        &nbsp;&nbsp;✓ Đạt → Chuẩn hóa (Control Plan/PFMEA/SOP) + khen thưởng + sang vấn đề khác<br>
+        &nbsp;&nbsp;✗ Chưa đạt → Quay lại P, tìm nguyên nhân mới<br>
+        ↓<br>
+        <strong style="color:var(--success)">⮌ Vòng mới bắt đầu</strong>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- KHỐI 5: VÍ DỤ KL-102 -->
+<section id="vi-du" class="reveal">
+  <div class="container">
+    <h2>Ví dụ thực tế: KL-102</h2>
+    <p>Dự án: Giảm phế phẩm bong bóng khí cho sản phẩm KL-102 (vật liệu PA66).</p>
+    
+    <table>
+      <thead>
+        <tr><th>Bước</th><th>Nội dung thực thi</th><th>Công cụ</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>P</strong></td>
+          <td>Phế bong bóng khí 4% (KPI) + chiếm 52% tổng phế (Pareto) → Fishbone/Why-Why: gốc rễ là độ ẩm hạt không đạt → Mục tiêu: 52→≤10 sp/tuần → Kế hoạch 5W2H</td>
+          <td>KPI, Pareto, Fishbone, 5W2H</td>
+        </tr>
+        <tr>
+          <td><strong>D</strong></td>
+          <td>Lắp cảnh báo độ ẩm (thử máy IM-03) + sửa WI-KT-004 + checklist đầu ca + đào tạo 2 ca + chạy thử 2 ca</td>
+          <td>Bảo trì, 5S, WI-KT-004</td>
+        </tr>
+        <tr>
+          <td><strong>C</strong></td>
+          <td>Đo 2 tuần: phế ~8 sp/tuần (đạt mục tiêu ≤10) + kiểm tra checklist được tuân thủ 95%</td>
+          <td>KPI, SPC (biểu đồ X-bar)</td>
+        </tr>
+        <tr>
+          <td><strong>A</strong></td>
+          <td>Chuẩn hóa Control Plan/PFMEA/SOP + nhân rộng cho vật liệu PET + khen thưởng nhóm + chọn vấn đề kế tiếp từ Pareto</td>
+          <td>QMS G6, 8D D7, Control Plan</td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <div class="callout">
+      <strong>So sánh Kaizen/PDCA và 8D:</strong> Cùng đích — ngăn tái phát + chuẩn hóa. Khác: 8D là phản ứng xử lý khiếu nại khách hàng; PDCA là chủ động cải tiến mỗi ngày từ nội bộ.
+    </div>
+  </div>
+</section>
+
+<!-- KHỐI 6: 10 GỢI Ý HẰNG NGÀY -->
+<section id="goi-y" class="reveal">
+  <div class="container">
+    <h2>10 gợi ý Kaizen hằng ngày</h2>
+    <ol>
+      <li>Kẻ vùng đặt khuôn/key trên giá — dùng băng màu, không cần sơn.</li>
+      <li>Dán nhãn nhiệt độ khuyến nghị trên máy sấy — tránh cài sai.</li>
+      <li>Kéo gần bàn phôi + thùng phế — giảm Motion (cử động thừa).</li>
+      <li>Phân loại thùng hạt tái chế theo màu — tránh lẫn vật liệu.</li>
+      <li>Checklist đầu ca gắn tại máy (5S) — ai làm người ký.</li>
+      <li>Đèn báo 3 màu trạng thái máy — giảm thời gian chờ tìm thợ.</li>
+      <li>Tiêu chuẩn hóa thời điểm vệ sinh khuôn trên lịch bảo trì.</li>
+      <li>Gắn chỉ báo áp suất dễ quan sát — không cần cúi xuống.</li>
+      <li>Board Kaizen giữa xưởng — 3 cột: Ý tưởng → Đang làm → Đã chuẩn hóa.</li>
+      <li>Họp 5 phút đầu ca — đọc 1 gợi ý + kết quả ngày hôm qua.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- KHỐI 7: LIÊN HỆ BỘ TÀI LIỆU -->
+<section id="lien-he" class="reveal">
+  <div class="container">
+    <h2>Liên hệ trọn bộ tài liệu</h2>
+    <table>
+      <thead>
+        <tr><th>Giai đoạn PDCA</th><th>Công cụ</th><th>File tương ứng</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>P</strong> — Chọn vấn đề</td><td>7 Wastes · Pareto · KPI</td><td>7-lang-phi, 6-tools, kpi-nha-may-theo-gio</td></tr>
+        <tr><td><strong>P</strong> — Tìm gốc rễ</td><td>Fishbone/Why-Why · SPC</td><td>fishbone-whywhy, spc-cpk</td></tr>
+        <tr><td><strong>P</strong> — Kế hoạch</td><td>5W2H</td><td>5w2h</td></tr>
+        <tr><td><strong>D</strong> — Thực hiện</td><td>Bảo trì · 5S · An toàn · EESH</td><td>bao-tri, 5s, dao-tao-an-toan, eesh</td></tr>
+        <tr><td><strong>C</strong> — Đo</td><td>KPI · SPC (Cpk)</td><td>kpi-nha-may-theo-gio, spc-cpk</td></tr>
+        <tr><td><strong>A</strong> — Chuẩn hóa</td><td>Control Plan/PFMEA + §10.3</td><td>giai-doan-6-qms</td></tr>
+        <tr><td><strong>Xuyên suốt</strong></td><td>8D (phản ứng khiếu nại)</td><td>8d</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- KHỐI 8: BOARD KAIZEN -->
+<section id="board" class="reveal">
+  <div class="container">
+    <h2>Board Kaizen tương tác</h2>
+    <p>Quản lý dự án cải tiến theo PDCA. Tự động lưu trình duyệt.</p>
+    
+    <!-- FORM THÊM -->
+    <div class="card" style="margin-top:20px">
+      <h3 style="margin-top:0">+ Thêm dự án mới</h3>
+      <div class="board-controls">
+        <input type="text" id="kaizen-name" placeholder="Tên dự án (VD: Giảm phế KL-102)" style="flex:2;min-width:200px">
+        <input type="text" id="kaizen-owner" placeholder="Người phụ trách" style="flex:1;min-width:150px">
+        <input type="text" id="kaizen-goal" placeholder="Mục tiêu (VD: 52→≤10 sp/tuần)" style="flex:2;min-width:200px">
+      </div>
+      <div class="board-controls" style="flex-direction:column">
+        <textarea id="kaizen-p" placeholder="P (Plan): Nhận diện vấn đề, nguyên nhân gốc, mục tiêu, kế hoạch 5W2H..."></textarea>
+        <textarea id="kaizen-d" placeholder="D (Do): Thực hiện thí điểm, đào tạo, ghi chép..."></textarea>
+        <textarea id="kaizen-c" placeholder="C (Check): Đo kết quả, so mục tiêu, dữ liệu thu thập..."></textarea>
+        <textarea id="kaizen-a" placeholder="A (Act): Chuẩn hóa nếu đạt / Quay lại P nếu chưa đạt..."></textarea>
+        <button class="btn btn-primary" onclick="addKaizenProject()">+ Thêm dự án vào board</button>
+      </div>
+    </div>
+    
+    <!-- KANBAN BOARD -->
+    <div class="kanban" id="kanban-board">
+      <div class="kanban-column col-doing">
+        <h3>🔄 Đang làm</h3>
+        <div id="col-doing"></div>
+      </div>
+      <div class="kanban-column col-done">
+        <h3>✅ Đạt — Chuẩn hóa</h3>
+        <div id="col-done"></div>
+      </div>
+      <div class="kanban-column col-retry">
+        <h3>🔁 Chưa đạt — Quay lại P</h3>
+        <div id="col-retry"></div>
+      </div>
+    </div>
+    
+    <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap">
+      <button class="btn btn-secondary" onclick="loadExampleKL102()">⚡ Nạp ví dụ KL-102</button>
+      <button class="btn btn-secondary" onclick="clearAllKaizen()">🗑 Xóa tất cả</button>
+      <button class="btn btn-secondary" onclick="window.print()">🖨 In board</button>
+    </div>
+  </div>
+</section>
+
+<!-- KHỐI 9: CHECKLIST 20 ĐIỂM -->
+<section id="checklist" class="reveal">
+  <div class="container">
+    <h2>Checklist 20 điểm — Văn hóa Kaizen</h2>
+    <p>Đánh giá mức độ trưởng thành văn hóa Kaizen trong nhà máy.</p>
+    
+    <div class="checklist-grid" id="checklist-grid"></div>
+    
+    <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="calculateChecklist()">Chấm điểm</button>
+      <button class="btn btn-secondary" onclick="resetChecklist()">Làm lại</button>
+    </div>
+    
+    <div id="checklist-result" class="checklist-result" style="display:none"></div>
+  </div>
+</section>
+
+<!-- KHỐI 10: TRẮC NGHIỆM -->
+<section id="quiz" class="reveal">
+  <div class="container">
+    <h2>Trắc nghiệm 10 câu</h2>
+    <p>≥80% (8/10 đúng) = ĐẠT | &lt;80% = Ôn lại</p>
+    
+    <div class="quiz-container" id="quiz-container"></div>
+    
+    <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap" class="quiz-actions">
+      <button class="btn btn-primary" onclick="submitQuiz()">Chấm bài</button>
+      <button class="btn btn-secondary" onclick="resetQuiz()">Làm lại</button>
+    </div>
+    
+    <div id="quiz-result" class="quiz-result" style="display:none"></div>
+    <div id="quiz-stats" style="margin-top:16px;text-align:center;color:var(--text-light)"></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p>Tài liệu trình bày — Kaizen & PDCA trong bộ hồ sơ nhà máy ép phun theo ISO 9001. Ví dụ minh họa.</p>
+    <p style="margin-top:8px">Cập nhật 01/10/2026 · Phiên bản 1.0</p>
+  </div>
+</footer>
+
+<!-- BACK TO TOP -->
+<div class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</div>
+
+<script>
+// ==================== UTILS ====================
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function saveToLocal(key, data) {
+  try { localStorage.setItem(key, JSON.stringify(data)); } catch(e) { console.warn('Save failed:',e); }
+}
+
+function loadFromLocal(key) {
+  try { return JSON.parse(localStorage.getItem(key)); } catch(e) { return null; }
+}
+
+// ==================== KAIZEN BOARD ====================
+let kaizenProjects = [];
+
+function initBoard() {
+  kaizenProjects = loadFromLocal('kaizen-board-v1') || [];
+  renderBoard();
+}
+
+function addKaizenProject() {
+  const name = document.getElementById('kaizen-name').value.trim();
+  const owner = document.getElementById('kaizen-owner').value.trim();
+  const goal = document.getElementById('kaizen-goal').value.trim();
+  const p = document.getElementById('kaizen-p').value.trim();
+  const d = document.getElementById('kaizen-d').value.trim();
+  const c = document.getElementById('kaizen-c').value.trim();
+  const a = document.getElementById('kaizen-a').value.trim();
+  
+  if (!name) { alert('Vui lòng nhập tên dự án!'); return; }
+  
+  const project = {
+    id: Date.now(),
+    name, owner, goal, p, d, c, a,
+    status: 'doing',
+    createdAt: new Date().toISOString()
+  };
+  
+  kaizenProjects.push(project);
+  saveToLocal('kaizen-board-v1', kaizenProjects);
+  renderBoard();
+  
+  // Clear form
+  document.getElementById('kaizen-name').value = '';
+  document.getElementById('kaizen-owner').value = '';
+  document.getElementById('kaizen-goal').value = '';
+  document.getElementById('kaizen-p').value = '';
+  document.getElementById('kaizen-d').value = '';
+  document.getElementById('kaizen-c').value = '';
+  document.getElementById('kaizen-a').value = '';
+}
+
+function deleteProject(id) {
+  if (!confirm('Xóa dự án này?')) return;
+  kaizenProjects = kaizenProjects.filter(p => p.id !== id);
+  saveToLocal('kaizen-board-v1', kaizenProjects);
+  renderBoard();
+}
+
+function changeStatus(id, newStatus) {
+  const project = kaizenProjects.find(p => p.id === id);
+  if (project) {
+    project.status = newStatus;
+    saveToLocal('kaizen-board-v1', kaizenProjects);
+    renderBoard();
+  }
+}
+
+function renderBoard() {
+  const doing = kaizenProjects.filter(p => p.status === 'doing');
+  const done = kaizenProjects.filter(p => p.status === 'done');
+  const retry = kaizenProjects.filter(p => p.status === 'retry');
+  
+  document.getElementById('col-doing').innerHTML = doing.map(renderCard).join('') || '<p style="color:var(--text-light);padding:20px;text-align:center">Chưa có dự án</p>';
+  document.getElementById('col-done').innerHTML = done.map(renderCard).join('') || '<p style="color:var(--text-light);padding:20px;text-align:center">Chưa có dự án</p>';
+  document.getElementById('col-retry').innerHTML = retry.map(renderCard).join('') || '<p style="color:var(--text-light);padding:20px;text-align:center">Chưa có dự án</p>';
+}
+
+function renderCard(p) {
+  const statusBadge = p.status === 'doing' ? '<span class="badge badge-doing">Đang làm</span>' :
+                      p.status === 'done' ? '<span class="badge badge-done">Đạt</span>' :
+                      '<span class="badge badge-retry">Chưa đạt</span>';
+  
+  const actions = p.status === 'doing' ?
+    '<button class="btn btn-sm btn-success" onclick="changeStatus('+p.id+',\'done\')">→ Đạt</button>' +
+    '<button class="btn btn-sm btn-danger" onclick="changeStatus('+p.id+',\'retry\')">→ Chưa đạt</button>' :
+    '<button class="btn btn-sm btn-secondary" onclick="changeStatus('+p.id+',\'doing\')">↺ Mở lại</button>';
+  
+  return '<div class="kaizen-card">' +
+    '<h4>' + escapeHtml(p.name) + '</h4>' +
+    '<div class="meta">' + statusBadge + ' · Phụ trách: ' + escapeHtml(p.owner || 'Chưa rõ') + '</div>' +
+    (p.goal ? '<div class="meta"><strong>Mục tiêu:</strong> ' + escapeHtml(p.goal) + '</div>' : '') +
+    '<div class="pa-grid">' +
+    '<div class="pa-item"><strong>P</strong>' + escapeHtml(p.p || '—').substring(0,50) + (p.p && p.p.length>50?'...':'') + '</div>' +
+    '<div class="pa-item"><strong>D</strong>' + escapeHtml(p.d || '—').substring(0,50) + (p.d && p.d.length>50?'...':'') + '</div>' +
+    '<div class="pa-item"><strong>C</strong>' + escapeHtml(p.c || '—').substring(0,50) + (p.c && p.c.length>50?'...':'') + '</div>' +
+    '<div class="pa-item"><strong>A</strong>' + escapeHtml(p.a || '—').substring(0,50) + (p.a && p.a.length>50?'...':'') + '</div>' +
+    '</div>' +
+    '<div class="actions">' + actions +
+    '<button class="btn btn-sm btn-danger" onclick="deleteProject('+p.id+')">Xóa</button>' +
+    '</div></div>';
+}
+
+function loadExampleKL102() {
+  if (kaizenProjects.length > 0 && !confirm('Thêm ví dụ KL-102 vào board hiện có?')) return;
+  
+  const kl102 = {
+    id: Date.now(),
+    name: 'Giảm phế bong bóng khí KL-102',
+    owner: 'Tổ ép phun A',
+    goal: '52→≤10 sp/tuần',
+    p: 'Phế 4% (52% tổng) do độ ẩm hạt không đạt. Fishbone: người (thiếu check), máy (không cảnh báo), phương pháp (WI chưa rõ). Mục tiêu: ≤10 sp/tuần. 5W2H: What=lắp cảnh báo độ ẩm, Where=IM-03, Who=Bảo trì+QC, When=2 tuần, Why=giảm phế, How=sensor+WI, How much=2 triệu.',
+    d: 'Lắp sensor cảnh báo độ ẩm máy IM-03. Sửa WI-KT-004 thêm bước kiểm tra độ ẩm. Checklist đầu ca. Đào tạo 2 ca (15 người). Chạy thử 2 ca, ghi chép đầy đủ.',
+    c: '2 tuần sau: phế 8 sp/tuần (đạt). Checklist tuân thủ 95%. SPC Cpk=1.42 (ổn định).',
+    a: 'Chuẩn hóa: Control Plan rev.3, PFMEA cập nhật RPN, SOP KT-004 rev.2. Nhân rộng PET. Khen thưởng 500k/nhóm. Vấn đề kế tiếp: vết cháy đen (32% tổng phế).',
+    status: 'done',
+    createdAt: new Date().toISOString()
+  };
+  
+  kaizenProjects.push(kl102);
+  saveToLocal('kaizen-board-v1', kaizenProjects);
+  renderBoard();
+}
+
+function clearAllKaizen() {
+  if (!confirm('XÓA TẤT CẢ dự án Kaizen? Hành động không thể hoàn tác!')) return;
+  kaizenProjects = [];
+  saveToLocal('kaizen-board-v1', kaizenProjects);
+  renderBoard();
+}
+
+// ==================== CHECKLIST 20 ĐIỂM ====================
+const checklistItems = [
+  'Có Board Kaizen đặt tại xưởng, cập nhật hàng tuần',
+  'Có hòm gợi ý Kaizen cho công nhân',
+  'Họp 5 phút đầu ca đọc kết quả + gợi ý Kaizen',
+  'Đào tạo Kaizen/PDCA cho nhân viên mới',
+  'Ban lãnh đạo tham gia review Kaizen hàng tháng',
+  'Thực hành Genchi Genbutsu (đi hiện trường trước khi quyết định)',
+  'Văn hóa không đổ lỗi — tìm nguyên nhân quy trình',
+  'Mọi cải tiến đạt đều được chuẩn hóa vào SOP/WI',
+  'Đo KPI trước/sau mỗi cải tiến',
+  'Có phần thưởng cho Kaizen được áp dụng',
+  'Mỗi nhân viên có ≥1 ý tưởng Kaizen/tháng',
+  'Pareto được dùng để chọn vấn đề ưu tiên',
+  'Fishbone/Why-Why được dùng để tìm gốc rễ',
+  '5W2H được dùng để lập kế hoạch hành động',
+  'Checklist đầu ca được áp dụng tại máy',
+  'SPC/Cpk được dùng để đo ổn định quy trình',
+  'Control Plan được cập nhật sau cải tiến',
+  'PFMEA được review sau sự cố/cải tiến',
+  'Kaizen Event được tổ chức ≥1 lần/quý',
+  'Kết quả Kaizen được chia sẻ toàn nhà máy'
+];
+
+function initChecklist() {
+  const saved = loadFromLocal('kaizen-checklist-v1');
+  const grid = document.getElementById('checklist-grid');
+  grid.innerHTML = checklistItems.map((item, i) => {
+    const checked = saved && saved[i] ? 'checked' : '';
+    return '<div class="checklist-item">' +
+      '<input type="checkbox" id="chk-'+i+'" '+checked+'>' +
+      '<label for="chk-'+i+'">'+item+'</label>' +
+      '</div>';
+  }).join('');
+}
+
+function calculateChecklist() {
+  let score = 0;
+  const answers = [];
+  for (let i=0; i<20; i++) {
+    const checked = document.getElementById('chk-'+i).checked;
+    answers.push(checked);
+    if (checked) score++;
+  }
+  saveToLocal('kaizen-checklist-v1', answers);
+  
+  const pct = Math.round(score/20*100);
+  const resultDiv = document.getElementById('checklist-result');
+  resultDiv.style.display = 'block';
+  resultDiv.className = 'checklist-result ' + (pct>=80?'strong':pct>=60?'forming':'weak');
+  
+  let evaluation = pct>=80 ? '🌟 Văn hóa Kaizen MẠNH — Duy trì và nhân rộng!' :
+                   pct>=60 ? '📈 Đang hình thành — Tập trung vào điểm còn thiếu' :
+                   '🌱 Cần bắt đầu — Chọn 3 điểm dễ nhất để cải tiến';
+  
+  resultDiv.innerHTML = 'Điểm: '+score+'/20 ('+pct+'%)<br><span style="font-size:1rem;font-weight:400">'+evaluation+'</span>';
+}
+
+function resetChecklist() {
+  for (let i=0; i<20; i++) {
+    document.getElementById('chk-'+i).checked = false;
+  }
+  document.getElementById('checklist-result').style.display = 'none';
+  saveToLocal('kaizen-checklist-v1', Array(20).fill(false));
+}
+
+// ==================== QUIZ 10 CÂU ====================
+const quizQuestions = [
+  {
+    q: 'PDCA dùng để làm gì?',
+    options: ['Xây nhà xưởng mới', 'Vòng lặp cải tiến liên tục Plan–Do–Check–Act', 'Lắp máy tự động hoá'],
+    correct: 1,
+    feedback: 'PDCA là vòng quay cải tiến liên tục, không phải dự án một lần.'
+  },
+  {
+    q: 'Trong PDCA, bước dễ bị bỏ qua nhưng tạo giá trị nhất?',
+    options: ['Plan', 'Do', 'Act (chuẩn hóa khi đạt / quay lại P khi chưa đạt)'],
+    correct: 2,
+    feedback: 'Act mới là nơi tạo giá trị bền vững — chuẩn hóa hoặc học từ thất bại.'
+  },
+  {
+    q: 'Kaizen khác "đổi mới lớn" thế nào?',
+    options: ['Cải tiến nhỏ, liên tục, do mọi người thực hiện hằng ngày', 'Thay toàn bộ dây chuyền 1 lần', 'Chỉ dành cho cấp quản lý'],
+    correct: 0,
+    feedback: 'Kaizen là cải tiến nhỏ, liên tục, từ mọi nhân viên — không phải dự án lớn.'
+  },
+  {
+    q: '"Genchi Genbutsu" nghĩa là gì?',
+    options: ['Đi hiện trường xem thực tế rồi mới quyết định', 'Ngồi phòng họp phân tích số liệu', 'Giao cho QC kiểm tra thay'],
+    correct: 0,
+    feedback: 'Genchi Genbutsu = "Hiện trường, hiện vật" — phải tận mắt xem mới hiểu đúng.'
+  },
+  {
+    q: 'Check xong thấy CHƯA đạt mục tiêu, hành động đúng?',
+    options: ['Bỏ cuộc chuyển vấn đề khác', 'Quay lại Plan, tìm vì sao chưa đạt, chạy vòng PDCA mới', 'Kéo dài deadline vô hạn'],
+    correct: 1,
+    feedback: 'Chưa đạt → quay lại P, tìm nguyên nhân mới, không bỏ cuộc.'
+  },
+  {
+    q: 'Ý tưởng cải tiến của công nhân nên được xử lý đầu tiên qua đâu?',
+    options: ['Viết thẳng vào SOP', 'Board/hòm Kaizen để team đánh giá', 'Đợi đến cuối năm đánh giá'],
+    correct: 1,
+    feedback: 'Board/hòm Kaizen giúp đánh giá nhanh, không bỏ sót ý tưởng.'
+  },
+  {
+    q: 'Sau khi cải tiến ĐẠT mục tiêu, bước bắt buộc kế tiếp?',
+    options: ['Chuẩn hóa vào SOP/WI/Control Plan + đào tạo', 'Bỏ qua vì đã thành công', 'Chỉ khen ngợi nhóm'],
+    correct: 0,
+    feedback: 'Không chuẩn hóa = cải tiến sẽ mất khi người làm rời đi.'
+  },
+  {
+    q: 'Kaizen tập trung xóa bỏ gì dựa trên 7 lãng phí?',
+    options: ['Một công đoạn mới', 'Muda — lãng phí', 'Chi phí nhân sự'],
+    correct: 1,
+    feedback: 'Muda (lãng phí) là mục tiêu của Kaizen — không phải cắt giảm nhân sự.'
+  },
+  {
+    q: 'ISO 9001 quy định "Cải tiến liên tục" ở điều nào?',
+    options: ['§8.2', '§9.2', '§10.3'],
+    correct: 2,
+    feedback: 'ISO 9001:2015 §10.3 — Improvement (Cải tiến liên tục).'
+  },
+  {
+    q: 'Bước P "chọn vấn đề" nên dùng công cụ nào TRƯỚC TIÊN?',
+    options: ['Tính chi phí nhà máy', 'Pareto/7 Wastes/KPI để chọn vấn đề tác động lớn nhất', 'Chờ khách khiếu nại'],
+    correct: 1,
+    feedback: 'Pareto giúp chọn vấn đề có tác động lớn nhất — không đoán mò.'
+  }
+];
+
+let quizAnswers = [];
+
+function initQuiz() {
+  const saved = loadFromLocal('kaizen-quiz-v1');
+  quizAnswers = saved?.answers || [];
+  
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = quizQuestions.map((item, i) => {
+    const prevAnswer = quizAnswers[i] !== undefined ? quizAnswers[i] : null;
+    return '<div class="quiz-question" id="q'+i+'">' +
+      '<h4>'+ (i+1) +'. '+ item.q +'</h4>' +
+      '<div class="quiz-options">' +
+      item.options.map((opt, j) => {
+        const checked = prevAnswer === j ? 'checked' : '';
+        return '<label><input type="radio" name="q'+i+'" value="'+j+'" '+checked+'> '+opt+'</label>';
+      }).join('') +
+      '</div>' +
+      '<div class="quiz-feedback" id="fb'+i+'" style="display:none"></div>' +
+      '</div>';
+  }).join('');
+  
+  if (saved?.score !== undefined) {
+    showQuizResult(saved.score, saved.passed);
+  }
+}
+
+function submitQuiz() {
+  let score = 0;
+  const answers = [];
+  
+  quizQuestions.forEach((item, i) => {
+    const selected = document.querySelector('input[name="q'+i+'"]:checked');
+    const userAnswer = selected ? parseInt(selected.value) : null;
+    answers.push(userAnswer);
+    
+    const qDiv = document.getElementById('q'+i);
+    const fbDiv = document.getElementById('fb'+i);
+    
+    qDiv.classList.remove('correct', 'incorrect');
+    fbDiv.style.display = 'block';
+    
+    if (userAnswer === item.correct) {
+      score++;
+      qDiv.classList.add('correct');
+      fbDiv.className = 'quiz-feedback correct';
+      fbDiv.innerHTML = '✓ Đúng! ' + item.feedback;
+    } else {
+      qDiv.classList.add('incorrect');
+      fbDiv.className = 'quiz-feedback incorrect';
+      fbDiv.innerHTML = '✗ Sai. Đáp án: '+ (item.correct+1) +'. '+ item.feedback;
+    }
+  });
+  
+  quizAnswers = answers;
+  const passed = score >= 8;
+  saveToLocal('kaizen-quiz-v1', { answers, score, passed, date: new Date().toISOString() });
+  
+  showQuizResult(score, passed);
+  updateQuizStats();
+}
+
+function showQuizResult(score, passed) {
+  const resultDiv = document.getElementById('quiz-result');
+  resultDiv.style.display = 'block';
+  resultDiv.className = 'quiz-result ' + (passed ? 'pass' : 'fail');
+  resultDiv.innerHTML = (passed ? '🎉 ĐẠT' : '📚 ÔN LẠI') + ' — '+ score +'/10 ('+ (score*10) +'%)';
+}
+
+function updateQuizStats() {
+  const saved = loadFromLocal('kaizen-quiz-v1');
+  if (saved?.date) {
+    const date = new Date(saved.date).toLocaleString('vi-VN');
+    document.getElementById('quiz-stats').innerHTML = 'Lần làm gần nhất: '+ date +' · Điểm cao nhất: '+ saved.score +'/10';
+  }
+}
+
+function resetQuiz() {
+  quizAnswers = [];
+  saveToLocal('kaizen-quiz-v1', { answers: [], score: 0, passed: false });
+  initQuiz();
+  document.getElementById('quiz-result').style.display = 'none';
+  document.getElementById('quiz-stats').innerHTML = '';
+}
+
+// ==================== SCROLLSPY + REVEAL + BACK TO TOP ====================
+function initScrollSpy() {
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav a');
+  
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop - 100;
+      if (window.scrollY >= sectionTop) {
+        current = section.getAttribute('id');
+      }
+    });
+    
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#'+current) {
+        link.classList.add('active');
+      }
+    });
+    
+    // Back to top
+    const backToTop = document.getElementById('backToTop');
+    if (window.scrollY > 500) {
+      backToTop.classList.add('visible');
+    } else {
+      backToTop.classList.remove('visible');
+    }
+    
+    // Reveal animation
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop - window.innerHeight + 100;
+      if (window.scrollY > sectionTop) {
+        section.classList.add('visible');
+      }
+    });
+  });
+}
+
+// ==================== INIT ====================
+document.addEventListener('DOMContentLoaded', () => {
+  initBoard();
+  initChecklist();
+  initQuiz();
+  initScrollSpy();
+});
+</script>
+</body>
+</html>

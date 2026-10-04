@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KPI Nhà Máy Theo Giờ — Dashboard OEE 24h | Nhà máy ép phun</title>
+    <style>
+        :root {
+            --navy-dark: #0a1628;
+            --navy-primary: #122442;
+            --navy-light: #1a365d;
+            --amber-primary: #d97706;
+            --amber-light: #fbbf24;
+            --amber-pale: #fef3c7;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --success: #16a34a;
+            --warning: #eab308;
+            --error: #dc2626;
+            --border-radius: 8px;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --transition: all 0.2s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scroll-margin-top: 80px; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            background: var(--bg-light);
+        }
+
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
+
+        /* Nav */
+        .nav {
+            position: sticky;
+            top: 0;
+            background: var(--navy-dark);
+            padding: 12px 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+        }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { color: #fff; font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+        .nav-logo a { color: var(--amber-light); text-decoration: none; font-size: 0.85rem; padding: 3px 8px; border: 1px solid var(--amber-light); border-radius: 4px; }
+        .nav-links { display: flex; gap: 18px; list-style: none; }
+        .nav-links a { color: var(--gray-200); text-decoration: none; font-size: 0.9rem; transition: var(--transition); }
+        .nav-links a:hover { color: var(--amber-light); }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-primary) 100%);
+            color: var(--white);
+            padding: 50px 0 40px;
+            text-align: center;
+        }
+        .hero h1 { font-size: 2.2rem; margin-bottom: 12px; font-weight: 700; }
+        .hero p { font-size: 1.05rem; opacity: 0.9; max-width: 850px; margin: 0 auto; }
+
+        /* KPI Stat Cards */
+        .kpi-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-top: -25px;
+            position: relative;
+            z-index: 10;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow-md);
+            border-top: 4px solid var(--navy-primary);
+            text-align: center;
+        }
+        .stat-card.amber { border-top-color: var(--amber-primary); }
+        .stat-card.green { border-top-color: var(--success); }
+        .stat-card.red { border-top-color: var(--error); }
+        .stat-title { font-size: 0.85rem; color: var(--gray-600); text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
+        .stat-number { font-size: 2rem; font-weight: 800; color: var(--navy-primary); line-height: 1.1; }
+        .stat-subtitle { font-size: 0.8rem; color: var(--gray-600); margin-top: 4px; }
+
+        /* Sections */
+        section {
+            padding: 40px 0;
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-200);
+        }
+        section:nth-child(even) { background: var(--bg-light); }
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--navy-primary);
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 3px solid var(--amber-primary);
+            display: inline-block;
+        }
+
+        /* Chart Grid */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 25px;
+            margin: 20px 0;
+        }
+        .chart-box {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .chart-header h3 { font-size: 1.1rem; color: var(--navy-primary); font-weight: 600; }
+        .svg-container { width: 100%; height: 260px; }
+
+        /* Input Form */
+        .form-box {
+            background: var(--white);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            border: 2px solid var(--navy-primary);
+            box-shadow: var(--shadow-md);
+            margin: 20px 0;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        label { font-weight: 600; font-size: 0.85rem; color: var(--navy-primary); }
+        input, select {
+            padding: 8px 12px;
+            border: 1px solid var(--gray-300);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: var(--transition);
+        }
+        input:focus, select:focus {
+            border-color: var(--amber-primary);
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
+        }
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
+        .btn {
+            padding: 9px 18px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-primary { background: var(--amber-primary); color: var(--navy-dark); }
+        .btn-primary:hover { background: #b45309; color: #fff; }
+        .btn-secondary { background: var(--navy-primary); color: #fff; }
+        .btn-outline { background: transparent; border: 1px solid var(--gray-300); color: var(--gray-700); }
+
+        /* Tables */
+        .table-responsive { overflow-x: auto; margin: 20px 0; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.88rem; background: var(--white); }
+        th, td { border: 1px solid var(--gray-200); padding: 10px 12px; text-align: left; }
+        th { background: var(--navy-primary); color: #fff; font-weight: 600; }
+        tr:nth-child(even) { background: var(--gray-100); }
+
+        /* Footer */
+        .footer { background: var(--navy-dark); color: var(--gray-300); text-align: center; padding: 25px 0; font-size: 0.85rem; }
+        .footer a { color: var(--amber-light); text-decoration: none; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.6rem; }
+            .nav-links { display: none; }
+            .charts-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav class="nav">
+        <div class="container nav-container">
+            <div class="nav-logo">
+                <span>KPI Theo Giờ · OEE 24h</span>
+                <a href="index.html">← Trang chủ ISO</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#tong-quan">Tổng quan</a></li>
+                <li><a href="#cong-thuc-oee">Công thức OEE</a></li>
+                <li><a href="#dashboard-charts">Biểu đồ 24h</a></li>
+                <li><a href="#nhap-lieu-gio">Nhập liệu theo giờ</a></li>
+                <li><a href="#lich-su-kpi">Bảng dữ liệu</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="hero">
+        <div class="container">
+            <h1>KPI Nhà Máy Ép Phun Theo Giờ — Dashboard OEE 24h</h1>
+            <p>Hệ thống giám sát hiệu suất thiết bị toàn phần (OEE), sản lượng, tỷ lệ phế và thời gian dừng máy theo giờ — Tiêu chuẩn ISO 9001:2015 (§9.1 Đo lường & Đánh giá)</p>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- KPI SUMMARY CARDS -->
+        <div class="kpi-summary-grid">
+            <div class="stat-card green">
+                <div class="stat-title">OEE Trung Bình Nhà Máy</div>
+                <div class="stat-number" id="lblOEE">82.4%</div>
+                <div class="stat-subtitle">Mục tiêu: ≥ 80.0% (Đạt tiêu chuẩn)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Hiệu Suất Khả Dụng (A)</div>
+                <div class="stat-number" id="lblA">89.2%</div>
+                <div class="stat-subtitle">Downtime tích lũy: 155 phút / 20 máy</div>
+            </div>
+            <div class="stat-card amber">
+                <div class="stat-title">Hiệu Suất Vận Hành (P)</div>
+                <div class="stat-number" id="lblP">94.1%</div>
+                <div class="stat-subtitle">Tốc độ chu kỳ ép phun trung bình: 18.5s</div>
+            </div>
+            <div class="stat-card red">
+                <div class="stat-title">Tỷ Lệ Phế Phẩm (Scrap)</div>
+                <div class="stat-number" id="lblScrap">2.1%</div>
+                <div class="stat-subtitle">Mục tiêu kiểm soát: &lt; 2.0%</div>
+            </div>
+        </div>
+
+        <!-- TỔNG QUAN -->
+        <section id="tong-quan">
+            <h2 class="section-title">1. Giám Sát Đo Lường Sản Xuất Theo Giờ Trong ISO 9001</h2>
+            <p>Thay vì đợi đến hết ca hoặc hết tháng mới tổng kết số liệu thì việc <strong>đo lường KPI theo giờ (Hourly Production Board)</strong> giúp tổ trưởng và kỹ thuật phát hiện ngay bất thường ở giờ thứ nhất, tránh phế phẩm dây chuyền hàng loạt. Điều khoản <strong>ISO 9001:2015 §9.1.1</strong> yêu cầu tổ chức phải xác định: <em>Cái gì cần theo dõi, phương pháp nào đo lường và khi nào cần phân tích kết quả</em>.</p>
+        </section>
+
+        <!-- CÔNG THỨC OEE -->
+        <section id="cong-thuc-oee">
+            <h2 class="section-title">2. Công Thức Tính OEE Chuẩn Ngành Ép Phun</h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Thành phần</th>
+                            <th>Ý nghĩa trong Xưởng Ép Phun</th>
+                            <th>Cách tính chi tiết</th>
+                            <th>Mục tiêu chuẩn</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>A (Availability)</strong><br>Tính khả dụng</td>
+                            <td>Thời gian máy chạy thực tế so với thời gian lên kế hoạch làm việc (loại trừ dừng thay khuôn, sự cố máy, mất điện).</td>
+                            <td><code>A = (Thời gian ca - Thời gian dừng máy) / Thời gian ca × 100%</code></td>
+                            <td>≥ 85%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>P (Performance)</strong><br>Hiệu suất vận hành</td>
+                            <td>Tốc độ sản xuất thực tế so với chu kỳ ép chuẩn (Cycle Time tiêu chuẩn của khuôn do Kỹ thuật ban hành).</td>
+                            <td><code>P = (Tổng sản phẩm dập được × Cycle Time chuẩn) / Thời gian máy chạy thực × 100%</code></td>
+                            <td>≥ 90%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Q (Quality)</strong><br>Mức chất lượng</td>
+                            <td>Tỷ lệ sản phẩm nhựa đạt yêu cầu (OK) so với tổng số lượng sản phẩm ép ra (bao gồm cả hàng lỗi, bavia, phế setup).</td>
+                            <td><code>Q = (Tổng SP ép ra - Phế phẩm) / Tổng SP ép ra × 100%</code></td>
+                            <td>≥ 98% (Phế &lt; 2%)</td>
+                        </tr>
+                        <tr style="background: var(--amber-pale); font-weight: 700;">
+                            <td><strong>OEE TOÀN PHẦN</strong></td>
+                            <td colspan="2"><code>OEE = Availability × Performance × Quality</code></td>
+                            <td>≥ 75% - 85% (World Class: 85%)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- DASHBOARD CHARTS 24H -->
+        <section id="dashboard-charts">
+            <h2 class="section-title">3. Trực Quan Hóa Dữ Liệu 24 Giờ (4 Biểu Đồ SVG Tương Tác)</h2>
+
+            <div class="charts-grid">
+                <!-- CHART 1: OEE THEO GIỜ -->
+                <div class="chart-box">
+                    <div class="chart-header">
+                        <h3>Biểu Đồ 1: Biến Thiên OEE Theo Giờ (24h)</h3>
+                        <span style="font-size:0.8rem;color:var(--amber-primary);font-weight:600;">Đường đỏ: Ngưỡng 80%</span>
+                    </div>
+                    <div class="svg-container" id="chartOeeContainer"></div>
+                </div>
+
+                <!-- CHART 2: SẢN LƯỢNG VS PHẾ -->
+                <div class="chart-box">
+                    <div class="chart-header">
+                        <h3>Biểu Đồ 2: Sản Lượng Đạt vs Phế Phẩm (pcs)</h3>
+                        <span style="font-size:0.8rem;color:var(--success);font-weight:600;">Xanh: Đạt | Đỏ: Phế</span>
+                    </div>
+                    <div class="svg-container" id="chartOutputContainer"></div>
+                </div>
+
+                <!-- CHART 3: DOWNTIME THEO NGUYÊN NHÂN -->
+                <div class="chart-box">
+                    <div class="chart-header">
+                        <h3>Biểu Đồ 3: Cơ Cấu Dừng Máy Downtime (Phút)</h3>
+                        <span style="font-size:0.8rem;color:var(--gray-600);">Pareto nguyên nhân dừng</span>
+                    </div>
+                    <div class="svg-container" id="chartDowntimeContainer"></div>
+                </div>
+
+                <!-- CHART 4: TỶ LỆ PHẾ 20 MÁY -->
+                <div class="chart-box">
+                    <div class="chart-header">
+                        <h3>Biểu Đồ 4: Tỷ Lệ Phế % Trên 10 Máy Trọng Yếu</h3>
+                        <span style="font-size:0.8rem;color:var(--error);font-weight:600;">Cảnh báo &gt; 2.5%</span>
+                    </div>
+                    <div class="svg-container" id="chartScrapByMachineContainer"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NHẬP LIỆU THEO GIỜ -->
+        <section id="nhap-lieu-gio">
+            <h2 class="section-title">4. Biểu Mẫu Nhập Liệu KPI Nhanh (3 Phút / Ca)</h2>
+            <div class="form-box">
+                <form id="formKpi">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Chọn Máy Ép Phun</label>
+                            <select id="kpiMachine" required>
+                                <option value="Máy 01 (120T)">Máy 01 (120T)</option>
+                                <option value="Máy 02 (160T)">Máy 02 (160T)</option>
+                                <option value="Máy 03 (160T)">Máy 03 (160T)</option>
+                                <option value="Máy 04 (200T)">Máy 04 (200T)</option>
+                                <option value="Máy 05 (250T)">Máy 05 (250T)</option>
+                                <option value="Máy 06 (250T)">Máy 06 (250T)</option>
+                                <option value="Máy 07 (300T)">Máy 07 (300T)</option>
+                                <option value="Máy 08 (350T)">Máy 08 (350T)</option>
+                                <option value="Máy 09 (400T)">Máy 09 (400T)</option>
+                                <option value="Máy 10 (450T)">Máy 10 (450T)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Khung Giờ</label>
+                            <select id="kpiHour">
+                                <option value="06:00 - 08:00">06:00 - 08:00 (Đầu ca 1)</option>
+                                <option value="08:00 - 10:00">08:00 - 10:00</option>
+                                <option value="10:00 - 12:00">10:00 - 12:00</option>
+                                <option value="12:00 - 14:00">12:00 - 14:00 (Giao ca 2)</option>
+                                <option value="14:00 - 16:00">14:00 - 16:00</option>
+                                <option value="16:00 - 18:00">16:00 - 18:00</option>
+                                <option value="18:00 - 20:00">18:00 - 20:00</option>
+                                <option value="20:00 - 22:00">20:00 - 22:00 (Giao ca 3)</option>
+                                <option value="22:00 - 06:00">22:00 - 06:00 (Ca đêm)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Sản Lượng Kế Hoạch (pcs)</label>
+                            <input type="number" id="kpiPlan" value="400" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Sản Lượng Đạt OK (pcs)</label>
+                            <input type="number" id="kpiActual" value="385" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phế Phẩm (pcs)</label>
+                            <input type="number" id="kpiScrap" value="8" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Downtime Dừng Máy (Phút)</label>
+                            <input type="number" id="kpiDowntime" value="12" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Nguyên Nhân Dừng Máy Chính</label>
+                            <select id="kpiReason">
+                                <option value="Không dừng máy">Không dừng máy</option>
+                                <option value="Thay khuôn (SMED)">Thay khuôn (SMED)</option>
+                                <option value="Chờ nguyên liệu / sấy nhựa">Chờ nguyên liệu / sấy nhựa</option>
+                                <option value="Lỗi máy ép (kẹt bơm, xì dầu)">Lỗi máy ép (kẹt bơm, xì dầu)</option>
+                                <option value="Lỗi khuôn (kẹt ty lừa, đứt ty)">Lỗi khuôn (kẹt ty lừa, đứt ty)</option>
+                                <option value="Chờ QC kiểm tra mẫu đầu ca">Chờ QC kiểm tra mẫu đầu ca</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Người Ghi Nhận (Mã NV)</label>
+                            <input type="text" id="kpiOperator" placeholder="VD: NV-104" required>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">💾 Lưu Nhật Ký KPI</button>
+                        <button type="button" class="btn btn-secondary" onclick="generateSampleLogs()">⚡ Nạp dữ liệu giả lập 24h</button>
+                        <button type="button" class="btn btn-outline" onclick="clearLogs()">Xóa nhật ký</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- LỊCH SỬ KPI -->
+        <section id="lich-su-kpi">
+            <h2 class="section-title">5. Nhật Ký Sản Xuất Theo Giờ Đã Lưu</h2>
+            <div class="table-responsive">
+                <table id="tblKpiLogs">
+                    <thead>
+                        <tr>
+                            <th>Thời Gian</th>
+                            <th>Máy Ép</th>
+                            <th>Kế Hoạch</th>
+                            <th>Thực Tế</th>
+                            <th>Phế</th>
+                            <th>Phế %</th>
+                            <th>Downtime</th>
+                            <th>Nguyên Nhân</th>
+                            <th>Người Ghi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="kpiLogBody">
+                        <tr><td colspan="9" style="text-align:center;color:#64748b;">Đang tải dữ liệu...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <p>Hệ thống Quản lý Chất lượng ISO 9001:2015 Nhà máy Ép Phun 20 Máy · Dashboard OEE 24h</p>
+            <p style="margin-top: 5px;"><a href="index.html">← Quay lại Cổng tra cứu tài liệu</a></p>
+        </div>
+    </footer>
+
+    <script>
+        const KPI_STORAGE_KEY = 'iso_kpi_hourly_logs_v1';
+
+        // Sample Data Initializer
+        const defaultSampleData = [
+            { time: "06:00 - 08:00", machine: "Máy 05 (250T)", plan: 400, actual: 380, scrap: 6, downtime: 10, reason: "Chờ QC kiểm tra mẫu đầu ca", operator: "NV-02" },
+            { time: "08:00 - 10:00", machine: "Máy 05 (250T)", plan: 400, actual: 395, scrap: 4, downtime: 0, reason: "Không dừng máy", operator: "NV-02" },
+            { time: "10:00 - 12:00", machine: "Máy 05 (250T)", plan: 400, actual: 360, scrap: 15, downtime: 25, reason: "Lỗi khuôn (kẹt ty lừa, đứt ty)", operator: "NV-02" },
+            { time: "12:00 - 14:00", machine: "Máy 05 (250T)", plan: 400, actual: 390, scrap: 5, downtime: 5, reason: "Không dừng máy", operator: "NV-15" },
+            { time: "14:00 - 16:00", machine: "Máy 05 (250T)", plan: 400, actual: 320, scrap: 8, downtime: 45, reason: "Thay khuôn (SMED)", operator: "NV-15" },
+            { time: "16:00 - 18:00", machine: "Máy 05 (250T)", plan: 400, actual: 392, scrap: 6, downtime: 0, reason: "Không dừng máy", operator: "NV-15" }
+        ];
+
+        function getLogs() {
+            const raw = localStorage.getItem(KPI_STORAGE_KEY);
+            if (!raw) {
+                localStorage.setItem(KPI_STORAGE_KEY, JSON.stringify(defaultSampleData));
+                return defaultSampleData;
+            }
+            return JSON.parse(raw);
+        }
+
+        function renderLogs() {
+            const logs = getLogs();
+            const tbody = document.getElementById('kpiLogBody');
+            if (logs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#64748b;">Chưa có dữ liệu nào. Hãy nhập ở form trên!</td></tr>';
+                return;
+            }
+
+            let totalPlan = 0, totalActual = 0, totalScrap = 0, totalDowntime = 0;
+
+            tbody.innerHTML = logs.map(l => {
+                totalPlan += parseInt(l.plan) || 0;
+                totalActual += parseInt(l.actual) || 0;
+                totalScrap += parseInt(l.scrap) || 0;
+                totalDowntime += parseInt(l.downtime) || 0;
+                const scrapPct = l.actual > 0 ? ((l.scrap / (parseInt(l.actual) + parseInt(l.scrap))) * 100).toFixed(1) : 0;
+                return `
+                    <tr>
+                        <td>${escapeHtml(l.time)}</td>
+                        <td><strong>${escapeHtml(l.machine)}</strong></td>
+                        <td>${l.plan}</td>
+                        <td><span style="color:var(--success);font-weight:600;">${l.actual}</span></td>
+                        <td><span style="color:var(--error);font-weight:600;">${l.scrap}</span></td>
+                        <td><strong>${scrapPct}%</strong></td>
+                        <td>${l.downtime} phút</td>
+                        <td>${escapeHtml(l.reason)}</td>
+                        <td><code>${escapeHtml(l.operator)}</code></td>
+                    </tr>
+                `;
+            }).join('');
+
+            // Update stats
+            if (totalActual > 0) {
+                const scrapRate = ((totalScrap / (totalActual + totalScrap)) * 100).toFixed(1);
+                document.getElementById('lblScrap').textContent = scrapRate + '%';
+            }
+
+            renderCharts();
+        }
+
+        // SVG Charts Renderers
+        function renderCharts() {
+            renderOeeChart();
+            renderOutputChart();
+            renderDowntimeChart();
+            renderMachineScrapChart();
+        }
+
+        function renderOeeChart() {
+            const container = document.getElementById('chartOeeContainer');
+            const hours = ['06h', '08h', '10h', '12h', '14h', '16h', '18h', '20h', '22h', '00h', '02h', '04h'];
+            const oeeValues = [78, 85, 71, 88, 68, 89, 86, 84, 82, 79, 81, 83];
+
+            const w = container.clientWidth || 500;
+            const h = 240;
+            const padL = 40, padR = 20, padT = 20, padB = 30;
+            const chartW = w - padL - padR;
+            const chartH = h - padT - padB;
+
+            let points = oeeValues.map((val, i) => {
+                const x = padL + (i / (hours.length - 1)) * chartW;
+                const y = padT + (1 - (val - 50) / 50) * chartH;
+                return `${x},${y}`;
+            }).join(' ');
+
+            let thresholdY = padT + (1 - (80 - 50) / 50) * chartH;
+
+            container.innerHTML = `
+                <svg width="100%" height="100%" viewBox="0 0 ${w} ${h}">
+                    <!-- Axes -->
+                    <line x1="${padL}" y1="${padT + chartH}" x2="${w - padR}" y2="${padT + chartH}" stroke="#cbd5e1" stroke-width="2"/>
+                    <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT + chartH}" stroke="#cbd5e1" stroke-width="2"/>
+                    <!-- Target Line 80% -->
+                    <line x1="${padL}" y1="${thresholdY}" x2="${w - padR}" y2="${thresholdY}" stroke="#dc2626" stroke-dasharray="4" stroke-width="1.5"/>
+                    <text x="${w - padR - 55}" y="${thresholdY - 5}" font-size="10" fill="#dc2626">Ngưỡng 80%</text>
+                    <!-- Polyline OEE -->
+                    <polyline fill="none" stroke="#d97706" stroke-width="3" points="${points}"/>
+                    <!-- Circles & Labels -->
+                    ${oeeValues.map((val, i) => {
+                        const x = padL + (i / (hours.length - 1)) * chartW;
+                        const y = padT + (1 - (val - 50) / 50) * chartH;
+                        return `
+                            <circle cx="${x}" cy="${y}" r="4" fill="#122442" stroke="#d97706" stroke-width="2"/>
+                            <text x="${x}" y="${y - 8}" font-size="10" text-anchor="middle" fill="#1e293b" font-weight="600">${val}%</text>
+                            <text x="${x}" y="${h - 10}" font-size="10" text-anchor="middle" fill="#64748b">${hours[i]}</text>
+                        `;
+                    }).join('')}
+                </svg>
+            `;
+        }
+
+        function renderOutputChart() {
+            const container = document.getElementById('chartOutputContainer');
+            const data = [
+                { label: '06-08', ok: 380, scrap: 6 },
+                { label: '08-10', ok: 395, scrap: 4 },
+                { label: '10-12', ok: 360, scrap: 15 },
+                { label: '12-14', ok: 390, scrap: 5 },
+                { label: '14-16', ok: 320, scrap: 8 },
+                { label: '16-18', ok: 392, scrap: 6 }
+            ];
+
+            const w = container.clientWidth || 500;
+            const h = 240;
+            const padL = 40, padR = 20, padT = 20, padB = 30;
+            const chartW = w - padL - padR;
+            const chartH = h - padT - padB;
+            const barGroupW = chartW / data.length;
+
+            container.innerHTML = `
+                <svg width="100%" height="100%" viewBox="0 0 ${w} ${h}">
+                    <line x1="${padL}" y1="${padT + chartH}" x2="${w - padR}" y2="${padT + chartH}" stroke="#cbd5e1" stroke-width="2"/>
+                    ${data.map((d, i) => {
+                        const gx = padL + i * barGroupW;
+                        const hOk = (d.ok / 450) * chartH;
+                        const hScrap = (d.scrap / 40) * chartH;
+                        const yOk = padT + chartH - hOk;
+                        const yScrap = padT + chartH - hScrap;
+                        return `
+                            <!-- OK Bar -->
+                            <rect x="${gx + 8}" y="${yOk}" width="${barGroupW/2 - 10}" height="${hOk}" fill="#16a34a" rx="2"/>
+                            <text x="${gx + 8 + (barGroupW/2 - 10)/2}" y="${yOk - 4}" font-size="9" text-anchor="middle" fill="#15803d">${d.ok}</text>
+                            <!-- Scrap Bar -->
+                            <rect x="${gx + barGroupW/2 + 2}" y="${yScrap}" width="${barGroupW/2 - 10}" height="${hScrap}" fill="#dc2626" rx="2"/>
+                            <text x="${gx + barGroupW/2 + 2 + (barGroupW/2 - 10)/2}" y="${yScrap - 4}" font-size="9" text-anchor="middle" fill="#b91c1c">${d.scrap}</text>
+                            <text x="${gx + barGroupW/2}" y="${h - 10}" font-size="10" text-anchor="middle" fill="#64748b">${d.label}</text>
+                        `;
+                    }).join('')}
+                </svg>
+            `;
+        }
+
+        function renderDowntimeChart() {
+            const container = document.getElementById('chartDowntimeContainer');
+            const items = [
+                { reason: 'Thay khuôn (SMED)', min: 65, color: '#d97706' },
+                { reason: 'Lỗi khuôn (kẹt ty/nước)', min: 42, color: '#dc2626' },
+                { reason: 'Chờ sấy hạt nhựa', min: 25, color: '#3b82f6' },
+                { reason: 'QC duyệt mẫu đầu ca', min: 18, color: '#64748b' },
+                { reason: 'Sự cố máy & thủy lực', min: 12, color: '#8b5cf6' }
+            ];
+
+            const w = container.clientWidth || 500;
+            const h = 240;
+            const padL = 140, padR = 40, padT = 20, padB = 20;
+            const barH = 24;
+
+            container.innerHTML = `
+                <svg width="100%" height="100%" viewBox="0 0 ${w} ${h}">
+                    ${items.map((it, i) => {
+                        const y = padT + i * (barH + 16);
+                        const barW = (it.min / 70) * (w - padL - padR);
+                        return `
+                            <text x="${padL - 10}" y="${y + 16}" font-size="11" text-anchor="end" fill="#1e293b" font-weight="500">${it.reason}</text>
+                            <rect x="${padL}" y="${y}" width="${barW}" height="${barH}" fill="${it.color}" rx="3"/>
+                            <text x="${padL + barW + 8}" y="${y + 16}" font-size="11" fill="#1e293b" font-weight="600">${it.min}p</text>
+                        `;
+                    }).join('')}
+                </svg>
+            `;
+        }
+
+        function renderMachineScrapChart() {
+            const container = document.getElementById('chartScrapByMachineContainer');
+            const machines = ['M01', 'M02', 'M03', 'M04', 'M05', 'M06', 'M07', 'M08', 'M09', 'M10'];
+            const scrapPcts = [1.2, 1.8, 2.8, 1.4, 3.2, 1.9, 2.1, 3.6, 1.5, 1.7];
+
+            const w = container.clientWidth || 500;
+            const h = 240;
+            const padL = 35, padR = 20, padT = 20, padB = 30;
+            const chartW = w - padL - padR;
+            const chartH = h - padT - padB;
+            const barW = chartW / machines.length;
+
+            const limitY = padT + (1 - (2.5 / 4.0)) * chartH;
+
+            container.innerHTML = `
+                <svg width="100%" height="100%" viewBox="0 0 ${w} ${h}">
+                    <line x1="${padL}" y1="${padT + chartH}" x2="${w - padR}" y2="${padT + chartH}" stroke="#cbd5e1" stroke-width="2"/>
+                    <line x1="${padL}" y1="${limitY}" x2="${w - padR}" y2="${limitY}" stroke="#dc2626" stroke-dasharray="3" stroke-width="1.5"/>
+                    <text x="${w - padR - 70}" y="${limitY - 5}" font-size="10" fill="#dc2626">Ngưỡng 2.5%</text>
+
+                    ${machines.map((m, i) => {
+                        const val = scrapPcts[i];
+                        const bh = (val / 4.0) * chartH;
+                        const bx = padL + i * barW + 6;
+                        const by = padT + chartH - bh;
+                        const color = val > 2.5 ? '#dc2626' : (val > 2.0 ? '#d97706' : '#16a34a');
+                        return `
+                            <rect x="${bx}" y="${by}" width="${barW - 12}" height="${bh}" fill="${color}" rx="3"/>
+                            <text x="${bx + (barW - 12)/2}" y="${by - 4}" font-size="10" text-anchor="middle" font-weight="600" fill="${color}">${val}%</text>
+                            <text x="${bx + (barW - 12)/2}" y="${h - 10}" font-size="10" text-anchor="middle" fill="#64748b">${m}</text>
+                        `;
+                    }).join('')}
+                </svg>
+            `;
+        }
+
+        // Form Submit
+        document.getElementById('formKpi').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newLog = {
+                time: document.getElementById('kpiHour').value,
+                machine: document.getElementById('kpiMachine').value,
+                plan: document.getElementById('kpiPlan').value,
+                actual: document.getElementById('kpiActual').value,
+                scrap: document.getElementById('kpiScrap').value,
+                downtime: document.getElementById('kpiDowntime').value,
+                reason: document.getElementById('kpiReason').value,
+                operator: document.getElementById('kpiOperator').value.trim()
+            };
+
+            const logs = getLogs();
+            logs.unshift(newLog);
+            localStorage.setItem(KPI_STORAGE_KEY, JSON.stringify(logs));
+            renderLogs();
+            alert('Đã cập nhật chỉ số KPI ca thành công!');
+        });
+
+        function generateSampleLogs() {
+            localStorage.setItem(KPI_STORAGE_KEY, JSON.stringify(defaultSampleData));
+            renderLogs();
+            alert('Đã nạp lại dữ liệu mẫu 24h!');
+        }
+
+        function clearLogs() {
+            if (confirm('Bạn có chắc muốn xóa hết dữ liệu nhật ký KPI?')) {
+                localStorage.setItem(KPI_STORAGE_KEY, JSON.stringify([]));
+                renderLogs();
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        window.addEventListener('resize', renderCharts);
+        document.addEventListener('DOMContentLoaded', renderLogs);
+    </script>
+</body>
+</html>

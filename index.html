@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bộ Hồ sơ Nhà máy Ép phun theo ISO 9001</title>
+    <style>
+        /* ===== DESIGN SYSTEM ===== */
+        :root {
+            /* Colors - Navy & Amber theme */
+            --navy-dark: #0a1628;
+            --navy: #122442;
+            --navy-light: #1a3a5c;
+            --amber: #d97706;
+            --amber-light: #fbbf24;
+            --amber-dim: #f59e0b;
+            
+            /* Neutrals */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border: #e2e8f0;
+            
+            /* Group colors */
+            --group1-bg: #eff6ff;
+            --group1-border: #3b82f6;
+            --group1-text: #1d4ed8;
+            --group2-bg: #fef3c7;
+            --group2-border: #f59e0b;
+            --group2-text: #b45309;
+            --group3-bg: #f0fdf4;
+            --group3-border: #22c55e;
+            --group3-text: #15803d;
+            
+            /* Spacing scale (8px base) */
+            --space-1: 4px;
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-5: 20px;
+            --space-6: 24px;
+            --space-8: 32px;
+            --space-10: 40px;
+            --space-12: 48px;
+            --space-16: 64px;
+            
+            /* Typography */
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Noto Sans TC", sans-serif;
+            --font-size-xs: 0.75rem;
+            --font-size-sm: 0.875rem;
+            --font-size-base: 1rem;
+            --font-size-lg: 1.125rem;
+            --font-size-xl: 1.25rem;
+            --font-size-2xl: 1.5rem;
+            --font-size-3xl: 1.875rem;
+            --font-size-4xl: 2.25rem;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            
+            /* Border radius */
+            --radius-sm: 4px;
+            --radius: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            
+            /* Transitions */
+            --transition-fast: 150ms ease;
+            --transition: 200ms ease;
+            --transition-slow: 300ms ease;
+        }
+        
+        /* ===== RESET & BASE ===== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+        
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--bg-secondary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        a {
+            color: var(--amber);
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        /* ===== NAVIGATION ===== */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--navy-dark);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--navy-light);
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--space-4) var(--space-6);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--space-6);
+        }
+        
+        .nav-logo {
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            color: #ffffff;
+            white-space: nowrap;
+        }
+        
+        .nav-logo span {
+            color: var(--amber-light);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: var(--space-2);
+            flex-wrap: wrap;
+        }
+        
+        .nav-link {
+            padding: var(--space-2) var(--space-4);
+            color: var(--text-muted);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            border-radius: var(--radius);
+            transition: all var(--transition-fast);
+            background: transparent;
+            border: 1px solid transparent;
+            cursor: pointer;
+        }
+        
+        .nav-link:hover {
+            color: #ffffff;
+            background: var(--navy-light);
+            text-decoration: none;
+        }
+        
+        .nav-link.active {
+            color: #ffffff;
+            background: var(--amber);
+            border-color: var(--amber);
+        }
+        
+        /* ===== HERO SECTION ===== */
+        .hero {
+            background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%);
+            padding: var(--space-16) var(--space-6) var(--space-12);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--amber-dim) 0%, transparent 70%);
+            opacity: 0.1;
+            pointer-events: none;
+        }
+        
+        .hero-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-title {
+            font-size: clamp(var(--font-size-3xl), 5vw, var(--font-size-4xl));
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1.2;
+            margin-bottom: var(--space-4);
+            letter-spacing: -0.02em;
+        }
+        
+        .hero-subtitle {
+            font-size: var(--font-size-lg);
+            color: var(--text-muted);
+            max-width: 800px;
+            margin-bottom: var(--space-8);
+            line-height: 1.7;
+        }
+        
+        .hero-stats {
+            display: flex;
+            gap: var(--space-4);
+            flex-wrap: wrap;
+            margin-bottom: var(--space-8);
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: var(--radius-md);
+            padding: var(--space-4) var(--space-6);
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+        
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--amber);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .stat-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke: #ffffff;
+        }
+        
+        .stat-content {
+            color: #ffffff;
+        }
+        
+        .stat-value {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        
+        .stat-label {
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+        }
+        
+        /* ===== TOOLS SECTION ===== */
+        .tools {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border);
+            padding: var(--space-6);
+            position: sticky;
+            top: 64px;
+            z-index: 50;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .tools-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            gap: var(--space-4);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .search-wrapper {
+            flex: 1;
+            min-width: 280px;
+            position: relative;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: var(--space-4);
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            stroke: var(--text-muted);
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: var(--space-3) var(--space-4) var(--space-3) var(--space-12);
+            font-size: var(--font-size-base);
+            font-family: inherit;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: all var(--transition-fast);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--amber);
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
+        }
+        
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .filter-group {
+            display: flex;
+            gap: var(--space-2);
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: var(--space-2) var(--space-4);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            font-family: inherit;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        
+        .filter-btn:hover {
+            border-color: var(--navy);
+            color: var(--navy);
+        }
+        
+        .filter-btn.active {
+            background: var(--navy);
+            border-color: var(--navy);
+            color: #ffffff;
+        }
+        
+        .sort-select {
+            padding: var(--space-2) var(--space-4);
+            font-size: var(--font-size-sm);
+            font-family: inherit;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        
+        .sort-select:focus {
+            outline: none;
+            border-color: var(--amber);
+        }
+        
+        .results-count {
+            margin-left: auto;
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        
+        /* ===== MAIN CONTENT ===== */
+        .main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--space-10) var(--space-6);
+        }
+        
+        .section {
+            margin-bottom: var(--space-12);
+            scroll-margin-top: 110px; /* bù trừ nav sticky khi nhảy anchor */
+        }
+        
+        .section-header {
+            margin-bottom: var(--space-6);
+        }
+        
+        .section-title {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            color: var(--navy-dark);
+            margin-bottom: var(--space-2);
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+        
+        .section-badge {
+            padding: var(--space-1) var(--space-3);
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-radius: var(--radius);
+        }
+        
+        .section-badge.group1 {
+            background: var(--group1-bg);
+            color: var(--group1-text);
+        }
+        
+        .section-badge.group2 {
+            background: var(--group2-bg);
+            color: var(--group2-text);
+        }
+        
+        .section-badge.group3 {
+            background: var(--group3-bg);
+            color: var(--group3-text);
+        }
+        
+        .section-desc {
+            color: var(--text-secondary);
+            font-size: var(--font-size-base);
+        }
+        
+        /* ===== CARDS GRID ===== */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: var(--space-6);
+        }
+        
+        .card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            transition: all var(--transition);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--border);
+            transition: background var(--transition);
+        }
+        
+        .card.group1::before {
+            background: var(--group1-border);
+        }
+        
+        .card.group2::before {
+            background: var(--group2-border);
+        }
+        
+        .card.group3::before {
+            background: var(--group3-border);
+        }
+        
+        .card:hover {
+            border-color: var(--navy-light);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-3);
+        }
+        
+        .card-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .card-icon.group1 {
+            background: var(--group1-bg);
+        }
+        
+        .card-icon.group2 {
+            background: var(--group2-bg);
+        }
+        
+        .card-icon.group3 {
+            background: var(--group3-bg);
+        }
+        
+        .card-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .card-icon.group1 svg {
+            stroke: var(--group1-text);
+        }
+        
+        .card-icon.group2 svg {
+            stroke: var(--group2-text);
+        }
+        
+        .card-icon.group3 svg {
+            stroke: var(--group3-text);
+        }
+        
+        .card-title {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--navy-dark);
+            line-height: 1.4;
+            flex: 1;
+        }
+        
+        .card-desc {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+            line-height: 1.6;
+            flex: 1;
+        }
+        
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-2);
+        }
+        
+        .tag {
+            padding: var(--space-1) var(--space-3);
+            font-size: var(--font-size-xs);
+            font-weight: 500;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+        
+        .card-action {
+            margin-top: auto;
+        }
+        
+        .btn-open {
+            width: 100%;
+            padding: var(--space-3) var(--space-4);
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            font-family: inherit;
+            color: #ffffff;
+            background: var(--navy);
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            transition: all var(--transition-fast);
+        }
+        
+        .btn-open:hover {
+            background: var(--navy-light);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-open svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+        }
+        
+        .btn-excel {
+            background: #1d6f42;
+        }
+        
+        .btn-excel:hover {
+            background: #155734;
+        }
+        
+        /* ===== FOOTER ===== */
+        .footer {
+            background: var(--navy-dark);
+            color: var(--text-muted);
+            padding: var(--space-10) var(--space-6);
+            border-top: 1px solid var(--navy-light);
+        }
+        
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .footer-text {
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--space-2);
+        }
+        
+        .footer-note {
+            font-size: var(--font-size-xs);
+            color: var(--text-muted);
+            opacity: 0.8;
+        }
+        
+        /* ===== UTILITIES ===== */
+        .hidden {
+            display: none !important;
+        }
+        
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: var(--space-4);
+            }
+            
+            .nav-links {
+                justify-content: center;
+            }
+            
+            .hero {
+                padding: var(--space-12) var(--space-4) var(--space-8);
+            }
+            
+            .hero-stats {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .tools-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-wrapper {
+                min-width: 100%;
+            }
+            
+            .filter-group {
+                justify-content: center;
+            }
+            
+            .results-count {
+                text-align: center;
+                margin-left: 0;
+                margin-top: var(--space-2);
+            }
+            
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* ===== PRINT ===== */
+        @media print {
+            .nav, .tools {
+                position: static;
+            }
+            
+            .hero {
+                background: var(--navy-dark);
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .card {
+                break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+            
+            .btn-open {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="nav-logo">ISO 9001<span>·</span>Ep phun</div>
+            <div class="nav-links">
+                <a href="#group1" class="nav-link">Nền tảng chất lượng</a>
+                <a href="#group2" class="nav-link">Nhân sự & KPI</a>
+                <a href="#group3" class="nav-link">An toàn & Vận hành</a>
+                <a href="webapp/mobile.html" class="nav-link" style="color:var(--amber-light);font-weight:700;">📱 WebApp Ca</a>
+                <a href="webapp/dashboard.html" class="nav-link" style="color:var(--amber-light);font-weight:700;">🖥️ Live Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-container">
+            <h1 class="hero-title">Bộ Hồ sơ Nhà máy Ép phun theo ISO 9001</h1>
+            <p class="hero-subtitle">20 tài liệu & công cụ: từ hệ thống chất lượng, nhân sự, KPI đến 5S, an toàn và cải tiến liên tục — mở trực tiếp từ một nơi</p>
+            
+            <div class="hero-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value">20 tài liệu</div>
+                        <div class="stat-label">Tổng cộng</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value">3 nhóm</div>
+                        <div class="stat-label">Phân loại</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 11 12 14 22 4"></polyline>
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value">2 trắc nghiệm</div>
+                        <div class="stat-label">Tương tác</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="3" y1="9" x2="21" y2="9"></line>
+                            <line x1="9" y1="21" x2="9" y2="9"></line>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value">1 Excel</div>
+                        <div class="stat-label">Workbook</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gemba WebApp Quick Launcher Banner -->
+            <div style="background: rgba(217, 119, 6, 0.15); border: 2px solid var(--amber); border-radius: var(--radius-md); padding: var(--space-4) var(--space-6); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-4); margin-top: var(--space-2);">
+                <div>
+                    <div style="color: #ffffff; font-weight: 700; font-size: var(--font-size-lg); display: flex; align-items: center; gap: 8px;">
+                        <span>🚀 Gemba WebApp — Vận Hành 20 Máy Ép Phun Trực Tiếp</span>
+                    </div>
+                    <div style="color: var(--amber-light); font-size: var(--font-size-sm); margin-top: 2px;">
+                        Hệ thống số hóa hiện trường: Quét mã QR tại 20 máy, tích 5S đầu ca (&lt; 60s), báo lỗi chụp ảnh &amp; Live Dashboard
+                    </div>
+                </div>
+                <div style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
+                    <a href="webapp/mobile.html" style="background: var(--amber); color: var(--navy-dark); font-weight: 700; padding: var(--space-2) var(--space-4); border-radius: var(--radius); text-decoration: none; font-size: var(--font-size-sm); display: inline-flex; align-items: center; gap: 6px;">
+                        📱 Giao Diện Ca (Mobile)
+                    </a>
+                    <a href="webapp/dashboard.html" style="background: #ffffff; color: var(--navy-dark); font-weight: 700; padding: var(--space-2) var(--space-4); border-radius: var(--radius); text-decoration: none; font-size: var(--font-size-sm); display: inline-flex; align-items: center; gap: 6px;">
+                        🖥️ Live Dashboard 20 Máy
+                    </a>
+                    <a href="webapp/qr_generator.html" style="background: var(--navy-light); border: 1px solid var(--amber-light); color: var(--amber-light); font-weight: 700; padding: var(--space-2) var(--space-4); border-radius: var(--radius); text-decoration: none; font-size: var(--font-size-sm); display: inline-flex; align-items: center; gap: 6px;">
+                        🏷️ In 20 Mã QR
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Tools Section -->
+    <div class="tools">
+        <div class="tools-container">
+            <div class="search-wrapper">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" class="search-input" id="searchInput" placeholder="Tìm kiếm theo tiêu đề, mô tả, tags...">
+            </div>
+            
+            <div class="filter-group" id="filterGroup">
+                <button class="filter-btn active" data-group="all">Tất cả</button>
+                <button class="filter-btn" data-group="group1">Nền tảng chất lượng</button>
+                <button class="filter-btn" data-group="group2">Nhân sự & KPI</button>
+                <button class="filter-btn" data-group="group3">An toàn & Vận hành</button>
+            </div>
+            
+            <select class="sort-select" id="sortSelect">
+                <option value="group">Theo nhóm</option>
+                <option value="alpha">A → Z</option>
+            </select>
+            
+            <div class="results-count" id="resultsCount">Hiển thị 20 / 20 tài liệu</div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Group 1: Nền tảng chất lượng -->
+        <section id="group1" class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="section-badge group1">Nhóm 1</span>
+                    Nền tảng chất lượng
+                </h2>
+                <p class="section-desc">Hệ thống quản lý chất lượng ISO 9001, công cụ lập kế hoạch và giải quyết vấn đề</p>
+            </div>
+            <div class="cards-grid" id="cardsGroup1"></div>
+        </section>
+
+        <!-- Group 2: Nhân sự & KPI -->
+        <section id="group2" class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="section-badge group2">Nhóm 2</span>
+                    Nhân sự & KPI
+                </h2>
+                <p class="section-desc">Tính toán nhân sự, dashboard KPI theo giờ, theo dõi hiệu suất nhà máy</p>
+            </div>
+            <div class="cards-grid" id="cardsGroup2"></div>
+        </section>
+
+        <!-- Group 3: An toàn & Vận hành -->
+        <section id="group3" class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="section-badge group3">Nhóm 3</span>
+                    An toàn & Vận hành
+                </h2>
+                <p class="section-desc">5S, EESH, đào tạo an toàn, bảo trì TPM — vận hành nhà máy an toàn và hiệu quả</p>
+            </div>
+            <div class="cards-grid" id="cardsGroup3"></div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p class="footer-text">Bộ hồ sơ nhà máy ép phun theo ISO 9001 — Ví dụ minh họa cho xây dựng hệ thống</p>
+            <p class="footer-note">Cập nhật 01/10/2026 · Phiên bản 1.0 · Mở trực tiếp bằng Chrome/Edge — các tài liệu đều hoạt động offline</p>
+        </div>
+    </footer>
+
+    <script>
+        // ===== DATA =====
+        const documents = [
+            {
+                file: "giai-doan-6-qms-iso9001.html",
+                title: "Giai đoạn 6 — QMS ISO 9001",
+                desc: "Cẩm nang triển khai hệ thống quản lý chất lượng giai đoạn 6: tài liệu hóa, đào tạo, kiểm soát sản xuất, đo lường, CAPA, audit nội bộ.",
+                tags: ["QMS", "ISO 9001", "Quy trình"],
+                group: "group1",
+                icon: "clipboard"
+            },
+            {
+                file: "5w2h-nha-may-ep-phun.html",
+                title: "5W2H — Khung kế hoạch 7 câu hỏi",
+                desc: "Lập kế hoạch / mô tả vấn đề / giao hành động khắc phục; có biểu mẫu tương tác điền 7 ô + lưu lịch sử.",
+                tags: ["Kế hoạch", "8D", "Biểu mẫu"],
+                group: "group1",
+                icon: "list"
+            },
+            {
+                file: "8d-nha-may-ep-phun.html",
+                title: "8D — Giải quyết vấn đề 8 bước",
+                desc: "Cẩm nang 8D (D0–D8 theo ISO 9001 §10.2): mô tả Is/Is-Not, nguyên nhân gốc, ngăn tái phát + worksheet 8D tương tác (9 ô, lưu lịch sử).",
+                tags: ["8D", "Giải quyết vấn đề", "ISO 9001"],
+                group: "group1",
+                icon: "shield"
+            },
+            {
+                file: "6-tools-nha-may-ep-phun.html",
+                title: "6 Tools — Công cụ giải quyết vấn đề",
+                desc: "SPC, Fishbone, Why-Why, Pareto (biểu đồ tương tác, ABC)...",
+                tags: ["Giải quyết vấn đề", "SPC", "Pareto"],
+                group: "group1",
+                icon: "tool"
+            },
+            {
+                file: "7-qc-tools-nha-may-ep-phun.html",
+                title: "7 QC Tools — Công cụ quản lý chất lượng",
+                desc: "Check Sheet, Pareto, Fishbone, Histogram, Scatter, Control Chart, Stratification (Ishikawa); có histogram + scatter SVG tương tác, bảng phân tầng ca/máy, phiếu đếm lỗi + trắc nghiệm 10 câu.",
+                tags: ["7 QC Tools", "Histogram", "Stratification"],
+                group: "group1",
+                icon: "chart"
+            },
+            {
+                file: "spc-cpk-nha-may-ep-phun.html",
+                title: "SPC & Cpk — Kiểm soát quá trình bằng thống kê",
+                desc: "Biểu đồ kiểm soát X̄-R + 6 qui tắc Nelson + chỉ số năng lực Cp/Cpk; có công cụ nhập tới 25 nhóm × 5, vẽ biểu đồ SVG, phát hiện bất thường, lưu lịch sử + trắc nghiệm 10 câu.",
+                tags: ["SPC", "Cpk", "Kiểm soát quá trình"],
+                group: "group1",
+                icon: "chart"
+            },
+            {
+                file: "fishbone-whywhy-nha-may-ep-phun.html",
+                title: "Fishbone & Why-Why — Đào nguyên nhân gốc",
+                desc: "Công cụ lõi của 8D D4: Fishbone (Ishikawa 6M) mở rộng ngang + Why-Why đào sâu 5 tầng + công cụ vẽ tương tác có cảnh báo trả lời chung chung, lưu lịch sử.",
+                tags: ["Fishbone", "Why-Why", "Nguyên nhân gốc"],
+                group: "group1",
+                icon: "chart"
+            },
+            {
+                file: "7-lang-phi-nha-may-ep-phun.html",
+                title: "7 Lãng phí (7 Wastes)",
+                desc: "TIMWOOD, ví dụ ép phun, phân biệt dễ nhầm, Waste Walk + 16 câu trắc nghiệm.",
+                tags: ["Lean", "TIMWOOD", "Trắc nghiệm"],
+                group: "group1",
+                icon: "trash"
+            },
+            {
+                file: "kaizen-pdca-nha-may-ep-phun.html",
+                title: "Kaizen & PDCA — Cải tiến liên tục",
+                desc: "Vòng lặp Plan–Do–Check–Act + văn hóa Kaizen (ISO 9001 §10.3); có Board Kaizen tương tác 3 cột, checklist 20 điểm văn hóa cải tiến + trắc nghiệm 10 câu.",
+                tags: ["Kaizen", "PDCA", "Cải tiến liên tục"],
+                group: "group1",
+                icon: "tool"
+            },
+            {
+                file: "smed-nha-may-ep-phun.html",
+                title: "SMED — Chuyển đổi khuôn nhanh",
+                desc: "Rút thời gian đổi khuôn xuống dưới 10 phút (Shigeo Shingo); có công cụ tính lợi ích (giờ + tiền tiết kiệm), bảng phân loại Nội/Ngoại tương tác, checklist 8 bước + trắc nghiệm 10 câu.",
+                tags: ["SMED", "Đổi khuôn", "Nội/Ngoại"],
+                group: "group1",
+                icon: "wrench"
+            },
+            {
+                file: "cau-hoi-tu-danh-gia-iso9001.html",
+                title: "Bộ câu hỏi Tự đánh giá & Đánh giá chéo ISO 9001",
+                desc: "235 câu theo vai trò (A–H) + 6 cặp đánh giá chéo: mỗi người tự đánh giá mình và đánh giá bộ phận khác; thang Đạt/Một phần/Chưa, tự chấm %, danh sách điểm yếu, lưu lịch sử + in phiếu.",
+                tags: ["ISO 9001", "Tự đánh giá", "Đánh giá chéo"],
+                group: "group1",
+                icon: "list"
+            },
+            {
+                file: "audit-noi-bo-nha-may-ep-phun.html",
+                title: "Audit nội bộ ISO 9001 — Đánh giá nội bộ hiệu lực",
+                desc: "Cẩm nang §9.2 + bộ công cụ: lịch audit năm, checklist audit 30 câu (chấm Tuân thủ/NC/OFI), bảng theo dõi không phù hợp (NC) đến khi đóng + trắc nghiệm 10 câu.",
+                tags: ["ISO 9001", "Audit nội bộ", "NC"],
+                group: "group1",
+                icon: "clipboard"
+            },
+            {
+                file: "y-tuong-ke-hoach-webapp-iso.html",
+                title: "Ý tưởng & Kế hoạch triển khai Webapp quản lý ISO",
+                desc: "Đặc tả hệ thống tự phát triển dùng trên điện thoại: 5 module (checklist/đánh giá/KPI/sự cố/hồ sơ), vòng khép kín, cấu trúc DB + API gợi ý, phân quyền, lộ trình 3 đợt + checklist MVP 12 mục.",
+                tags: ["Webapp", "Số hóa", "Kế hoạch triển khai"],
+                group: "group1",
+                icon: "chart"
+            },
+            {
+                file: "tinh-toan-nhan-su-nha-may-ep-phun.html",
+                title: "Tính toán nhân sự nhà máy ép phun",
+                desc: "App tương tác (localStorage): 13 bộ phận, tham số bên phải, tổng nhân sự trực tiếp/gián tiếp ~133 người (20 máy, 3 ca, K=1.15, lắp ráp 10, xe nâng 2).",
+                tags: ["Nhân sự", "Công cụ tính"],
+                group: "group2",
+                icon: "users"
+            },
+            {
+                file: "tinh-toan-nhan-su-nha-may-ep-phun.xlsx",
+                title: "Excel tính nhân sự + KPI Dashboard",
+                desc: "Workbook 4 sheet: Tham số / Tính toán / Tổng hợp / KPI Dashboard (công thức, tự tính).",
+                tags: ["Excel", "Nhân sự", "KPI"],
+                group: "group2",
+                icon: "spreadsheet",
+                isExcel: true
+            },
+            {
+                file: "kpi-nha-may-theo-gio.html",
+                title: "KPI nhà máy theo giờ",
+                desc: "Dashboard 24h: OEE (A/P/Q), phế, an toàn, công suất; 4 chart SVG, lưu dữ liệu.",
+                tags: ["KPI", "OEE", "Dashboard"],
+                group: "group2",
+                icon: "chart"
+            },
+            {
+                file: "5s-nha-may-ep-phun.html",
+                title: "5S — Sàng lọc · Sắp xếp · Sạch sẽ · Săn sóc · Sẵn sàng",
+                desc: "Cẩm nang 5S + checklist chấm điểm 100.",
+                tags: ["5S", "Checklist", "Vệ sinh công nghiệp"],
+                group: "group3",
+                icon: "broom"
+            },
+            {
+                file: "eesh-nha-may-ep-phun.html",
+                title: "EESH — An toàn · Sức khỏe · Môi trường · An ninh",
+                desc: "HSE + mô-đun Risk Assessment tương tác (C = S × O).",
+                tags: ["EESH", "HSE", "Đánh giá rủi ro"],
+                group: "group3",
+                icon: "shield"
+            },
+            {
+                file: "dao-tao-an-toan-nha-may.html",
+                title: "Đào tạo an toàn + Trắc nghiệm",
+                desc: "9 mô-đun (nội quy, PPE, điện, máy, phòng cháy, hóa chất, CTNH, LOTO...) + 24 câu trắc nghiệm chấm điểm (đạt ≥80%).",
+                tags: ["An toàn", "Đào tạo", "Trắc nghiệm"],
+                group: "group3",
+                icon: "graduation"
+            },
+            {
+                file: "bao-tri-nha-may-ep-phun.html",
+                title: "Bảo trì nhà máy ép phun (TPM)",
+                desc: "Bảo trì phòng ngừa/dự đoán, KPI MTTR/MTBF, công cụ lập lịch PM tương tác.",
+                tags: ["Bảo trì", "TPM", "MTTR/MTBF"],
+                group: "group3",
+                icon: "wrench"
+            }
+        ];
+
+        // ===== ICONS =====
+        const icons = {
+            clipboard: `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>`,
+            list: `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>`,
+            tool: `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>`,
+            trash: `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>`,
+            users: `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>`,
+            spreadsheet: `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>`,
+            chart: `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>`,
+            broom: `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 4L6 16M6 16L4 18M6 16L8 18"></path><path d="M14 8l2-2"></path><path d="M18 4l2 2"></path></svg>`,
+            shield: `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`,
+            graduation: `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>`,
+            wrench: `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>`
+        };
+
+        // ===== STATE =====
+        let currentFilter = 'all';
+        let currentSort = 'group';
+        let searchQuery = '';
+
+        // ===== UTILITY FUNCTIONS =====
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function normalizeText(text) {
+            return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        }
+
+        // ===== RENDER FUNCTIONS =====
+        function createCard(doc) {
+            const card = document.createElement('article');
+            card.className = `card ${doc.group}`;
+            card.dataset.group = doc.group;
+            card.dataset.search = doc.datasetSearch || normalizeText(`${doc.title} ${doc.desc} ${doc.tags.join(' ')}`);
+            card.style.cursor = 'pointer';
+            
+            const btnClass = doc.isExcel ? 'btn-open btn-excel' : 'btn-open';
+            const btnText = doc.isExcel ? '📊 Mở Excel' : '📂 Mở tài liệu';
+            
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="card-icon ${doc.group}">
+                        ${icons[doc.icon] || icons.clipboard}
+                    </div>
+                    <h3 class="card-title">
+                        <a href="${escapeHtml(doc.file)}" style="color:inherit;text-decoration:none;">${escapeHtml(doc.title)}</a>
+                    </h3>
+                </div>
+                <p class="card-desc">${escapeHtml(doc.desc)}</p>
+                <div class="card-tags">
+                    ${doc.tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}
+                </div>
+                <div class="card-action">
+                    <a href="${escapeHtml(doc.file)}" class="${btnClass}">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                            <polyline points="15 3 21 3 21 9"></polyline>
+                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                        ${btnText}
+                    </a>
+                </div>
+            `;
+
+            // Click anywhere on card (except inside an explicit <a> tag) to open the page
+            card.addEventListener('click', (e) => {
+                if (!e.target.closest('a')) {
+                    window.location.href = doc.file;
+                }
+            });
+            
+            return card;
+        }
+
+        function renderCards() {
+            const filtered = documents.filter(doc => {
+                const matchesGroup = currentFilter === 'all' || doc.group === currentFilter;
+                const searchTarget = doc.datasetSearch || normalizeText(`${doc.title} ${doc.desc} ${doc.tags.join(' ')}`);
+                const matchesSearch = searchQuery === '' || searchTarget.includes(normalizeText(searchQuery));
+                return matchesGroup && matchesSearch;
+            });
+
+            const sorted = [...filtered].sort((a, b) => {
+                if (currentSort === 'alpha') {
+                    return a.title.localeCompare(b.title, 'vi');
+                }
+                if (a.group === b.group) {
+                    return a.title.localeCompare(b.title, 'vi');
+                }
+                return a.group.localeCompare(b.group);
+            });
+
+            const grouped = { group1: [], group2: [], group3: [] };
+            sorted.forEach(doc => grouped[doc.group].push(doc));
+
+            const containerMap = {
+                group1: 'cardsGroup1',
+                group2: 'cardsGroup2',
+                group3: 'cardsGroup3'
+            };
+
+            ['group1', 'group2', 'group3'].forEach(groupId => {
+                const containerId = containerMap[groupId];
+                const container = document.getElementById(containerId);
+                const section = document.getElementById(groupId);
+
+                if (container) {
+                    container.innerHTML = '';
+                    grouped[groupId].forEach(doc => {
+                        container.appendChild(createCard(doc));
+                    });
+                }
+
+                // Show or hide section based on filter and content
+                if (section) {
+                    if (currentFilter !== 'all' && currentFilter !== groupId) {
+                        section.style.display = 'none';
+                    } else if (grouped[groupId].length === 0 && searchQuery !== '') {
+                        section.style.display = 'none';
+                    } else {
+                        section.style.display = 'block';
+                    }
+                }
+            });
+
+            updateResultsCount(filtered.length);
+        }
+
+        function updateResultsCount(count) {
+            const countEl = document.getElementById('resultsCount');
+            countEl.textContent = `Hiển thị ${count} / ${documents.length} tài liệu`;
+        }
+
+        // ===== EVENT HANDLERS =====
+        function handleSearch(e) {
+            searchQuery = e.target.value.trim();
+            renderCards();
+        }
+
+        function handleFilter(e) {
+            if (e.target.classList.contains('filter-btn')) {
+                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilter = e.target.dataset.group;
+                renderCards();
+            }
+        }
+
+        function handleSort(e) {
+            currentSort = e.target.value;
+            renderCards();
+        }
+
+        function handleNavClick(e) {
+            if (e.target.classList.contains('nav-link')) {
+                document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+                e.target.classList.add('active');
+            }
+        }
+
+        // ===== INITIALIZATION =====
+        function init() {
+            documents.forEach(doc => {
+                doc.datasetSearch = normalizeText(`${doc.title} ${doc.desc} ${doc.tags.join(' ')}`);
+            });
+
+            const searchInput = document.getElementById('searchInput');
+            const filterGroup = document.getElementById('filterGroup');
+            const sortSelect = document.getElementById('sortSelect');
+            const nav = document.querySelector('.nav');
+
+            searchInput.addEventListener('input', handleSearch);
+            filterGroup.addEventListener('click', handleFilter);
+            sortSelect.addEventListener('change', handleSort);
+            nav.addEventListener('click', handleNavClick);
+
+            renderCards();
+        }
+
+        // Start
+        init();
+    </script>
+</body>
+</html>

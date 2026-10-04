@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5S — Thực Hành Quản Lý Trực Quan | Nhà máy ép phun</title>
+    <style>
+        :root {
+            --navy-dark: #0a1628;
+            --navy-primary: #122442;
+            --navy-light: #1a365d;
+            --amber-primary: #d97706;
+            --amber-light: #fbbf24;
+            --amber-pale: #fef3c7;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --success: #16a34a;
+            --error: #dc2626;
+            --border-radius: 8px;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --transition: all 0.2s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scroll-margin-top: 80px; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            background: var(--bg-light);
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        .nav {
+            position: sticky;
+            top: 0;
+            background: var(--navy-dark);
+            padding: 12px 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+        }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { color: #fff; font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+        .nav-logo a { color: var(--amber-light); text-decoration: none; font-size: 0.85rem; padding: 3px 8px; border: 1px solid var(--amber-light); border-radius: 4px; }
+        .nav-links { display: flex; gap: 18px; list-style: none; }
+        .nav-links a { color: var(--gray-200); text-decoration: none; font-size: 0.9rem; transition: var(--transition); }
+        .nav-links a:hover { color: var(--amber-light); }
+
+        .hero {
+            background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-primary) 100%);
+            color: var(--white);
+            padding: 50px 0;
+            text-align: center;
+        }
+        .hero h1 { font-size: 2.2rem; margin-bottom: 12px; font-weight: 700; }
+        .hero p { font-size: 1.05rem; opacity: 0.9; max-width: 850px; margin: 0 auto; }
+
+        section { padding: 45px 0; background: var(--white); border-bottom: 1px solid var(--gray-200); }
+        section:nth-child(even) { background: var(--bg-light); }
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--navy-primary);
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 3px solid var(--amber-primary);
+            display: inline-block;
+        }
+
+        .grid-5s {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .card-5s {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            border-top: 4px solid var(--navy-primary);
+            box-shadow: var(--shadow-sm);
+        }
+        .card-5s.amber { border-top-color: var(--amber-primary); }
+        .card-5s.green { border-top-color: var(--success); }
+        .card-5s h3 { font-size: 1.15rem; color: var(--navy-primary); margin-bottom: 8px; }
+        .card-5s .jp-name { font-size: 0.8rem; color: var(--gray-600); font-weight: 600; text-transform: uppercase; margin-bottom: 8px; }
+
+        /* Checklist Box */
+        .checklist-box {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            border: 2px solid var(--navy-primary);
+            box-shadow: var(--shadow-md);
+            margin: 20px 0;
+        }
+        .score-display {
+            background: var(--navy-primary);
+            color: #fff;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .score-val { font-size: 2.4rem; font-weight: 800; color: var(--amber-light); }
+        .score-status { font-size: 1.1rem; font-weight: 600; }
+
+        .item-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 15px;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        .item-desc { font-size: 0.9rem; font-weight: 500; }
+        .item-area { font-size: 0.75rem; color: var(--gray-600); }
+        select.score-select {
+            padding: 6px 10px;
+            border: 1px solid var(--gray-300);
+            border-radius: 4px;
+            font-size: 0.88rem;
+            outline: none;
+        }
+
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-primary { background: var(--amber-primary); color: var(--navy-dark); }
+        .btn-primary:hover { background: #b45309; color: #fff; }
+        .btn-secondary { background: var(--navy-primary); color: #fff; }
+
+        .footer { background: var(--navy-dark); color: var(--gray-300); text-align: center; padding: 25px 0; font-size: 0.85rem; }
+        .footer a { color: var(--amber-light); text-decoration: none; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.6rem; }
+            .item-row { grid-template-columns: 1fr; gap: 8px; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="container nav-container">
+            <div class="nav-logo">
+                <span>5S · Xưởng Ép Phun</span>
+                <a href="index.html">← Trang chủ ISO</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#tong-quan">Tổng quan 5S</a></li>
+                <li><a href="#tieu-chuan-khu-vuc">4 Khu vực chuẩn</a></li>
+                <li><a href="#checklist-100">Checklist 100 Điểm</a></li>
+                <li><a href="#hanh-dong">Biên bản đánh giá</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="container">
+            <h1>5S — Thực Hành Quản Lý Trực Quan Nhà Máy Ép Phun</h1>
+            <p>Sàng lọc · Sắp xếp · Sạch sẽ · Săn sóc · Sẵn sàng — Nền tảng môi trường vận hành quá trình theo chuẩn ISO 9001:2015 (§7.1.3 Cơ sở hạ tầng & §7.1.4 Môi trường)</p>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- TỔNG QUAN -->
+        <section id="tong-quan">
+            <h2 class="section-title">1. Nguyên Tắc 5S Trong Nhà Máy Ép Phun 20 Máy</h2>
+            <p>Xưởng ép phun nhựa là nơi phát sinh nhiều dầu thủy lực, bụi hạt nhựa, cuống keo phế và dụng cụ gá kẹp nặng. Nếu không duy trì 5S, rủi ro lẫn hạt màu, xước mặt khuôn, trượt ngã và cháy nổ nòng gia nhiệt là rất cao:</p>
+
+            <div class="grid-5s">
+                <div class="card-5s amber">
+                    <div class="jp-name">1S · SEIRI (SÀNG LỌC)</div>
+                    <h3>Tách & Bỏ Lãng Phí</h3>
+                    <p>Dán thẻ đỏ loại bỏ: cuống keo hỏng, bao bì rách, phụ tùng khuôn vỡ, giẻ lau dính dầu thừa.</p>
+                </div>
+                <div class="card-5s">
+                    <div class="jp-name">2S · SEITON (SẮP XẾP)</div>
+                    <h3>Dễ Thấy - Dễ Lấy</h3>
+                    <p>Kẻ vạch sơn đường di chuyển pa-lăng, vị trí bảng gá bu lông kẹp khuôn, khay cuống keo, pallet thành phẩm.</p>
+                </div>
+                <div class="card-5s green">
+                    <div class="jp-name">3S · SEISO (SẠCH SẼ)</div>
+                    <h3>Kiểm Tra Bằng Vệ Sinh</h3>
+                    <p>Lau sạch bàn kẹp máy, kiểm tra rò rỉ gioăng dầu, hút bụi nắp phễu sấy, quét sạch hạt nhựa rơi vãi.</p>
+                </div>
+                <div class="card-5s">
+                    <div class="jp-name">4S · SEIKETSU (SĂN SÓC)</div>
+                    <h3>Chuẩn Hóa Quy Trình</h3>
+                    <p>Duy trì checklist 5 phút đầu ca & 5 phút cuối ca; bảng phân công vệ sinh định kỳ từng máy.</p>
+                </div>
+                <div class="card-5s amber">
+                    <div class="jp-name">5S · SHITSUKE (SẴN SÀNG)</div>
+                    <h3>Tự Giác Kỷ Luật</h3>
+                    <p>Tạo văn hóa nhặt hạt nhựa rơi ngay lập tức; không để đồ vật lạ trên bàn máy; chấm điểm thi đua ca.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TIÊU CHUẨN 4 KHU VỰC -->
+        <section id="tieu-chuan-khu-vuc">
+            <h2 class="section-title">2. Tiêu Chuẩn 5S Cho 4 Khu Vực Trọng Yếu</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-top:15px;">
+                <div style="background:#fff;border:1px solid #e2e8f0;padding:18px;border-radius:6px;border-left:4px solid #122442;">
+                    <h3 style="color:#122442;margin-bottom:8px;">A. Khu Vực 20 Máy Ép Phun</h3>
+                    <p style="font-size:0.88rem;color:#475569;">Bàn máy không đọng dầu nhớt. Cửa an toàn đóng kín, kính cửa nhìn rõ bên trong. Băng tải không bị kẹt ba via. Dây nước làm mát buộc gọn gàng, không chạm nòng gia nhiệt.</p>
+                </div>
+                <div style="background:#fff;border:1px solid #e2e8f0;padding:18px;border-radius:6px;border-left:4px solid #d97706;">
+                    <h3 style="color:#d97706;margin-bottom:8px;">B. Khu Vực Kho Khuôn Mẫu</h3>
+                    <p style="font-size:0.88rem;color:#475569;">Khuôn có bảng tên, mã khuôn, tình trạng (Sẵn sàng / Đang bảo dưỡng / Chờ sửa). Bôi mỡ chống gỉ mặt phân khuôn trước khi lên kệ. Tuyệt đối không để khuôn trực tiếp dưới sàn đất.</p>
+                </div>
+                <div style="background:#fff;border:1px solid #e2e8f0;padding:18px;border-radius:6px;border-left:4px solid #16a34a;">
+                    <h3 style="color:#16a34a;margin-bottom:8px;">C. Khu Sấy & Trộn Hạt Nhựa</h3>
+                    <p style="font-size:0.88rem;color:#475569;">Bao hạt nhựa mở dở phải kẹp kín miệng tránh hút ẩm. Thùng trộn màu dán nhãn mã màu rõ ràng. Phễu sấy kiểm tra lưới lọc định kỳ, tránh tắc nghẽn nhiệt độ.</p>
+                </div>
+                <div style="background:#fff;border:1px solid #e2e8f0;padding:18px;border-radius:6px;border-left:4px solid #64748b;">
+                    <h3 style="color:#64748b;margin-bottom:8px;">D. Khu Nghiền Tái Sinh & Phế</h3>
+                    <p style="font-size:0.88rem;color:#475569;">Máy băm có phên chắn an toàn, đeo chụp tai giảm ồn. Thùng hạt băm phân chia theo màu sắc (trắng, đen, xanh...). Không để lẫn dị vật kim loại vào phễu băm.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CHECKLIST 100 ĐIỂM -->
+        <section id="checklist-100">
+            <h2 class="section-title">3. Bảng Kiểm 5S Chấm Điểm 100 Điểm Tương Tác</h2>
+            <p>Đánh giá tuần/tháng cho từng cụm máy ép phun. Chọn thang điểm từ 0 đến 5 cho 20 hạng mục:</p>
+
+            <div class="checklist-box">
+                <div style="display:flex;gap:15px;flex-wrap:wrap;margin-bottom:20px;">
+                    <div>
+                        <label style="font-weight:600;font-size:0.85rem;">Chọn Máy / Cụm Máy Đánh Giá:</label><br>
+                        <select id="evalTarget" style="padding:6px 12px;border:1px solid #cbd5e1;border-radius:4px;">
+                            <option value="Cụm Máy M01 - M05">Cụm Máy M01 - M05</option>
+                            <option value="Cụm Máy M06 - M10">Cụm Máy M06 - M10</option>
+                            <option value="Cụm Máy M11 - M15">Cụm Máy M11 - M15</option>
+                            <option value="Cụm Máy M16 - M20">Cụm Máy M16 - M20</option>
+                            <option value="Khu vực Kho Khuôn & Bảo dưỡng">Khu vực Kho Khuôn & Bảo dưỡng</option>
+                            <option value="Khu vực Sấy hạt & Nghiền phế">Khu vực Sấy hạt & Nghiền phế</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-weight:600;font-size:0.85rem;">Người Đánh Giá (Auditor):</label><br>
+                        <input type="text" id="evalAuditor" value="Ban 5S / QA" style="padding:6px 12px;border:1px solid #cbd5e1;border-radius:4px;">
+                    </div>
+                </div>
+
+                <!-- Score Box -->
+                <div class="score-display">
+                    <div>
+                        <div style="font-size:0.9rem;opacity:0.9;">TỔNG ĐIỂM 5S / 100 ĐIỂM:</div>
+                        <div class="score-val" id="totalScore">100 / 100</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div class="score-status" id="scoreGrade">XẾP LOẠI: XUẤT SẮC (A)</div>
+                        <div style="font-size:0.8rem;opacity:0.8;" id="actionRequired">Không có hạng mục nào vi phạm nghiêm trọng</div>
+                    </div>
+                </div>
+
+                <!-- 20 Items List -->
+                <div id="checklistItemsContainer"></div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="saveAudit5S()">💾 Lưu Kết Quả Đánh Giá 5S</button>
+                    <button class="btn btn-secondary" onclick="resetChecklist(5)">Đặt tất cả 5 điểm (Chuẩn)</button>
+                    <button class="btn btn-secondary" onclick="window.print()">🖨 In Biên Bản Đánh Giá</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- LỊCH SỬ LƯU -->
+        <section id="hanh-dong">
+            <h2 class="section-title">4. Nhật Ký Đánh Giá 5S Đã Thực Hiện</h2>
+            <div id="audit5sHistory" style="overflow-x:auto;">
+                <table style="width:100%;border-collapse:collapse;font-size:0.88rem;">
+                    <thead>
+                        <tr style="background:#122442;color:#fff;">
+                            <th style="padding:10px;border:1px solid #cbd5e1;">Ngày</th>
+                            <th style="padding:10px;border:1px solid #cbd5e1;">Khu vực</th>
+                            <th style="padding:10px;border:1px solid #cbd5e1;">Người đánh giá</th>
+                            <th style="padding:10px;border:1px solid #cbd5e1;">Điểm số</th>
+                            <th style="padding:10px;border:1px solid #cbd5e1;">Xếp loại</th>
+                            <th style="padding:10px;border:1px solid #cbd5e1;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history5sBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Hệ thống Quản lý Chất lượng ISO 9001:2015 Nhà máy Ép Phun 20 Máy · Tiêu chuẩn 5S Hiện Trường</p>
+            <p style="margin-top: 5px;"><a href="index.html">← Quay lại Cổng tra cứu tài liệu</a></p>
+        </div>
+    </footer>
+
+    <script>
+        const STORAGE_5S_KEY = 'iso_5s_audit_results_v1';
+
+        const checklistQuestions = [
+            // 1S
+            { s: '1S Sàng lọc', q: 'Không có linh kiện nhựa hỏng, cuống keo thừa chất đống dưới gầm máy.', area: 'Khu vực máy' },
+            { s: '1S Sàng lọc', q: 'Các đồ gá, bu lông hỏng được dán thẻ đỏ hoặc đưa vào thùng phế liệu.', area: 'Khuôn & Gá kẹp' },
+            { s: '1S Sàng lọc', q: 'Không có bao bì rách, giẻ lau dính dầu mỡ để bừa bãi xung quanh.', area: 'Khu vực máy' },
+            { s: '1S Sàng lọc', q: 'Hạt nhựa thừa cuối ca được thu gom trả về kho hoặc sấy bảo quản.', area: 'Khu sấy hạt' },
+
+            // 2S
+            { s: '2S Sắp xếp', q: 'Đồ nghề sửa máy, cờ lê lực kẹp khuôn được đặt đúng bảng treo bóng (shadow board).', area: 'Dụng cụ' },
+            { s: '2S Sắp xếp', q: 'Vạch sơn phân định đường đi, vị trí đặt pallet hàng đạt/chờ xử lý rõ ràng.', area: 'Mặt bằng xưởng' },
+            { s: '2S Sắp xếp', q: 'Khuôn mẫu trên kệ có nhãn mã khuôn, hướng đặt đúng chuẩn an toàn.', area: 'Kho khuôn' },
+            { s: '2S Sắp xếp', q: 'Dây điện, ống nước làm mát, ống khí nén đi gọn gàng, có kẹp cố định.', area: 'Khu vực máy' },
+
+            // 3S
+            { s: '3S Sạch sẽ', q: 'Thân máy, bàn kẹp tĩnh, bàn kẹp động sạch dầu mỡ, không bám cặn nhựa.', area: 'Khu vực máy' },
+            { s: '3S Sạch sẽ', q: 'Sàn xưởng xung quanh 20 máy sạch bóng, không có hạt nhựa gây trượt ngã.', area: 'Sàn xưởng' },
+            { s: '3S Sạch sẽ', q: 'Phễu sấy hạt nhựa và lưới lọc bụi được hút bụi vệ sinh định kỳ.', area: 'Thiết bị phụ trợ' },
+            { s: '3S Sạch sẽ', q: 'Kính cửa an toàn máy ép trong suốt, quan sát rõ chu kỳ đóng mở khuôn.', area: 'An toàn máy' },
+
+            // 4S
+            { s: '4S Săn sóc', q: 'Bảng phân công trách nhiệm 5S từng máy có tên ca trưởng/người phụ trách.', area: 'Trực quan hóa' },
+            { s: '4S Săn sóc', q: 'Checklist kiểm tra 5S đầu ca được công nhân thực hiện nghiêm túc hằng ngày.', area: 'Quy trình' },
+            { s: '4S Săn sóc', q: 'Các đồng hồ đo áp suất, nhiệt độ có vạch sơn xanh (chuẩn) và đỏ (nguy hiểm).', area: 'Thiết bị' },
+            { s: '4S Săn sóc', q: 'Hộp sơ cứu y tế và bình chữa cháy không bị đồ đạc che chắn lối vào.', area: 'An toàn PCCC' },
+
+            // 5S
+            { s: '5S Sẵn sàng', q: '100% công nhân mang đầy đủ trang bị BHLĐ (giày mũi sắt, kính, nút tai).', area: 'Ý thức con người' },
+            { s: '5S Sẵn sàng', q: 'Tự giác thu gom hạt nhựa ngay khi có sự cố rơi vãi, không đợi nhắc nhở.', area: 'Ý thức con người' },
+            { s: '5S Sẵn sàng', q: 'Tuân thủ đúng quy tắc bàn giao ca 5S trước khi rời khỏi máy.', area: 'Ý thức con người' },
+            { s: '5S Sẵn sàng', q: 'Các lỗi 5S tuần trước đã được khắc phục triệt để, không tái diễn.', area: 'Cải tiến Kaizen' }
+        ];
+
+        function renderChecklist() {
+            const container = document.getElementById('checklistItemsContainer');
+            container.innerHTML = checklistQuestions.map((item, idx) => `
+                <div class="item-row">
+                    <div>
+                        <span style="font-size:0.75rem;font-weight:700;color:var(--amber-primary);text-transform:uppercase;">${item.s}</span>
+                        <div class="item-desc">${idx + 1}. ${item.q}</div>
+                        <div class="item-area">Khu vực: ${item.area}</div>
+                    </div>
+                    <div>
+                        <select class="score-select" id="score_${idx}" onchange="calcTotal()">
+                            <option value="5" selected>5 điểm - Hoàn hảo</option>
+                            <option value="4">4 điểm - Tốt (thiếu sót nhỏ)</option>
+                            <option value="3">3 điểm - Trung bình (cần sửa)</option>
+                            <option value="1">1 điểm - Kém (vi phạm rõ)</option>
+                            <option value="0">0 điểm - Chưa thực hiện</option>
+                        </select>
+                    </div>
+                    <div style="font-size:0.8rem;color:#64748b;" id="tip_${idx}">Tối đa 5đ</div>
+                </div>
+            `).join('');
+            calcTotal();
+        }
+
+        function calcTotal() {
+            let total = 0;
+            let weakItems = 0;
+            for (let i = 0; i < checklistQuestions.length; i++) {
+                const val = parseInt(document.getElementById(`score_${i}`).value) || 0;
+                total += val;
+                if (val <= 3) weakItems++;
+            }
+
+            document.getElementById('totalScore').textContent = `${total} / 100`;
+
+            const gradeDiv = document.getElementById('scoreGrade');
+            const reqDiv = document.getElementById('actionRequired');
+
+            if (total >= 90) {
+                gradeDiv.textContent = 'XẾP LOẠI: XUẤT SẮC (HẠNG A)';
+                gradeDiv.style.color = '#4ade80';
+                reqDiv.textContent = weakItems === 0 ? 'Môi trường làm việc chuẩn mực kiểu mẫu' : `Có ${weakItems} điểm cần cải thiện nhẹ`;
+            } else if (total >= 75) {
+                gradeDiv.textContent = 'XẾP LOẠI: ĐẠT TIÊU CHUẨN (HẠNG B)';
+                gradeDiv.style.color = '#fbbf24';
+                reqDiv.textContent = `Có ${weakItems} hạng mục cần khắc phục trong tuần`;
+            } else {
+                gradeDiv.textContent = 'XẾP LOẠI: KHÔNG ĐẠT (HẠNG C - CẢNH BÁO)';
+                gradeDiv.style.color = '#f87171';
+                reqDiv.textContent = `Yêu cầu lập phiếu 5W2H khắc phục ngay cho ${weakItems} điểm yếu!`;
+            }
+        }
+
+        function resetChecklist(score) {
+            for (let i = 0; i < checklistQuestions.length; i++) {
+                document.getElementById(`score_${i}`).value = score;
+            }
+            calcTotal();
+        }
+
+        function saveAudit5S() {
+            const totalText = document.getElementById('totalScore').textContent;
+            const gradeText = document.getElementById('scoreGrade').textContent;
+            const target = document.getElementById('evalTarget').value;
+            const auditor = document.getElementById('evalAuditor').value.trim() || 'QA';
+
+            const record = {
+                date: new Date().toLocaleDateString('vi-VN'),
+                target: target,
+                auditor: auditor,
+                score: totalText,
+                grade: gradeText
+            };
+
+            const history = JSON.parse(localStorage.getItem(STORAGE_5S_KEY) || '[]');
+            history.unshift(record);
+            localStorage.setItem(STORAGE_5S_KEY, JSON.stringify(history));
+            loadHistory();
+            alert('Đã lưu biên bản đánh giá 5S thành công!');
+        }
+
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem(STORAGE_5S_KEY) || '[]');
+            const tbody = document.getElementById('history5sBody');
+            if (history.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:12px;color:#64748b;">Chưa có lịch sử đánh giá nào.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = history.map((h, i) => `
+                <tr>
+                    <td style="padding:8px 10px;border:1px solid #cbd5e1;">${h.date}</td>
+                    <td style="padding:8px 10px;border:1px solid #cbd5e1;font-weight:600;">${h.target}</td>
+                    <td style="padding:8px 10px;border:1px solid #cbd5e1;">${h.auditor}</td>
+                    <td style="padding:8px 10px;border:1px solid #cbd5e1;color:var(--navy-primary);font-weight:700;">${h.score}</td>
+                    <td style="padding:8px 10px;border:1px solid #cbd5e1;">${h.grade}</td>
+                    <td style="padding:8px 10px;border:1px solid #cbd5e1;">
+                        <button onclick="delRecord(${i})" style="padding:2px 8px;font-size:0.75rem;cursor:pointer;color:red;">Xóa</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function delRecord(idx) {
+            if (confirm('Xóa biên bản này?')) {
+                const history = JSON.parse(localStorage.getItem(STORAGE_5S_KEY) || '[]');
+                history.splice(idx, 1);
+                localStorage.setItem(STORAGE_5S_KEY, JSON.stringify(history));
+                loadHistory();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderChecklist();
+            loadHistory();
+        });
+    </script>
+</body>
+</html>

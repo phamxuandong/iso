@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6 Tools — Bộ Công Cụ Giải Quyết Vấn Đề | Nhà máy ép phun</title>
+    <style>
+        :root {
+            --navy-dark: #0a1628;
+            --navy-primary: #122442;
+            --navy-light: #1a365d;
+            --amber-primary: #d97706;
+            --amber-light: #fbbf24;
+            --amber-pale: #fef3c7;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --success: #16a34a;
+            --error: #dc2626;
+            --border-radius: 8px;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --transition: all 0.2s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scroll-margin-top: 80px; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            background: var(--bg-light);
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        .nav {
+            position: sticky;
+            top: 0;
+            background: var(--navy-dark);
+            padding: 12px 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+        }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { color: #fff; font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+        .nav-logo a { color: var(--amber-light); text-decoration: none; font-size: 0.85rem; padding: 3px 8px; border: 1px solid var(--amber-light); border-radius: 4px; }
+        .nav-links { display: flex; gap: 18px; list-style: none; }
+        .nav-links a { color: var(--gray-200); text-decoration: none; font-size: 0.9rem; transition: var(--transition); }
+        .nav-links a:hover { color: var(--amber-light); }
+
+        .hero {
+            background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-primary) 100%);
+            color: var(--white);
+            padding: 50px 0;
+            text-align: center;
+        }
+        .hero h1 { font-size: 2.2rem; margin-bottom: 12px; font-weight: 700; }
+        .hero p { font-size: 1.05rem; opacity: 0.9; max-width: 850px; margin: 0 auto; }
+
+        section { padding: 45px 0; background: var(--white); border-bottom: 1px solid var(--gray-200); }
+        section:nth-child(even) { background: var(--bg-light); }
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--navy-primary);
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 3px solid var(--amber-primary);
+            display: inline-block;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .tool-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 22px;
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow-sm);
+            border-left: 4px solid var(--navy-primary);
+        }
+        .tool-card.amber { border-left-color: var(--amber-primary); }
+        .tool-card.green { border-left-color: var(--success); }
+        .tool-card h3 { font-size: 1.15rem; color: var(--navy-primary); margin-bottom: 8px; }
+
+        /* Pareto Generator Box */
+        .pareto-box {
+            background: var(--white);
+            border: 2px solid var(--navy-primary);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: var(--shadow-md);
+        }
+        .svg-pareto { width: 100%; height: 320px; margin: 20px 0; }
+
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
+        .btn {
+            padding: 9px 18px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-primary { background: var(--amber-primary); color: var(--navy-dark); }
+        .btn-primary:hover { background: #b45309; color: #fff; }
+        .btn-secondary { background: var(--navy-primary); color: #fff; }
+
+        .table-responsive { overflow-x: auto; margin: 20px 0; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.88rem; background: var(--white); }
+        th, td { border: 1px solid var(--gray-200); padding: 10px 12px; text-align: left; }
+        th { background: var(--navy-primary); color: #fff; font-weight: 600; }
+        tr:nth-child(even) { background: var(--gray-100); }
+
+        .footer { background: var(--navy-dark); color: var(--gray-300); text-align: center; padding: 25px 0; font-size: 0.85rem; }
+        .footer a { color: var(--amber-light); text-decoration: none; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.6rem; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="container nav-container">
+            <div class="nav-logo">
+                <span>6 Tools · Giải Quyết Vấn Đề</span>
+                <a href="index.html">← Trang chủ ISO</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#tong-quan">6 Công cụ</a></li>
+                <li><a href="#pareto-generator">Biểu đồ Pareto</a></li>
+                <li><a href="#ma-tran-chon">Ma trận chọn công cụ</a></li>
+                <li><a href="#trac-nghiem">Trắc nghiệm</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="container">
+            <h1>6 Tools — Bộ Công Cụ Giải Quyết Vấn Đề Chất Lượng</h1>
+            <p>Pareto · Fishbone 6M · 5-Why · SPC & Cpk · 8D · SMED — Hệ thống công cụ cốt lõi loại bỏ khiếm khuyết ép phun theo ISO 9001:2015 (§10.2 Khắc phục & Cải tiến)</p>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- TỔNG QUAN 6 TOOLS -->
+        <section id="tong-quan">
+            <h2 class="section-title">1. Tổng Quan 6 Công Cụ Giải Quyết Vấn Đề Trong Nhà Máy Ép Phun</h2>
+            <div class="tools-grid">
+                <div class="tool-card amber">
+                    <span style="font-size:0.75rem;font-weight:700;color:var(--amber-primary);">CÔNG CỤ 1</span>
+                    <h3>1. Biểu Đồ Pareto (Quy tắc 80/20)</h3>
+                    <p style="font-size:0.88rem;color:#475569;">Xác định 20% dạng khuyết tật gây ra 80% tổng sản lượng phế phẩm tại xưởng (phân tích ABC). Giúp đội ngũ tập trung giải quyết đúng điểm nghẽn trước.</p>
+                </div>
+                <div class="tool-card">
+                    <span style="font-size:0.75rem;font-weight:700;color:var(--navy-primary);">CÔNG CỤ 2</span>
+                    <h3>2. Sơ Đồ Xương Cá Ishikawa 6M</h3>
+                    <p style="font-size:0.88rem;color:#475569;">Mở rộng bề ngang để không bỏ sót nguyên nhân tiềm ẩn qua 6 yếu tố: Con người, Máy móc, Nguyên liệu nhựa, Phương pháp ép, Đo lường, Môi trường xưởng.</p>
+                </div>
+                <div class="tool-card green">
+                    <span style="font-size:0.75rem;font-weight:700;color:var(--success);">CÔNG CỤ 3</span>
+                    <h3>3. Phân Tích 5 Why (5 Câu Hỏi Tại Sao)</h3>
+                    <p style="font-size:0.88rem;color:#475569;">Đào sâu xuống tầng gốc rễ của vấn đề. Không dừng lại ở triệu chứng bên ngoài (ví dụ: tại sao sản phẩm thiếu thịt $\rightarrow$ tại sao áp suất tụt $\rightarrow$ tại sao gioăng hỏng).</p>
+                </div>
+                <div class="tool-card">
+                    <span style="font-size:0.75rem;font-weight:700;color:var(--navy-primary);">CÔNG CỤ 4</span>
+                    <h3>4. SPC & Chỉ Số Năng Lực Cpk</h3>
+                    <p style="font-size:0.88rem;color:#475569;">Kiểm soát quá trình bằng thống kê (Biểu đồ X̄-R) và đánh giá độ ổn định kích thước sản phẩm nhựa chính xác (yêu cầu Cpk $\ge 1.33$).</p>
+                </div>
+                <div class="tool-card red">
+                    <span style="font-size:0.75rem;font-weight:700;color:var(--error);">CÔNG CỤ 5</span>
+                    <h3>5. Phương Pháp 8D (8 Disciplines)</h3>
+                    <p style="font-size:0.88rem;color:#475569;">Quy trình giải quyết sự cố chuẩn mực toàn cầu gồm 8 bước từ D0 đến D8; đặc biệt bắt buộc khi nhận khiếu nại chất lượng khách hàng nghiêm trọng.</p>
+                </div>
+                <div class="tool-card amber">
+                    <span style="font-size:0.75rem;font-weight:700;color:var(--amber-primary);">CÔNG CỤ 6</span>
+                    <h3>6. Chuyển Đổi Nhanh Khuôn SMED</h3>
+                    <p style="font-size:0.88rem;color:#475569;">Rút ngắn thời gian thay khuôn ép xuống dưới 10 phút; tách biệt thao tác Chuẩn bị Ngoài (External) và Thao tác Trong máy (Internal).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PARETO GENERATOR -->
+        <section id="pareto-generator">
+            <h2 class="section-title">2. Công Cụ Tạo Biểu Đồ Pareto Tương Tác (Phân Tích Lỗi Ép Phun)</h2>
+            <p>Nhập số lượng phế phẩm theo từng dạng lỗi, hệ thống tự động sắp xếp và vẽ biểu đồ Pareto SVG phân định nhóm A (80%), nhóm B (15%) và nhóm C (5%):</p>
+
+            <div class="pareto-box">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:15px;">
+                    <div>
+                        <label style="font-weight:600;font-size:0.85rem;">1. Bavia (Flash - pcs):</label>
+                        <input type="number" id="errFlash" value="145" style="width:100%;padding:6px 10px;border:1px solid #cbd5e1;border-radius:4px;">
+                    </div>
+                    <div>
+                        <label style="font-weight:600;font-size:0.85rem;">2. Cong vênh (Warpage - pcs):</label>
+                        <input type="number" id="errWarp" value="98" style="width:100%;padding:6px 10px;border:1px solid #cbd5e1;border-radius:4px;">
+                    </div>
+                    <div>
+                        <label style="font-weight:600;font-size:0.85rem;">3. Thiếu thịt (Short Shot - pcs):</label>
+                        <input type="number" id="errShort" value="65" style="width:100%;padding:6px 10px;border:1px solid #cbd5e1;border-radius:4px;">
+                    </div>
+                    <div>
+                        <label style="font-weight:600;font-size:0.85rem;">4. Vết đen/cháy (Black spot - pcs):</label>
+                        <input type="number" id="errBlack" value="28" style="width:100%;padding:6px 10px;border:1px solid #cbd5e1;border-radius:4px;">
+                    </div>
+                    <div>
+                        <label style="font-weight:600;font-size:0.85rem;">5. Lõm bề mặt (Sink mark - pcs):</label>
+                        <input type="number" id="errSink" value="18" style="width:100%;padding:6px 10px;border:1px solid #cbd5e1;border-radius:4px;">
+                    </div>
+                    <div>
+                        <label style="font-weight:600;font-size:0.85rem;">6. Sọc bạc ẩm (Silver streak - pcs):</label>
+                        <input type="number" id="errSilver" value="12" style="width:100%;padding:6px 10px;border:1px solid #cbd5e1;border-radius:4px;">
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="renderPareto()">📊 Vẽ Biểu Đồ Pareto Lỗi</button>
+                    <button class="btn btn-secondary" onclick="resetParetoValues()">Nạp Lại Dữ Liệu Mẫu</button>
+                </div>
+
+                <div class="svg-pareto" id="paretoSvgContainer"></div>
+
+                <div id="paretoSummaryTable" style="margin-top:20px;"></div>
+            </div>
+        </section>
+
+        <!-- MA TRẬN CHỌN CÔNG CỤ -->
+        <section id="ma-tran-chon">
+            <h2 class="section-title">3. Ma Trận Hướng Dẫn: Khi Nào Dùng Công Cụ Nào?</h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tình Huống Sự Cố / Yêu Cầu</th>
+                            <th>Công Cụ Nên Dùng</th>
+                            <th>Đầu Ra Mong Đợi (Deliverable)</th>
+                            <th>Tài Liệu Chi Tiết</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Tỷ lệ phế cao nhưng chưa biết tập trung vào lỗi nào</td>
+                            <td><strong>Biểu đồ Pareto</strong></td>
+                            <td>Xác định 1-2 dạng khuyết tật chiếm 80% để lập kế hoạch</td>
+                            <td><a href="7-qc-tools-nha-may-ep-phun.html">7 QC Tools</a></td>
+                        </tr>
+                        <tr>
+                            <td>Không rõ nguyên nhân kỹ thuật do máy, khuôn hay hạt nhựa</td>
+                            <td><strong>Fishbone 6M + 5-Why</strong></td>
+                            <td>Sơ đồ xương cá và chuỗi 5-Why tìm ra nguyên nhân gốc rễ</td>
+                            <td><a href="fishbone-whywhy-nha-may-ep-phun.html">Fishbone & 5-Why</a></td>
+                        </tr>
+                        <tr>
+                            <td>Kích thước sản phẩm dao động, khách yêu cầu chứng minh ổn định</td>
+                            <td><strong>SPC & Cpk</strong></td>
+                            <td>Biểu đồ X̄-R, giá trị Cpk ≥ 1.33 không có điểm bất thường</td>
+                            <td><a href="spc-cpk-nha-may-ep-phun.html">SPC & Cpk</a></td>
+                        </tr>
+                        <tr>
+                            <td>Khách hàng khiếu nại (Claim) trả hàng hàng loạt</td>
+                            <td><strong>Quy trình 8D</strong></td>
+                            <td>Báo cáo 8D chính thức D0–D8 có đối chứng ngăn tái phát</td>
+                            <td><a href="8d-nha-may-ep-phun.html">8D Ép Phun</a></td>
+                        </tr>
+                        <tr>
+                            <td>Thời gian dừng máy thay khuôn quá lâu (&gt; 45 phút)</td>
+                            <td><strong>SMED</strong></td>
+                            <td>Quy trình chuyển đổi nhanh dưới 10 phút, tăng OEE máy</td>
+                            <td><a href="smed-nha-may-ep-phun.html">SMED Đổi Khuôn</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- TRẮC NGHIỆM -->
+        <section id="trac-nghiem">
+            <h2 class="section-title">4. Trắc Nghiệm Ôn Tập Bộ 6 Công Cụ Giải Quyết Vấn Đề</h2>
+            <div id="quiz6ToolsContainer"></div>
+            <div class="btn-group" style="margin-top:20px;">
+                <button class="btn btn-primary" onclick="grade6ToolsQuiz()">Chấm Điểm Trắc Nghiệm</button>
+                <span id="quiz6Score" style="font-weight:700;color:var(--navy-primary);font-size:1.1rem;align-self:center;"></span>
+            </div>
+        </section>
+
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Hệ thống Quản lý Chất lượng ISO 9001:2015 (§10.2) · Bộ 6 Công Cụ Giải Quyết Vấn Đề Nhà Máy Ép Phun</p>
+            <p style="margin-top: 5px;"><a href="index.html">← Quay lại Cổng tra cứu tài liệu</a></p>
+        </div>
+    </footer>
+
+    <script>
+        function renderPareto() {
+            const rawData = [
+                { name: 'Bavia (Flash)', qty: parseInt(document.getElementById('errFlash').value) || 0 },
+                { name: 'Cong vênh (Warpage)', qty: parseInt(document.getElementById('errWarp').value) || 0 },
+                { name: 'Thiếu thịt (Short shot)', qty: parseInt(document.getElementById('errShort').value) || 0 },
+                { name: 'Vệt đen cháy (Black spot)', qty: parseInt(document.getElementById('errBlack').value) || 0 },
+                { name: 'Lõm bề mặt (Sink mark)', qty: parseInt(document.getElementById('errSink').value) || 0 },
+                { name: 'Sọc bạc ẩm (Silver streak)', qty: parseInt(document.getElementById('errSilver').value) || 0 }
+            ];
+
+            // Sort descending
+            rawData.sort((a, b) => b.qty - a.qty);
+            const total = rawData.reduce((acc, cur) => acc + cur.qty, 0);
+
+            if (total === 0) {
+                alert('Vui lòng nhập số lượng lỗi > 0!');
+                return;
+            }
+
+            let cumQty = 0;
+            const data = rawData.map(item => {
+                cumQty += item.qty;
+                const cumPct = Math.round((cumQty / total) * 100);
+                return {
+                    name: item.name,
+                    qty: item.qty,
+                    pct: ((item.qty / total) * 100).toFixed(1),
+                    cumPct: cumPct,
+                    group: cumPct <= 80 ? 'A (Trọng yếu)' : (cumPct <= 95 ? 'B (Vừa)' : 'C (Ít)')
+                };
+            });
+
+            // Draw SVG
+            const container = document.getElementById('paretoSvgContainer');
+            const w = container.clientWidth || 600;
+            const h = 300;
+            const padL = 50, padR = 50, padT = 25, padB = 40;
+            const chartW = w - padL - padR;
+            const chartH = h - padT - padB;
+            const barW = chartW / data.length;
+            const maxVal = data[0].qty * 1.15;
+
+            let linePoints = data.map((d, i) => {
+                const x = padL + i * barW + barW / 2;
+                const y = padT + (1 - d.cumPct / 100) * chartH;
+                return `${x},${y}`;
+            }).join(' ');
+
+            const line80Y = padT + (1 - 80 / 100) * chartH;
+
+            container.innerHTML = `
+                <svg width="100%" height="100%" viewBox="0 0 ${w} ${h}">
+                    <!-- Axes -->
+                    <line x1="${padL}" y1="${padT + chartH}" x2="${w - padR}" y2="${padT + chartH}" stroke="#cbd5e1" stroke-width="2"/>
+                    <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT + chartH}" stroke="#cbd5e1" stroke-width="2"/>
+                    <line x1="${w - padR}" y1="${padT}" x2="${w - padR}" y2="${padT + chartH}" stroke="#cbd5e1" stroke-width="2"/>
+
+                    <!-- 80% Threshold Line -->
+                    <line x1="${padL}" y1="${line80Y}" x2="${w - padR}" y2="${line80Y}" stroke="#dc2626" stroke-dasharray="4" stroke-width="1.5"/>
+                    <text x="${w - padR + 5}" y="${line80Y + 4}" font-size="10" fill="#dc2626" font-weight="700">80%</text>
+
+                    <!-- Bars -->
+                    ${data.map((d, i) => {
+                        const bx = padL + i * barW + 8;
+                        const bw = barW - 16;
+                        const bh = (d.qty / maxVal) * chartH;
+                        const by = padT + chartH - bh;
+                        const color = d.cumPct <= 80 ? '#d97706' : '#122442';
+                        return `
+                            <rect x="${bx}" y="${by}" width="${bw}" height="${bh}" fill="${color}" rx="3"/>
+                            <text x="${bx + bw/2}" y="${by - 5}" font-size="10" text-anchor="middle" fill="#1e293b" font-weight="700">${d.qty}</text>
+                            <text x="${bx + bw/2}" y="${h - 12}" font-size="9" text-anchor="middle" fill="#64748b">${d.name.split(' ')[0]}</text>
+                        `;
+                    }).join('')}
+
+                    <!-- Cumulative Line -->
+                    <polyline fill="none" stroke="#2563eb" stroke-width="2.5" points="${linePoints}"/>
+                    ${data.map((d, i) => {
+                        const x = padL + i * barW + barW / 2;
+                        const y = padT + (1 - d.cumPct / 100) * chartH;
+                        return `
+                            <circle cx="${x}" cy="${y}" r="4" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+                            <text x="${x}" y="${y - 8}" font-size="9" text-anchor="middle" fill="#2563eb" font-weight="700">${d.cumPct}%</text>
+                        `;
+                    }).join('')}
+                </svg>
+            `;
+
+            // Table Summary
+            document.getElementById('paretoSummaryTable').innerHTML = `
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Thứ tự</th>
+                                <th>Dạng Khiếm Khuyết Ép Phun</th>
+                                <th>Số Lượng Phế (pcs)</th>
+                                <th>Tỷ Lệ %</th>
+                                <th>Tích Lũy %</th>
+                                <th>Phân Nhóm ABC</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.map((d, i) => `
+                                <tr>
+                                    <td>${i + 1}</td>
+                                    <td><strong>${d.name}</strong></td>
+                                    <td>${d.qty}</td>
+                                    <td>${d.pct}%</td>
+                                    <td><strong>${d.cumPct}%</strong></td>
+                                    <td><span style="font-weight:700;color:${d.group.includes('A')?'#d97706':'#16a34a'};">${d.group}</span></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function resetParetoValues() {
+            document.getElementById('errFlash').value = '145';
+            document.getElementById('errWarp').value = '98';
+            document.getElementById('errShort').value = '65';
+            document.getElementById('errBlack').value = '28';
+            document.getElementById('errSink').value = '18';
+            document.getElementById('errSilver').value = '12';
+            renderPareto();
+        }
+
+        // Quiz 6 Tools
+        const quiz6Data = [
+            { q: "1. Nguyên lý cốt lõi của biểu đồ Pareto (80/20) là gì?", opts: ["80% nỗ lực chỉ mang lại 20% kết quả", "Khoảng 80% vấn đề/phế phẩm bắt nguồn từ 20% nguyên nhân chính yếu", "Tất cả các lỗi đều có mức độ quan trọng ngang nhau", "Chỉ cần giải quyết các lỗi nhỏ trước"], c: 1 },
+            { q: "2. Trong phân tích nguyên nhân gốc rễ, Fishbone 6M có tác dụng gì khi kết hợp với 5-Why?", opts: ["Fishbone mở rộng theo bề ngang các khả năng; 5-Why đào sâu theo chiều dọc xuống gốc rễ", "Hai công cụ triệt tiêu lẫn nhau", "Chỉ dùng một trong hai", "5-Why mở rộng ngang, Fishbone đào sâu dọc"], c: 0 },
+            { q: "3. Chỉ số năng lực quá trình Cpk đạt bao nhiêu thì được coi là quá trình sản xuất ép phun đạt yêu cầu chuẩn?", opts: ["Cpk >= 0.67", "Cpk >= 1.00", "Cpk >= 1.33 (Tốt) hoặc Cpk >= 1.67 (Xuất sắc 6 Sigma)", "Cpk < 1.00"], c: 2 },
+            { q: "4. Bước nào trong quy trình 8D tập trung vào việc ngăn chặn khuyết tật đến tay khách hàng ngay lập tức trước khi tìm nguyên nhân gốc?", opts: ["Bước D3: Hành động ngăn chặn tạm thời (Interim Containment Action - ICA)", "Bước D1: Thành lập đội", "Bước D4: Xác định nguyên nhân gốc", "Bước D8: Chúc mừng đội"], c: 0 },
+            { q: "5. Mục tiêu tối thượng của phương pháp SMED là gì?", opts: ["Mua máy ép mới đắt tiền hơn", "Rút ngắn thời gian chuyển đổi khuôn xuống dưới 10 phút (Single-Minute)", "Tăng thời gian làm mát khuôn", "Không bao giờ thay khuôn nữa"], c: 1 }
+        ];
+
+        function render6Quiz() {
+            const container = document.getElementById('quiz6ToolsContainer');
+            container.innerHTML = quiz6Data.map((item, idx) => `
+                <div style="background:#f1f5f9;border:1px solid #cbd5e1;border-radius:6px;padding:14px;margin-bottom:12px;">
+                    <div style="font-weight:600;color:#122442;margin-bottom:8px;">${item.q}</div>
+                    <div style="display:flex;flex-direction:column;gap:6px;font-size:0.88rem;">
+                        ${item.opts.map((opt, oIdx) => `
+                            <label style="background:#fff;padding:6px 10px;border-radius:4px;border:1px solid #e2e8f0;cursor:pointer;display:flex;gap:8px;align-items:center;" id="q6_${idx}_opt_${oIdx}">
+                                <input type="radio" name="ans6_${idx}" value="${oIdx}">
+                                ${opt}
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function grade6ToolsQuiz() {
+            let score = 0;
+            quiz6Data.forEach((it, idx) => {
+                const sel = document.querySelector(`input[name="ans6_${idx}"]:checked`);
+                if (sel && parseInt(sel.value) === it.c) {
+                    score++;
+                    document.getElementById(`q6_${idx}_opt_${it.c}`).style.background = '#dcfce7';
+                } else {
+                    if (sel) document.getElementById(`q6_${idx}_opt_${sel.value}`).style.background = '#fee2e2';
+                    document.getElementById(`q6_${idx}_opt_${it.c}`).style.border = '2px solid #16a34a';
+                }
+            });
+            document.getElementById('quiz6Score').textContent = `Kết quả: ${score}/${quiz6Data.length} câu (${Math.round((score/quiz6Data.length)*100)}%)`;
+        }
+
+        window.addEventListener('resize', renderPareto);
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPareto();
+            render6Quiz();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7 Lãng Phí (TIMWOOD) | Nhà máy ép phun</title>
+    <style>
+        :root {
+            --navy-dark: #0a1628;
+            --navy-primary: #122442;
+            --navy-light: #1a365d;
+            --amber-primary: #d97706;
+            --amber-light: #fbbf24;
+            --amber-pale: #fef3c7;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --success: #16a34a;
+            --error: #dc2626;
+            --border-radius: 8px;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --transition: all 0.2s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scroll-margin-top: 80px; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            background: var(--bg-light);
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        .nav {
+            position: sticky;
+            top: 0;
+            background: var(--navy-dark);
+            padding: 12px 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+        }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { color: #fff; font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+        .nav-logo a { color: var(--amber-light); text-decoration: none; font-size: 0.85rem; padding: 3px 8px; border: 1px solid var(--amber-light); border-radius: 4px; }
+        .nav-links { display: flex; gap: 18px; list-style: none; }
+        .nav-links a { color: var(--gray-200); text-decoration: none; font-size: 0.9rem; transition: var(--transition); }
+        .nav-links a:hover { color: var(--amber-light); }
+
+        .hero {
+            background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-primary) 100%);
+            color: var(--white);
+            padding: 50px 0;
+            text-align: center;
+        }
+        .hero h1 { font-size: 2.2rem; margin-bottom: 12px; font-weight: 700; }
+        .hero p { font-size: 1.05rem; opacity: 0.9; max-width: 850px; margin: 0 auto; }
+
+        section { padding: 45px 0; background: var(--white); border-bottom: 1px solid var(--gray-200); }
+        section:nth-child(even) { background: var(--bg-light); }
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--navy-primary);
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 3px solid var(--amber-primary);
+            display: inline-block;
+        }
+
+        .waste-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .waste-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 22px;
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow-sm);
+            border-left: 4px solid var(--navy-primary);
+        }
+        .waste-card.amber { border-left-color: var(--amber-primary); }
+        .waste-card.red { border-left-color: var(--error); }
+        .waste-card h3 { font-size: 1.15rem; color: var(--navy-primary); margin-bottom: 8px; }
+        .waste-tag { font-size: 0.75rem; font-weight: 700; background: var(--amber-pale); color: var(--amber-primary); padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 6px; }
+
+        /* Waste Walk Box */
+        .walk-box {
+            background: var(--white);
+            border: 2px solid var(--navy-primary);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: var(--shadow-md);
+        }
+        .walk-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .walk-group { display: flex; flex-direction: column; gap: 5px; }
+        label { font-weight: 600; font-size: 0.85rem; color: var(--navy-primary); }
+        input, select, textarea {
+            padding: 8px 12px;
+            border: 1px solid var(--gray-300);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
+        .btn {
+            padding: 9px 18px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-primary { background: var(--amber-primary); color: var(--navy-dark); }
+        .btn-primary:hover { background: #b45309; color: #fff; }
+        .btn-secondary { background: var(--navy-primary); color: #fff; }
+
+        .table-responsive { overflow-x: auto; margin: 20px 0; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.88rem; background: var(--white); }
+        th, td { border: 1px solid var(--gray-200); padding: 10px 12px; text-align: left; }
+        th { background: var(--navy-primary); color: #fff; font-weight: 600; }
+        tr:nth-child(even) { background: var(--gray-100); }
+
+        .footer { background: var(--navy-dark); color: var(--gray-300); text-align: center; padding: 25px 0; font-size: 0.85rem; }
+        .footer a { color: var(--amber-light); text-decoration: none; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.6rem; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="container nav-container">
+            <div class="nav-logo">
+                <span>7 Lãng Phí · TIMWOOD</span>
+                <a href="index.html">← Trang chủ ISO</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#tong-quan">Mô hình TIMWOOD</a></li>
+                <li><a href="#phan-biet">Phân biệt dễ nhầm</a></li>
+                <li><a href="#waste-walk">Công cụ Waste Walk</a></li>
+                <li><a href="#trac-nghiem">Trắc nghiệm 16 câu</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="container">
+            <h1>7 Lãng Phí (TIMWOOD) Trong Nhà Máy Ép Phun</h1>
+            <p>Nhận diện, đo lường và triệt tiêu lãng phí tại hiện trường Gemba — Nền tảng cải tiến năng suất theo Lean Manufacturing & ISO 9001:2015 (§8.5.1 & §10.3)</p>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- TIMWOOD 7 LÃNG PHÍ -->
+        <section id="tong-quan">
+            <h2 class="section-title">1. Bảy Lãng Phí Cốt Lõi (TIMWOOD) Đặc Thù Ngành Ép Nhựa</h2>
+            <div class="waste-grid">
+                <div class="waste-card">
+                    <span class="waste-tag">T - TRANSPORTATION</span>
+                    <h3>1. Vận Chuyển Thừa</h3>
+                    <p style="font-size:0.88rem;color:#475569;">Di chuyển khuôn mẫu quá xa từ kho khuôn đến máy; xe nâng đẩy cuống keo phế chạy vòng vèo quanh xưởng; chở bán thành phẩm qua nhiều kho trung gian.</p>
+                </div>
+                <div class="waste-card amber">
+                    <span class="waste-tag">I - INVENTORY</span>
+                    <h3>2. Tồn Kho Dư Thừa</h3>
+                    <p style="font-size:0.88rem;color:#475569;">Tồn kho quá nhiều bao hạt nhựa ẩm mốc; cuống keo chất đống chưa băm; tồn kho linh kiện nhựa thừa không có đơn hàng dẫn đến ứ đọng vốn và chiếm diện tích.</p>
+                </div>
+                <div class="waste-card">
+                    <span class="waste-tag">M - MOTION</span>
+                    <h3>3. Thao Tác Thừa (Cử Động)</h3>
+                    <p style="font-size:0.88rem;color:#475569;">Công nhân phải cúi gập lưng bê thùng nhựa; với tay quá cao gỡ cuống keo; đi vòng quanh máy tìm cờ lê, lục giác siết bu lông kẹp khuôn.</p>
+                </div>
+                <div class="waste-card red">
+                    <span class="waste-tag">W - WAITING</span>
+                    <h3>4. Thời Gian Chờ Đợi</h3>
+                    <p style="font-size:0.88rem;color:#475569;">Máy ép dừng chờ sấy đủ nhiệt độ hạt nhựa; chờ cẩu trục đang bận ở máy khác; công nhân chờ QC đến duyệt mẫu đầu ca (First-Piece Inspection).</p>
+                </div>
+                <div class="waste-card amber">
+                    <span class="waste-tag">O - OVERPRODUCTION</span>
+                    <h3>5. Sản Xuất Dư Thừa</h3>
+                    <p style="font-size:0.88rem;color:#475569;">Đơn hàng 5.000 cái nhưng xưởng ép 6.000 cái vì "tiện công chạy máy"; gây lãng phí hạt nhựa, điện nung và rủi ro lưu kho ố vàng.</p>
+                </div>
+                <div class="waste-card">
+                    <span class="waste-tag">O - OVERPROCESSING</span>
+                    <h3>6. Gia Công Quá Mức</h3>
+                    <p style="font-size:0.88rem;color:#475569;">Cài đặt thời gian làm mát khuôn dư 8 giây so với thực tế cần thiết; gọt bavia tỉ mỉ ở các góc khuất bên trong mà khách hàng không yêu cầu.</p>
+                </div>
+                <div class="waste-card red">
+                    <span class="waste-tag">D - DEFECTS</span>
+                    <h3>7. Phế Phẩm & Khuyết Tật</h3>
+                    <p style="font-size:0.88rem;color:#475569;">Sản phẩm bị bavia, cong vênh, thiếu thịt, vệt đen, loang màu; tốn công phân loại, tiền hạt nhựa tái sinh và làm giảm uy tín giao hàng.</p>
+                </div>
+                <div class="waste-card" style="border-left-color:var(--success);">
+                    <span class="waste-tag" style="background:#dcfce7;color:#166534;">+1 LÃNG PHÍ THỨ 8</span>
+                    <h3>Không Tận Dụng Trí Tuệ</h3>
+                    <p style="font-size:0.88rem;color:#475569;">Bỏ qua các sáng kiến cải tiến, kinh nghiệm căn chỉnh máy của công nhân vận hành; không trao quyền cho tổ trưởng tự giải quyết sự cố nhỏ.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PHÂN BIỆT DỄ NHẦM -->
+        <section id="phan-biet">
+            <h2 class="section-title">2. Phân Biệt Các Cặp Lãng Phí Dễ Nhầm Lẫn</h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cặp Phân Biệt</th>
+                            <th>Lãng Phí Loại A</th>
+                            <th>Lãng Phí Loại B</th>
+                            <th>Cách Nhận Biết Chuẩn</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Vận Chuyển vs Thao Tác</strong><br>(Transportation vs Motion)</td>
+                            <td><strong>Vận chuyển:</strong> Di chuyển VẬT LIỆU, khuôn mẫu, bán thành phẩm giữa 2 địa điểm.</td>
+                            <td><strong>Thao tác:</strong> Cử động cơ thể của CON NGƯỜI (cúi, với, đi lại tìm đồ).</td>
+                            <td>Nếu vật thể di chuyển trên xe nâng/pallet $\rightarrow$ Vận chuyển. Nếu công nhân bước chân đi tìm kìm cắt $\rightarrow$ Thao tác thừa.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sản Xuất Thừa vs Tồn Kho</strong><br>(Overproduction vs Inventory)</td>
+                            <td><strong>Sản xuất thừa:</strong> Hành vi làm ra nhiều hơn hoặc sớm hơn kế hoạch.</td>
+                            <td><strong>Tồn kho:</strong> Hậu quả của sản xuất thừa (hàng hóa nằm ứ đọng chờ tiêu thụ).</td>
+                            <td>Sản xuất thừa là NGUYÊN NHÂN mẹ đẻ sinh ra các lãng phí tồn kho, hư hỏng và chiếm chỗ.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- CÔNG CỤ WASTE WALK -->
+        <section id="waste-walk">
+            <h2 class="section-title">3. Công Cụ Ghi Nhận Waste Walk (Đi Bộ Săn Lãng Phí Tại Xưởng)</h2>
+            <div class="walk-box">
+                <form id="formWalk">
+                    <div class="walk-grid">
+                        <div class="walk-group">
+                            <label>Chọn Loại Lãng Phí (TIMWOOD)</label>
+                            <select id="wType" required>
+                                <option value="T - Vận chuyển thừa">T - Vận chuyển thừa</option>
+                                <option value="I - Tồn kho dư thừa">I - Tồn kho dư thừa</option>
+                                <option value="M - Thao tác thừa của công nhân">M - Thao tác thừa của công nhân</option>
+                                <option value="W - Thời gian dừng máy chờ đợi">W - Thời gian dừng máy chờ đợi</option>
+                                <option value="O - Sản xuất thừa ngoài đơn">O - Sản xuất thừa ngoài đơn</option>
+                                <option value="O - Gia công quá mức (chu kỳ dài)">O - Gia công quá mức (chu kỳ dài)</option>
+                                <option value="D - Phế phẩm khuyết tật ép">D - Phế phẩm khuyết tật ép</option>
+                            </select>
+                        </div>
+                        <div class="walk-group">
+                            <label>Vị Trí Quan Sát (Máy / Khu vực)</label>
+                            <input type="text" id="wLocation" placeholder="VD: Máy 05 Haitian 250T" required>
+                        </div>
+                        <div class="walk-group">
+                            <label>Ước Tính Tổn Thất (VNĐ / Tháng)</label>
+                            <input type="number" id="wLoss" placeholder="VD: 3500000" required>
+                        </div>
+                    </div>
+                    <div class="walk-group" style="margin-bottom:15px;">
+                        <label>Mô Tả Hiện Trạng Lãng Phí Thấy Được</label>
+                        <textarea id="wDesc" rows="2" placeholder="VD: Công nhân phải đi bộ 15 mét mỗi chu kỳ để lấy thùng carton đóng gói..." required></textarea>
+                    </div>
+                    <div class="walk-group" style="margin-bottom:15px;">
+                        <label>Đề Xuất Hành Động Triệt Tiêu (Kaizen)</label>
+                        <input type="text" id="wAction" placeholder="VD: Lắp giá treo thùng carton ngay cạnh bàn máy ép" required>
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">➕ Ghi Nhận Phát Hiện Waste Walk</button>
+                    </div>
+                </form>
+
+                <div class="table-responsive" style="margin-top:20px;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Loại Lãng Phí</th>
+                                <th>Vị Trí</th>
+                                <th>Mô Tả Hiện Trạng</th>
+                                <th>Ước Tính Tổn Thất/Tháng</th>
+                                <th>Đề Xuất Khắc Phục</th>
+                                <th>Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="walkBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TRẮC NGHIỆM 16 CÂU -->
+        <section id="trac-nghiem">
+            <h2 class="section-title">4. Trắc Nghiệm 16 Câu Hỏi Nhận Diện Lãng Phí TIMWOOD</h2>
+            <div id="quiz16Container"></div>
+            <div class="btn-group" style="margin-top:20px;">
+                <button class="btn btn-primary" onclick="gradeWasteQuiz()">Chấm Điểm 16 Câu</button>
+                <span id="quiz16Score" style="font-weight:700;color:var(--navy-primary);font-size:1.1rem;align-self:center;"></span>
+            </div>
+        </section>
+
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Hệ thống Quản lý Sản xuất Tinh gọn Lean & ISO 9001:2015 (§10.3) · Nhà máy Ép Phun 20 Máy</p>
+            <p style="margin-top: 5px;"><a href="index.html">← Quay lại Cổng tra cứu tài liệu</a></p>
+        </div>
+    </footer>
+
+    <script>
+        const WASTE_STORAGE_KEY = 'iso_waste_walk_logs_v1';
+
+        const defaultWastes = [
+            { type: "W - Thời gian dừng máy chờ đợi", loc: "Máy 08 (350T)", loss: 4500000, desc: "Máy dừng 45 phút mỗi lần đổi khuôn vì chờ cẩu trục pa-lăng đang bận cẩu hàng", act: "Bổ sung lịch phân bổ cẩu trục theo giờ cố định" },
+            { type: "M - Thao tác thừa của công nhân", loc: "Khu vực Máy 01 - 04", loss: 2200000, desc: "Công nhân cúi gập người 500 lần/ca để nhặt sản phẩm từ thùng carton dưới đất", act: "Lắp bàn nâng thủy lực lò xo tự điều chỉnh độ cao" }
+        ];
+
+        function getWastes() {
+            const raw = localStorage.getItem(WASTE_STORAGE_KEY);
+            if (!raw) {
+                localStorage.setItem(WASTE_STORAGE_KEY, JSON.stringify(defaultWastes));
+                return defaultWastes;
+            }
+            return JSON.parse(raw);
+        }
+
+        function renderWastes() {
+            const list = getWastes();
+            const tbody = document.getElementById('walkBody');
+            if (list.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#64748b;">Chưa có phát hiện nào.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = list.map((item, i) => `
+                <tr>
+                    <td><strong>${escapeHtml(item.type)}</strong></td>
+                    <td>${escapeHtml(item.loc)}</td>
+                    <td>${escapeHtml(item.desc)}</td>
+                    <td style="color:var(--error);font-weight:700;">${parseInt(item.loss).toLocaleString('vi-VN')} đ</td>
+                    <td style="color:var(--success);font-weight:600;">${escapeHtml(item.act)}</td>
+                    <td><button onclick="delWaste(${i})" style="color:red;cursor:pointer;">Xóa</button></td>
+                </tr>
+            `).join('');
+        }
+
+        document.getElementById('formWalk').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newItem = {
+                type: document.getElementById('wType').value,
+                loc: document.getElementById('wLocation').value.trim(),
+                loss: document.getElementById('wLoss').value,
+                desc: document.getElementById('wDesc').value.trim(),
+                act: document.getElementById('wAction').value.trim()
+            };
+            const list = getWastes();
+            list.unshift(newItem);
+            localStorage.setItem(WASTE_STORAGE_KEY, JSON.stringify(list));
+            renderWastes();
+            document.getElementById('wDesc').value = '';
+            document.getElementById('wAction').value = '';
+            alert('Đã lưu phát hiện Waste Walk!');
+        });
+
+        function delWaste(idx) {
+            const list = getWastes();
+            list.splice(idx, 1);
+            localStorage.setItem(WASTE_STORAGE_KEY, JSON.stringify(list));
+            renderWastes();
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        // 16 Quiz Questions
+        const quiz16 = [
+            { q: "1. Trong Lean Manufacturing, lãng phí nào được coi là 'Mẹ của mọi lãng phí' vì nó che giấu tất cả các vấn đề khác?", opts: ["Lãng phí chờ đợi", "Lãng phí sản xuất thừa (Overproduction)", "Lãng phí vận chuyển", "Lãng phí khuyết tật"], c: 1 },
+            { q: "2. Một kỹ thuật viên cài đặt chu kỳ làm mát khuôn 25 giây trong khi chỉ cần 18 giây là sản phẩm đã định hình tốt. Đây là lãng phí gì?", opts: ["Sản xuất thừa", "Gia công quá mức (Overprocessing)", "Vận chuyển thừa", "Tồn kho"], c: 1 },
+            { q: "3. Công nhân phải đi 20 mét mỗi khi cần lấy cờ lê vặn bu lông kẹp khuôn. Đây là lãng phí gì?", opts: ["Vận chuyển thừa (Transportation)", "Thao tác thừa (Motion)", "Chờ đợi", "Khuyết tật"], c: 1 },
+            { q: "4. Xe nâng chở hạt nhựa từ kho nguyên liệu ra máy ép chạy vòng vèo do lối đi bị bít kín. Đây là lãng phí gì?", opts: ["Vận chuyển thừa (Transportation)", "Thao tác thừa (Motion)", "Tồn kho", "Sản xuất thừa"], c: 0 },
+            { q: "5. Máy ép Haitian 250T phải dừng chờ QC đến đo kích thước sản phẩm đầu ca suốt 40 phút. Đây là lãng phí gì?", opts: ["Chờ đợi (Waiting)", "Gia công thừa", "Sản xuất thừa", "Khuyết tật"], c: 0 },
+            { q: "6. Lãng phí cuống keo chất đầy 50 bao tải dưới gầm máy suốt 2 tuần chưa đem nghiền thuộc loại gì?", opts: ["Tồn kho (Inventory)", "Chờ đợi", "Gia công thừa", "Thao tác"], c: 0 },
+            { q: "7. Sản phẩm nắp hộp nhựa bị bavia phải cắt gọt lại bằng dao trổ thuộc loại lãng phí nào?", opts: ["Khuyết tật (Defects)", "Vận chuyển", "Chờ đợi", "Tồn kho"], c: 0 },
+            { q: "8. Lãng phí thứ 8 trong Lean hiện đại là gì?", opts: ["Lãng phí nước", "Không tận dụng tiềm năng, trí tuệ và sự sáng tạo của người lao động", "Lãng phí giấy tờ", "Lãng phí tiền điện"], c: 1 },
+            { q: "9. Chuyến đi bộ quan sát tại hiện trường để săn tìm lãng phí được gọi là thuật ngữ gì?", opts: ["5S Audit", "Gemba Waste Walk", "Kaizen Board", "Safety Inspection"], c: 1 },
+            { q: "10. Hoạt động nào sau đây là 'Giá trị gia tăng thực sự' (Value-Added) mà khách hàng sẵn sàng trả tiền?", opts: ["Thời gian máy ép phun nhựa nóng chảy vào lòng khuôn định hình sản phẩm", "Thời gian xe nâng chở pallet vào kho", "Thời gian công nhân đóng dấu kiểm định", "Thời gian lưu kho 1 tháng"], c: 0 },
+            { q: "11. Để giảm lãng phí Vận Chuyển trong xưởng ép phun, giải pháp hữu hiệu nhất là gì?", opts: ["Mua xe nâng chạy nhanh hơn", "Sắp xếp mặt bằng Layout máy móc và kho nguyên liệu kế cận nhau (Spaghetti Diagram)", "Tuyển thêm công nhân bốc vác", "Để nguyên hiện trạng"], c: 1 },
+            { q: "12. Bảng bóng (Shadow Board) treo dụng cụ sửa chữa tại chân máy giúp loại bỏ lãng phí nào?", opts: ["Thao tác thừa tìm kiếm dụng cụ", "Khuyết tật nứt sản phẩm", "Sản xuất thừa", "Tồn kho"], c: 0 },
+            { q: "13. Phương pháp SMED (Single-Minute Exchange of Die) giúp giảm trực tiếp lãng phí nào?", opts: ["Lãng phí thời gian dừng máy chờ đổi khuôn", "Lãng phí điện năng", "Lãng phí bao bì", "Lãng phí nước"], c: 0 },
+            { q: "14. Hệ thống cấp liệu hút nhựa tự động chân không trực tiếp lên phễu máy ép triệt tiêu lãng phí nào?", opts: ["Vận chuyển bao hạt nặng và thao tác leo trèo đổ hạt thủ công", "Khuyết tật bavia", "Sản xuất thừa", "Chờ đợi QC"], c: 0 },
+            { q: "15. Theo ISO 9001:2015 Điều khoản 10.3, cải tiến liên tục nhằm mục đích gì đối với lãng phí?", opts: ["Chỉ để đối phó khi chuyên gia đánh giá đến", "Nâng cao hiệu lực của QMS và loại bỏ các lãng phí, khiếm khuyết trong quy trình", "Tăng số lượng biểu mẫu báo cáo", "Mua sắm máy móc đắt tiền"], c: 1 },
+            { q: "16. Trong công thức tính OEE, phế phẩm khuyết tật (Defects) tác động trực tiếp vào thành phần nào?", opts: ["Mức độ chất lượng (Quality Rate - Q)", "Tính khả dụng (Availability - A)", "Hiệu suất vận hành (Performance - P)", "Không ảnh hưởng OEE"], c: 0 }
+        ];
+
+        function render16Quiz() {
+            const c = document.getElementById('quiz16Container');
+            c.innerHTML = quiz16.map((it, idx) => `
+                <div style="background:#f1f5f9;border:1px solid #cbd5e1;border-radius:6px;padding:14px;margin-bottom:12px;">
+                    <div style="font-weight:600;color:#122442;margin-bottom:8px;">${it.q}</div>
+                    <div style="display:flex;flex-direction:column;gap:6px;font-size:0.88rem;">
+                        ${it.opts.map((opt, oIdx) => `
+                            <label style="background:#fff;padding:6px 10px;border-radius:4px;border:1px solid #e2e8f0;cursor:pointer;display:flex;gap:8px;align-items:center;" id="q16_${idx}_opt_${oIdx}">
+                                <input type="radio" name="ans16_${idx}" value="${oIdx}">
+                                ${opt}
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function gradeWasteQuiz() {
+            let score = 0;
+            quiz16.forEach((it, idx) => {
+                const sel = document.querySelector(`input[name="ans16_${idx}"]:checked`);
+                if (sel && parseInt(sel.value) === it.c) {
+                    score++;
+                    document.getElementById(`q16_${idx}_opt_${it.c}`).style.background = '#dcfce7';
+                } else {
+                    if (sel) document.getElementById(`q16_${idx}_opt_${sel.value}`).style.background = '#fee2e2';
+                    document.getElementById(`q16_${idx}_opt_${it.c}`).style.border = '2px solid #16a34a';
+                }
+            });
+            document.getElementById('quiz16Score').textContent = `Kết quả: ${score}/${quiz16.length} câu (${Math.round((score/quiz16.length)*100)}%)`;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderWastes();
+            render16Quiz();
+        });
+    </script>
+</body>
+</html>
